@@ -1,0 +1,117 @@
+.main-logo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36.5rem;
+  z-index: 100;
+  transition: filter 0.5s ease;
+  cursor: pointer;
+}
+
+.main-logo:hover {
+  filter: blur(5px);
+}
+
+.main-logo img {
+  width: 100%;
+}
+
+.main-image-wrap {
+  width: 100vw;
+  position: relative;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.main-image-ver,
+.main-image-hor {
+  position: absolute;
+}
+
+.main-image-ver {
+  aspect-ratio: 3/4;
+}
+
+.main-image-hor {
+  aspect-ratio: 3/2;
+}
+
+.main-image-ver img,
+.main-image-hor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.main-image1 {
+  width: 33vw;
+  top: 15vw;
+  right: 0;
+}
+
+.main-image2 {
+  width: 33vw;
+  top: 100vw;
+  left: 0;
+}
+
+.main-image3 {
+  width: 58vw;
+  top: 0;
+}
+
+.main-image4 {
+  width: 48vw;
+  left: 10vw;
+  top: 50vw;
+}
+
+.main-image5 {
+  width: 58vw;
+  right: 0;
+  top: 90vw;
+}
+
+.main-image6 {
+  width: 50vw;
+  right: 0;
+  top: 140vw;
+}
+
+.main-image7 {
+  width: 40vw;
+  left: 0;
+  top: 155vw;
+}
+
+@media (max-width: 768px) {
+  .main-image-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .main-image-ver,
+  .main-image-hor {
+    position: static;
+    width: 100%;
+  }
+
+  .main-logo {
+    width: 25rem;
+  }
+
+  .main-logo:hover {
+    filter: blur(0px);
+  }
+}

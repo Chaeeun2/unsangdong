@@ -1,0 +1,317 @@
+.contact-container {
+  padding: 4rem;
+  margin: 0 auto;
+  position: relative;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.contact-left-wrap {
+  position: fixed;
+  top: 11rem;
+  width: 30%;
+  padding-bottom: 10rem;
+}
+
+.contact-right-wrap {
+  position: absolute;
+  top: 16rem;
+  margin-left: 38%;
+  width: calc(62% - 8rem);
+  padding-bottom: 10rem;
+}
+
+.contact-title {
+  font-size: 4.8rem;
+  font-weight: 700;
+  color: black;
+  letter-spacing: -0.03em;
+}
+
+/* 왼쪽 연락처 정보 */
+.contact-info {
+  margin-top: 4rem;
+}
+
+.contact-address {
+  margin-bottom: 4.5rem;
+}
+
+.contact-address-ko {
+  font-size: 1.8rem;
+  color: black;
+  line-height: 1.6;
+  font-family: Pretendard;
+  margin-bottom: 0.7rem;
+}
+
+.contact-address-en {
+  font-size: 1.7rem;
+  color: black;
+  line-height: 1.5;
+}
+
+.contact-number-wrap {
+  display: flex;
+  gap: 3rem;
+}
+
+.contact-number-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.contact-number-content-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.contact-number-title {
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: black;
+  margin: 0;
+  padding: 2px 0;
+}
+
+.contact-number-content {
+  font-size: 1.7rem;
+  color: black;
+  margin: 0;
+  padding: 2px 0;
+}
+
+.contact-number-content a {
+  color: black;
+}
+
+.form-title {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+  text-align: left;
+}
+
+.form-title-en {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #666;
+  margin: 0 0 40px 0;
+  text-align: left;
+  font-style: italic;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: black;
+  margin-bottom: 0px;
+  display: block;
+  font-family: Pretendard;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 12px 0px;
+  border-bottom: 1.5px solid black;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-size: 1.8rem;
+  font-family: inherit;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  font-family: Pretendard;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: none;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 150px;
+  height: 150px;
+  line-height: 1.5;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #cacaca;
+  font-family: Roboto Mono;
+}
+
+.company-name,
+.your-name,
+.e-mail,
+.phone-number {
+  width: 50%;
+}
+
+.form-submit-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  font-size: 1.8rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
+  border-radius: 0px;
+  font-family: "Roboto Mono", monospace;
+}
+
+.form-submit-btn:hover {
+  opacity: 0.8;
+}
+
+.form-submit-btn-arrow {
+  font-family: Pretendard;
+}
+
+@media (max-width: 768px) {
+  .contact-left-wrap {
+    position: static;
+    width: 100%;
+    padding-bottom: 5.5rem;
+  }
+
+  .contact-right-wrap {
+    position: static;
+    width: 100%;
+    padding-bottom: 8rem;
+    margin-left: 0%;
+  }
+
+  .contact-container {
+    margin-top: 7rem;
+    padding: 2.5rem 0;
+  }
+
+  .contact-title {
+    position: static;
+    font-size: 3.2rem;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    margin-top: 1rem;
+  }
+
+  .contact-info {
+    margin-top: 6rem;
+  }
+
+  .contact-info,
+  .contact-form-section {
+    padding: 0px 25px;
+  }
+
+  .contact-address {
+    margin-bottom: 3rem;
+  }
+
+  .contact-address-ko {
+    font-size: 1.6rem;
+    color: black;
+    line-height: 1.6;
+    font-family: Pretendard;
+    margin-bottom: 0rem;
+  }
+
+  .contact-address-en {
+    font-size: 1.5rem;
+    color: black;
+    line-height: 1.6;
+  }
+
+  .contact-number-title,
+  .contact-number-content {
+    font-size: 1.5rem;
+  }
+
+  .form-label {
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 10px 0px;
+    font-size: 1.5rem;
+    /* 모바일 브라우저 기본 스타일 제거 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+
+  .company-name,
+  .your-name,
+  .e-mail,
+  .phone-number {
+    width: 100%;
+  }
+
+  .form-group {
+    margin-bottom: 0rem;
+  }
+
+  .contact-form {
+    gap: 3rem;
+  }
+
+  .form-row:last-child {
+    justify-content: center;
+  }
+
+  .form-submit-btn {
+    font-size: 1.5rem;
+  }
+
+  .form-textarea {
+    min-height: 120px;
+    height: 120px;
+  }
+}
