@@ -40,6 +40,7 @@
 .news-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .news-title {
@@ -49,10 +50,13 @@
   letter-spacing: -0.01em;
   font-family: Pretendard;
   word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .news-table td {
-  padding: 2rem 1.7rem;
+  padding: 2rem 0;
   border-bottom: 1.5px solid black;
 }
 
@@ -61,17 +65,21 @@
 }
 
 .news-date {
-  text-align: center;
-  width: 10%;
-  min-width: 130px;
-  font-size: 2em;
+  text-align: right;
+  width: 18%;
+  min-width: 105px;
+  font-size: 1.8em;
   letter-spacing: -0.02em;
+}
+
+.news-date-mo {
+  display: none;
 }
 
 /* 페이지네이션 스타일 */
 .pagination {
   display: flex;
-  justify-content: left;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
   margin-top: 5rem;
@@ -119,4 +127,78 @@
   padding: 40px 20px;
   color: #666;
   font-size: 1.1em;
+}
+
+@media (max-width: 768px) {
+  .news-container {
+    margin-top: 7rem;
+    padding: 2.5rem 0;
+  }
+
+  .news-page-title {
+    position: static;
+    font-size: 3.2rem;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    margin-top: 1rem;
+  }
+
+  .news-board {
+    margin-left: 0;
+    padding: 0 2.5rem;
+  }
+
+  .news-table {
+    display: block;
+  }
+
+  .news-table tbody {
+    display: block;
+  }
+
+  .news-table tr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0;
+    border-bottom: 1.5px solid black;
+  }
+
+  .news-table td {
+    padding: 0;
+    border: none;
+  }
+
+  .news-title {
+    font-size: 1.6rem;
+    flex: 1;
+    padding-right: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 80px);
+  }
+
+  .news-date {
+    display: none;
+  }
+
+  .news-date-mo {
+    display: block;
+    text-align: right;
+    width: 80px;
+    font-size: 1.5em;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+
+  .pagination {
+    justify-content: center !important;
+    margin-bottom: 6rem !important;
+  }
+
+  .pagination button {
+    font-size: 1.6em !important;
+  }
 }

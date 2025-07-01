@@ -3,7 +3,6 @@
 .art-container {
   margin-top: 5rem;
   position: relative;
-  min-height: 100vh;
   animation: fadeIn 0.5s ease;
 }
 
@@ -81,5 +80,20 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .art-container .controls-bar {
+    padding: 3rem 2.5rem 3rem 2.5rem;
+  }
+
+  .art-type-btn {
+    font-size: 1.6rem;
+  }
+
+  .art-projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 }
