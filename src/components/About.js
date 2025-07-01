@@ -74,6 +74,7 @@ function About() {
                   </div>
               </div>
         <div className="about-description-wrap">
+          
                   <div className="lang-options">
           <button 
             className={`lang-btn ${langMode === 'KO' ? 'active' : ''}`}

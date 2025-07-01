@@ -39,6 +39,7 @@
 .press-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .press-year {
@@ -60,6 +61,10 @@
   font-family: Pretendard;
   width: 70%;
   word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 1px;
 }
 
 .press-newspaper {
@@ -133,4 +138,55 @@
   padding: 40px 20px;
   color: #666;
   font-size: 1.1em;
+}
+
+@media (max-width: 768px) {
+  .press-container {
+    margin-top: 7rem;
+    padding: 2.5rem 0;
+  }
+
+  .press-page-title {
+    position: static;
+    font-size: 3.2rem;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    margin-top: 1rem;
+  }
+
+  .press-board {
+    margin-left: 0;
+    padding: 0 2.5rem;
+  }
+
+  .press-title {
+    font-size: 1.6rem;
+    padding-left: 0 !important;
+    width: 70%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 1px;
+  }
+
+  .press-year {
+    display: none;
+  }
+
+  .press-newspaper {
+    width: 12%;
+    min-width: 55px !important;
+    font-size: 1.6em;
+    padding: 2rem 0 !important;
+  }
+
+  .pagination {
+    justify-content: center !important;
+    margin-bottom: 6rem !important;
+  }
+
+  .pagination button {
+    font-size: 1.6em !important;
+  }
 }

@@ -294,10 +294,10 @@ function Architecture({ onNavigate }) {
                 <div className="list-col-title">
                   <div className="list-project-title">
                     {project.title}
-                  </div>
-                  <div className="list-project-title-en">
+                  <span className="list-project-title-en">
                     {project.titleEn}
-                  </div>
+                    </span>
+                    </div>
                 </div>
                 <div className="list-col-year">{project.year}</div>
                 <div className="list-col-type">{project.type}</div>

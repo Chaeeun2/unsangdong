@@ -84,6 +84,14 @@ const News = ({ onNavigate }) => {
     return `${year}/${month}/${day}`;
   };
 
+  const formatDateMo = (dateString) => {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월 2자리
+    const day = String(date.getDate()).padStart(2, '0'); // 일 2자리
+    return `${month}/${day}`;
+  };
+
+
   const handleNewsClick = (news) => {
     console.log('뉴스 클릭:', news.title);
     onNavigate('news-detail', news.id);
@@ -135,10 +143,11 @@ const News = ({ onNavigate }) => {
       onClick={() => handleNewsClick(news)} 
       style={{ cursor: 'pointer' }}
     >
-      <td className="news-title">
+            <td className="news-title">
         {news.title}
       </td>
       <td className="news-date">{formatDate(news.created_at)}</td>
+      <td className="news-date-mo">{formatDateMo(news.created_at)}</td>
     </tr>
   );
 

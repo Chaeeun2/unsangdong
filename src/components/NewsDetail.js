@@ -210,7 +210,7 @@ const NewsDetail = ({ newsId, onNavigate }) => {
   if (loading) {
     return (
       <div className="news-container">
-        <h1 className="news-page-title">NEWS</h1>
+        <h1 className="newsdetail-page-title">NEWS</h1>
       </div>
     );
   }
@@ -218,7 +218,7 @@ const NewsDetail = ({ newsId, onNavigate }) => {
   if (!news) {
     return (
       <div className="news-container">
-        <h1 className="news-page-title">NEWS</h1>
+        <h1 className="newsdetail-page-title">NEWS</h1>
         <div className="news-not-found">뉴스를 찾을 수 없습니다.</div>
       </div>
     );
@@ -226,7 +226,7 @@ const NewsDetail = ({ newsId, onNavigate }) => {
 
   return (
     <div className="news-container">
-      <h1 className="news-page-title">NEWS</h1>
+      <h1 className="newsdetail-page-title">NEWS</h1>
       <div className="news-detail-board">
         <h2>{news.title}</h2>
         

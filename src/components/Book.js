@@ -1,7 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Book.css';
 
 const Book = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // 책 데이터 (이미지의 책들을 참고)
   const books = [
     {
@@ -52,7 +65,7 @@ const Book = () => {
     window.open(link, '_blank', 'noopener,noreferrer');
   };
 
-  // 책을 3개씩 묶어서 row로 구성
+  // 책을 3개씩 묶어서 row로 구성 (데스크톱용)
   const createRows = (books, itemsPerRow = 3) => {
     const rows = [];
     for (let i = 0; i < books.length; i += itemsPerRow) {
@@ -61,44 +74,97 @@ const Book = () => {
     return rows;
   };
 
+  // 모바일용 2개씩 묶어서 row로 구성
+  const createMobileRows = (books, itemsPerRow = 2) => {
+    const rows = [];
+    for (let i = 0; i < books.length; i += itemsPerRow) {
+      rows.push(books.slice(i, i + itemsPerRow));
+    }
+    return rows;
+  };
+
   const bookRows = createRows(books);
+  const mobileBookRows = createMobileRows(books);
+
+  // 데스크톱용 그리드 렌더링
+  const renderDesktopGrid = () => (
+    <div className="book-grid">
+      {bookRows.map((row, rowIndex) => (
+        <div key={rowIndex} className="book-row">
+          <div className="book-images">
+            {row.map((book) => (
+              <div 
+                key={book.id} 
+                className={`book-item book-item-${book.size}`}
+              >
+                <div className="book-image-wrapper">
+                  <a href={book.link} target="_blank" rel="noopener noreferrer">
+                    <img 
+                      src={book.image} 
+                      alt={book.title}
+                      className="book-image"
+                      onError={(e) => {
+                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJvb2sgSW1hZ2U8L3RleHQ+PC9zdmc+';
+                      }}
+                    />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="book-infos">
+            {row.map((book) => (
+              <div key={`info-${book.id}`} className="book-info">
+                <h3 className="book-title">{book.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // 모바일용 그리드 렌더링 (PC와 동일한 구조, 2열로만)
+  const renderMobileGrid = () => (
+    <div className="book-grid">
+      {mobileBookRows.map((row, rowIndex) => (
+        <div key={rowIndex} className="book-row">
+          <div className="book-images">
+            {row.map((book) => (
+              <div 
+                key={book.id} 
+                className={`book-item book-item-${book.size}`}
+              >
+                <div className="book-image-wrapper">
+                  <a href={book.link} target="_blank" rel="noopener noreferrer">
+                    <img 
+                      src={book.image} 
+                      alt={book.title}
+                      className="book-image"
+                      onError={(e) => {
+                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJvb2sgSW1hZ2U8L3RleHQ+PC9zdmc+';
+                      }}
+                    />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="book-infos">
+            {row.map((book) => (
+              <div key={`info-${book.id}`} className="book-info">
+                <h3 className="book-title">{book.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="book-container">
-      <div className="book-grid">
-                {bookRows.map((row, rowIndex) => (
-          <div key={rowIndex} className="book-row">
-            <div className="book-images">
-              {row.map((book) => (
-                <div 
-                  key={book.id} 
-                  className={`book-item book-item-${book.size}`}
-                >
-                    <div className="book-image-wrapper">
-                      <a href={book.link} target="_blank" rel="noopener noreferrer">
-                        <img 
-                          src={book.image} 
-                          alt={book.title}
-                          className="book-image"
-                          onError={(e) => {
-                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJvb2sgSW1hZ2U8L3RleHQ+PC9zdmc+';
-                          }}
-                        />
-                      </a>
-                    </div>
-                  </div>
-              ))}
-            </div>
-            <div className="book-infos">
-              {row.map((book) => (
-                <div key={`info-${book.id}`} className="book-info">
-                  <h3 className="book-title">{book.title}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {isMobile ? renderMobileGrid() : renderDesktopGrid()}
     </div>
   );
 };

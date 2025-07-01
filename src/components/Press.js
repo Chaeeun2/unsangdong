@@ -71,6 +71,11 @@ const Press = () => {
     return date.getFullYear().toString(); // 4자리 연도
   };
 
+  const truncateTitle = (title, maxLength = 40) => {
+    if (title.length <= maxLength) return title;
+    return title.substring(0, maxLength) + '...';
+  };
+
   const handlePressClick = (press) => {
     console.log('프레스 클릭:', press.title);
     window.open(press.link, '_blank', 'noopener,noreferrer');
@@ -124,7 +129,7 @@ const Press = () => {
     >
       <td className="press-year">{formatYear(press.created_at)}</td>
       <td className="press-title">
-        {press.title}
+        {truncateTitle(press.title)}
       </td>
       <td className="press-newspaper">{press.newspaper}</td>
     </tr>
