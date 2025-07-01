@@ -15,7 +15,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
-  color: #333;
+  color: black;
 }
 
 code {
@@ -43,7 +43,6 @@ code {
 
 /* 기본 링크 스타일 */
 a {
-  color: #667eea;
   text-decoration: none;
 }
 
@@ -63,9 +62,4 @@ button {
 
 button:hover {
   opacity: 0.9;
-}
-
-button:focus {
-  outline: 2px solid #667eea;
-  outline-offset: 2px;
 }
