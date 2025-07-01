@@ -1,0 +1,167 @@
+/* Book 페이지 스타일 */
+.book-container {
+  position: relative;
+  padding: 4rem 0 0 0;
+  width: 100vw;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 기본 그리드 스타일 */
+.book-grid {
+  margin-top: 10rem;
+  margin-bottom: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: 9rem;
+}
+
+.book-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.book-images {
+  display: flex;
+  justify-content: center;
+}
+
+.book-infos {
+  display: flex;
+  justify-content: center;
+}
+
+.book-item {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
+  width: 33.3%;
+  border-bottom: 1.5px solid black;
+  padding: 0 4rem;
+}
+
+/* 개별 책 크기 설정 */
+.book-item-small .book-image-wrapper {
+  width: 60%;
+}
+
+.book-item-medium .book-image-wrapper {
+  width: 70%;
+}
+
+.book-item-large .book-image-wrapper {
+  width: 80%;
+}
+
+.book-image-wrapper {
+  width: 100%;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+.book-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.book-info {
+  text-align: center;
+  width: 100%;
+  padding: 2.5rem 4rem;
+}
+
+.book-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: black;
+  letter-spacing: -0.01em;
+  font-family: Pretendard;
+  line-height: 1.4;
+  margin: 0;
+  word-break: keep-all;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .book-grid {
+    margin-left: 10%;
+    grid-template-columns: repeat(4, 1fr); /* 4열로 축소 */
+  }
+
+  .book-item-small {
+    grid-column: span 1; /* 1/4 크기 */
+  }
+
+  .book-item-medium {
+    grid-column: span 2; /* 2/4 크기 */
+  }
+
+  .book-item-large {
+    grid-column: span 2; /* 2/4 크기 */
+  }
+}
+
+@media (max-width: 768px) {
+  .book-container {
+    padding: 2rem;
+  }
+
+  .book-page-title {
+    font-size: 3rem;
+    top: 8rem;
+  }
+
+  .book-grid {
+    margin-left: 0;
+    margin-top: 4rem;
+    grid-template-columns: repeat(2, 1fr); /* 2열로 축소 */
+    gap: 2rem 1rem;
+  }
+
+  .book-item-small {
+    grid-column: span 1; /* 1/2 크기 */
+  }
+
+  .book-item-medium {
+    grid-column: span 1; /* 1/2 크기 */
+  }
+
+  .book-item-large {
+    grid-column: span 2; /* 2/2 크기 (전체 너비) */
+  }
+
+  .book-title {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-grid {
+    grid-template-columns: 1fr; /* 1열로 축소 */
+    gap: 2rem;
+  }
+
+  .book-item-small,
+  .book-item-medium,
+  .book-item-large {
+    grid-column: span 1; /* 모든 크기가 전체 너비 */
+  }
+
+  .book-item {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}

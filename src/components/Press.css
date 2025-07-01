@@ -1,0 +1,136 @@
+.pagination button:focus,
+.pagination button:active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.press-container {
+  position: relative;
+  padding: 4rem;
+  width: 100vw;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.press-page-title {
+  position: sticky;
+  top: 11rem;
+  font-size: 4.8rem;
+  font-weight: 700;
+  color: black;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.press-board {
+  margin-left: 18%;
+  margin-top: 3rem;
+}
+
+.press-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.press-year {
+  text-align: left;
+  width: 8%;
+  min-width: 80px;
+  font-size: 2em;
+  font-weight: 400;
+  color: black;
+  letter-spacing: -0.02em;
+  padding: 2rem 2rem 2rem 0 !important;
+}
+
+.press-title {
+  font-size: 2.3rem;
+  font-weight: 400;
+  color: black;
+  letter-spacing: -0.01em;
+  font-family: Pretendard;
+  width: 70%;
+  word-break: keep-all;
+}
+
+.press-newspaper {
+  text-align: left;
+  width: 18%;
+  min-width: 150px;
+  font-size: 1.8em;
+  font-weight: 400;
+  color: black;
+  letter-spacing: -0.01em;
+  font-family: Pretendard;
+}
+
+.press-table td {
+  padding: 2rem 1.7rem;
+  border-bottom: 1.5px solid black;
+}
+
+.press-table tr.important-row {
+  background-color: #ededed;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5rem;
+  margin-bottom: 10rem;
+}
+
+.pagination button {
+  color: black;
+  cursor: pointer;
+  min-width: 30px;
+  transition: all 0.2s ease;
+  background: none;
+  font-size: 1.8em;
+  opacity: 0.4;
+  padding: 10px;
+  border: none !important;
+  font-family: Pretendard;
+}
+
+.pagination button:hover {
+  background: none;
+  opacity: 1;
+  border: none !important;
+}
+
+.pagination button.active {
+  color: black;
+  background: none;
+  font-weight: 800;
+  opacity: 1;
+  border: none !important;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ql-editor {
+  padding: 0 0 50px 0 !important;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 1.1em;
+}

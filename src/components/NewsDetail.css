@@ -1,0 +1,172 @@
+.file-download-button button:focus,
+.file-download-button button:active,
+.news-files li:focus,
+.news-files li:active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.news-detail-container {
+  padding: 40px 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.news-detail-title {
+  text-align: center;
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: black;
+}
+
+.news-detail-board {
+  margin-left: 18%;
+  margin-top: 6rem;
+  margin-bottom: 10rem;
+}
+
+.news-detail-board h2 {
+  font-size: 3.2em;
+  word-break: keep-all;
+  line-height: 1.3;
+  padding-bottom: 1rem;
+  font-family: Pretendard;
+}
+
+.news-detail-meta {
+  display: flex;
+  font-size: 1.8em;
+  color: black;
+  margin-bottom: 50px;
+  border-bottom: 1.5px solid black;
+  font-weight: 400;
+  padding-bottom: 4rem;
+  font-family: Roboto Mono;
+  letter-spacing: -0.02em;
+}
+
+.news-detail-meta p {
+  margin-right: 50px;
+}
+
+.news-detail-meta span {
+  font-weight: 700;
+  margin-right: 20px;
+}
+
+.news-content {
+  font-size: 1.8rem;
+  color: black;
+  border-bottom: 0px solid black;
+  padding: 0;
+}
+
+.news-content p {
+  line-height: 1.8;
+  margin-bottom: 0;
+  word-break: keep-all;
+  font-family: Pretendard;
+}
+
+/* 리치텍스트 정렬 스타일 */
+.news-content .ql-align-center {
+  text-align: center;
+}
+
+.news-content .ql-align-right {
+  text-align: right;
+}
+
+.news-content .ql-align-justify {
+  text-align: justify;
+}
+
+.news-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
+
+.news-files {
+  padding: 4rem 0 0 0;
+  border-top: 1.5px solid black;
+  border-bottom: none;
+  margin-top: 10rem;
+}
+
+.news-files h3 {
+  font-size: 1.8em;
+  color: black;
+  margin-bottom: 15px;
+  font-weight: 600;
+  font-family: Pretendard;
+}
+
+.news-files ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.news-files li {
+  margin-bottom: 10px;
+}
+
+.file-download-button {
+  color: black;
+  cursor: pointer;
+  padding: 10px 12px;
+  text-decoration: none;
+  background: #ededed;
+  border: none;
+  display: inline-block;
+  transition: all 0.2s ease;
+  font-size: 1.8em;
+  border-radius: 0px;
+}
+
+.file-download-button:hover {
+  background: #e0e0e0;
+}
+
+.file-download-button:focus,
+.file-download-button:active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.news-not-found {
+  text-align: center;
+  padding: 60px 20px;
+  color: black;
+  font-size: 1.8em;
+  font-family: Pretendard;
+}
+
+.ql-editor {
+  padding: 0 0 50px 0 !important;
+}
+
+/* 일반 테이블 스타일 */
+.news-content table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #e3e3e3;
+}
+
+.news-content th,
+.news-content td {
+  border: 1px solid #e3e3e3;
+  padding: 6px 10px;
+}

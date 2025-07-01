@@ -1,0 +1,13 @@
+body {
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+출처: https://wooaoe.tistory.com/49 [개발개발 울었다:티스토리]
+
+.App {
+  min-height: 100vh;
+  background: #fafafa;
+}

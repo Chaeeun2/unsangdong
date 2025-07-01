@@ -1,0 +1,131 @@
+.search-results-container {
+  position: relative;
+  padding: 4rem;
+  width: 100vw;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.search-header {
+  margin-bottom: 4rem;
+}
+
+.search-page-title {
+  position: sticky;
+  top: 12rem;
+  font-size: 4.8rem;
+  font-weight: 700;
+  color: black;
+  letter-spacing: -0.03em;
+  width: 20%;
+  line-height: 1;
+}
+
+.search-query {
+  font-size: 2.2rem;
+  color: black;
+  font-family: Pretendard;
+  margin: 0;
+}
+
+.search-results-content {
+  margin-left: 20%;
+  margin-top: 4rem;
+}
+
+.no-search-term,
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+  font-size: 1.8rem;
+  font-family: Pretendard;
+}
+
+.search-line {
+  width: 3.5rem;
+  height: 1.5px;
+  background: black;
+  margin: 4rem 0 3rem 0;
+}
+
+/* List 스타일 (Architecture와 동일) */
+.search-projects-list {
+  background: white;
+  padding: 0rem;
+}
+
+.search-projects-list .list-item {
+  display: grid;
+  grid-template-columns: 6fr 1fr 1.5fr;
+  gap: 2rem;
+  padding: 2rem 0;
+  border-top: none;
+  border-bottom: 1.5px solid black;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-items: center;
+}
+
+.search-projects-list .list-col-title {
+  display: flex;
+  gap: 1rem;
+  font-size: 2.2rem;
+}
+
+.search-projects-list .list-col-year,
+.search-projects-list .list-col-type {
+  font-size: 2rem;
+  color: black;
+  font-weight: 400;
+}
+
+.search-projects-list .list-project-title {
+  font-weight: 400;
+  font-family: Pretendard, sans-serif;
+  cursor: pointer;
+  color: black;
+}
+
+.search-projects-list .list-project-title-en {
+  font-weight: 400;
+  font-family: Roboto Mono;
+  cursor: pointer;
+  color: black;
+}
+
+.search-projects-list .list-col-type {
+  text-transform: uppercase;
+}
+
+/* 호버 썸네일 */
+.search-projects-list .hover-thumbnail {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInThumbnail 0.2s ease forwards;
+}
+
+.search-projects-list .hover-thumbnail-image {
+  width: 30rem;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+@keyframes fadeInThumbnail {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
