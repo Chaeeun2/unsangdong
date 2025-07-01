@@ -231,12 +231,7 @@ function SearchResults({ searchQuery, onNavigate }) {
                 data-type={project.type}
               >
                 <div className="list-col-title">
-                  <div className="list-project-title">
-                    {project.title}
-                  </div>
-                  <div className="list-project-title-en">
-                    {project.titleEn}
-                  </div>
+                  <div className="list-project-title">{project.title}<span className="list-project-title-en">{project.titleEn}</span></div>
                 </div>
                 <div className="list-col-year">{project.year}</div>
                 <div className="list-col-type">{project.type}</div>
