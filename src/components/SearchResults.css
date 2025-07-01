@@ -179,4 +179,8 @@
     width: 2.5rem;
     margin: 3rem 0 2rem 0;
   }
+
+  .search-projects-list .list-item {
+    grid-template-columns: 1fr;
+  }
 }
