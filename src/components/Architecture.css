@@ -321,6 +321,75 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .controls-bar {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+    padding: 6rem 4rem 4rem 4rem;
+  }
+
+  .filters {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .filter-group {
+    width: 50%;
+  }
+
+  .custom-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .select-header {
+    padding: 0.8rem 0rem;
+    border-radius: 0.6rem;
+    /* 모바일 브라우저 기본 스타일 제거 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+
+  .select-value {
+    font-size: 1.5rem;
+  }
+
+  .select-option {
+    padding: 0.8rem 1.2rem;
+    font-size: 1.5rem;
+  }
+
+  .view-options {
+    align-self: flex-start;
+  }
+
+  .view-btn {
+    font-size: 1.5rem;
+  }
+
+  .view-btn.active {
+    color: black;
+    font-weight: 400;
+    text-decoration: none;
+    text-underline-offset: 0.8rem;
+    text-decoration-thickness: 0.15rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .architecture-container {
     margin-top: 7rem;

@@ -32,6 +32,13 @@
   padding-top: 5.5rem;
 }
 
+@media (max-width: 1200px) {
+  .design-container .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .design-container .projects-grid {
     padding-top: 2rem;

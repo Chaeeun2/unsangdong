@@ -206,6 +206,22 @@
   font-family: Pretendard;
 }
 
+@media (max-width: 1200px) {
+  .contact-left-wrap {
+    position: static;
+    width: 100%;
+    margin-top: 8rem;
+    padding-bottom: 7rem;
+  }
+
+  .contact-right-wrap {
+    position: static;
+    margin-left: 0%;
+    width: 100%;
+    padding-bottom: 5.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .contact-left-wrap {
     position: static;

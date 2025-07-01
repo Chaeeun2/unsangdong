@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap");
-
 .art-container {
   margin-top: 5rem;
   position: relative;
@@ -80,6 +78,13 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (max-width: 1200px) {
+  .art-projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
   }
 }
 

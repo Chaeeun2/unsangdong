@@ -195,7 +195,8 @@ function SearchResults({ searchQuery, onNavigate }) {
 
   return (
     <div className="search-results-container">
-        <h1 className="search-page-title">SEARCH<br/>RESULTS</h1>
+      <h1 className="search-page-title">SEARCH<br />RESULTS</h1>
+      <h1 className="search-page-title-mo">SEARCH RESULTS</h1>
 
       {/* 검색 결과 */}
       <div className="search-results-content">

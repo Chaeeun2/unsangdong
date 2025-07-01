@@ -29,6 +29,10 @@
   line-height: 1;
 }
 
+.search-page-title-mo {
+  display: none;
+}
+
 .search-query {
   font-size: 2.2rem;
   color: black;
@@ -127,5 +131,52 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (max-width: 1200px) {
+  .search-page-title {
+    position: static;
+    margin-top: 8rem;
+    width: 100%;
+  }
+
+  .search-results-content {
+    margin-left: 00%;
+    margin-top: 4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-results-container {
+    margin-top: 7rem;
+    padding: 2.5rem 0;
+  }
+
+  .search-page-title {
+    display: none;
+  }
+
+  .search-page-title-mo {
+    display: block;
+    font-size: 3.2rem;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    margin-top: 1rem;
+    letter-spacing: -0.03em;
+  }
+
+  .search-results-content {
+    padding: 0 2.5rem;
+    margin-top: 6rem;
+  }
+  .search-query {
+    font-size: 1.6rem;
+  }
+
+  .search-line {
+    width: 2.5rem;
+    margin: 3rem 0 2rem 0;
   }
 }
