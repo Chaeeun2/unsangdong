@@ -15,12 +15,12 @@ import NewsDetail from './components/NewsDetail';
 import Book from './components/Book';
 import Press from './components/Press';
 import SearchResults from './components/SearchResults';
+import AdminApp from './admin/Admin';
 
 function App() {
   // URL 기반 초기 페이지 설정
   const getInitialPageFromURL = () => {
     const path = window.location.pathname;
-    console.log('Getting initial page from URL:', path);
     
     if (path === '/' || path === '') {
       return { page: 'main', projectId: null };
@@ -45,24 +45,15 @@ function App() {
   // 브라우저 뒤로가기/앞으로가기 처리
   useEffect(() => {
     const handlePopState = (event) => {
-      console.log('=== POPSTATE EVENT ===');
-      console.log('event.state:', event.state);
-      console.log('current location:', window.location.pathname);
-      console.log('current page before change:', currentPage);
-      console.log('current projectId before change:', selectedProjectId);
       
       if (event.state) {
-        console.log('Setting page to:', event.state.page);
-        console.log('Setting projectId to:', event.state.projectId);
         setCurrentPage(event.state.page);
         setSelectedProjectId(event.state.projectId || null);
       } else {
-        console.log('No state found, going to main');
         // 초기 상태로 돌아감
         setCurrentPage('main');
         setSelectedProjectId(null);
       }
-      console.log('=== END POPSTATE ===');
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -74,28 +65,18 @@ function App() {
 
   // 초기 로드 시 현재 페이지의 히스토리 상태 설정
   useEffect(() => {
-    console.log('=== INITIAL LOAD CHECK ===');
-    console.log('window.history.state:', window.history.state);
-    console.log('currentPage:', currentPage);
-    console.log('selectedProjectId:', selectedProjectId);
-    console.log('window.location.pathname:', window.location.pathname);
     
     if (!window.history.state) {
-      console.log('No history state, setting initial state');
       const initialState = selectedProjectId 
         ? { page: currentPage, projectId: selectedProjectId }
         : { page: currentPage };
       window.history.replaceState(initialState, '', window.location.pathname);
-      console.log('Set initial state:', initialState);
     }
-    console.log('=== END INITIAL LOAD ===');
   }, []); // 빈 의존성 배열로 변경하여 한 번만 실행
 
   // 히스토리 정리 함수 추가
   const cleanupHistory = () => {
-    console.log('=== CLEANUP HISTORY ===');
-    console.log('Current history length:', window.history.length);
-    
+
     // 현재 상태 백업
     const currentState = {
       page: currentPage,
@@ -105,33 +86,21 @@ function App() {
     // 현재 URL 백업
     const currentUrl = window.location.pathname;
     
-    console.log('Backing up current state:', currentState, 'URL:', currentUrl);
-    
     // 히스토리를 현재 상태로 교체
     window.history.replaceState(currentState, '', currentUrl);
     
-    console.log('After cleanup - history length:', window.history.length);
-    console.log('=== END CLEANUP HISTORY ===');
   };
 
   const handleNavigate = (page, projectId = null, query = null) => {
-    console.log('=== HANDLE NAVIGATE ===');
-    console.log('handleNavigate called with page:', page, 'projectId:', projectId);
-    console.log('current page before change:', currentPage);
-    console.log('current projectId before change:', selectedProjectId);
-    console.log('history.length before:', window.history.length);
     
     // 같은 페이지로의 중복 네비게이션 방지 (검색 페이지는 제외)
     if (page === currentPage && projectId === selectedProjectId && page !== 'search') {
-      console.log('Same page and projectId, skipping navigation');
-      console.log('=== END HANDLE NAVIGATE (SKIPPED) ===');
       return;
     }
     
     setCurrentPage(page);
     
     if (page === 'search') {
-      console.log('App: Setting searchQuery to:', query);
       setSearchQuery(query);
     }
     setSelectedProjectId(projectId);
@@ -140,12 +109,10 @@ function App() {
     if (page === 'project-detail' && projectId) {
       const newState = { page, projectId };
       const newUrl = `/project/${projectId}`;
-      console.log('Pushing project detail state:', newState, 'URL:', newUrl);
       
       // 현재 상태가 이미 같은 프로젝트 상세 페이지인 경우 replace 사용
       const currentState = window.history.state;
       if (currentState && currentState.page === 'project-detail' && currentState.projectId === projectId) {
-        console.log('Replacing current project detail state instead of pushing');
         window.history.replaceState(newState, '', newUrl);
       } else {
         window.history.pushState(newState, '', newUrl);
@@ -153,12 +120,10 @@ function App() {
     } else if (page === 'news-detail' && projectId) {
       const newState = { page, projectId };
       const newUrl = `/news/${projectId}`;
-      console.log('Pushing news detail state:', newState, 'URL:', newUrl);
       
       // 현재 상태가 이미 같은 뉴스 상세 페이지인 경우 replace 사용
       const currentState = window.history.state;
       if (currentState && currentState.page === 'news-detail' && currentState.projectId === projectId) {
-        console.log('Replacing current news detail state instead of pushing');
         window.history.replaceState(newState, '', newUrl);
       } else {
         window.history.pushState(newState, '', newUrl);
@@ -166,17 +131,12 @@ function App() {
     } else {
       const url = page === 'main' ? '/' : `/${page}`;
       const newState = { page };
-      console.log('Pushing page state:', newState, 'URL:', url);
       window.history.pushState(newState, '', url);
     }
-    
-    console.log('After state change - history.state:', window.history.state);
-    console.log('history.length after:', window.history.length);
     
     // 페이지 이동 시 최상단으로 스크롤
     window.scrollTo(0, 0);
     
-    console.log('=== END HANDLE NAVIGATE ===');
   };
 
   const renderPage = () => {
@@ -211,14 +171,21 @@ function App() {
     }
   };
 
+  // Admin 경로인지 확인
+  const isAdminPath = window.location.pathname.startsWith('/admin');
+
   return (
     <Router>
       <div className="App">
-        <Header 
-          currentPage={currentPage}
-          onNavigate={handleNavigate}
-        />
-        {renderPage()}
+        {/* Admin 경로가 아닐 때만 헤더 표시 */}
+        {!isAdminPath && (
+          <Header 
+            currentPage={currentPage}
+            onNavigate={handleNavigate}
+          />
+        )}
+        {/* Admin 경로일 때는 AdminApp, 아니면 일반 페이지 */}
+        {isAdminPath ? <AdminApp /> : renderPage()}
       </div>
     </Router>
   );

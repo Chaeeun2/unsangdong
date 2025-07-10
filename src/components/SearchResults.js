@@ -247,7 +247,7 @@ function SearchResults({ searchQuery, onNavigate }) {
           className="hover-thumbnail"
           style={{
             left: mousePosition.x + 20,
-            top: mousePosition.y - 100,
+            top: mousePosition.y +20,
           }}
         >
           <img 

@@ -31,7 +31,7 @@
 
 .contact-title {
   font-size: 4.8rem;
-  font-weight: 700;
+  font-weight: 400;
   color: black;
   letter-spacing: -0.03em;
 }
@@ -57,6 +57,7 @@
   font-size: 1.7rem;
   color: black;
   line-height: 1.5;
+  word-spacing: -0.3em;
 }
 
 .contact-number-wrap {
@@ -237,7 +238,6 @@
   }
 
   .contact-container {
-    margin-top: 7rem;
     padding: 2.5rem 0;
   }
 

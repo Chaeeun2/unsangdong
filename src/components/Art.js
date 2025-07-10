@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Art.css';
+import { contentService, projectTypeService } from '../services/dataService';
 
 function Art({ onNavigate }) {
   const [selectedYear, setSelectedYear] = useState('');
@@ -10,33 +11,31 @@ function Art({ onNavigate }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const projects = [
-    {
-      id: 201,
-      title: "Art Project A",
-      titleEn: "Art Project A",
-      year: "2022",
-      type: "ARTWORK",
-      image: "./images/Art/art-1.jpg"
-    },
-    {
-      id: 202,
-      title: "Art Project B",
-      titleEn: "Art Project B",
-      year: "2023",
-      type: "ARTWORK",
-      image: "./images/Art/art-2.jpg"
-    },
-    {
-      id: 203,
-      title: "인간산수",
-      titleEn: "Human, Space, Mountain, Water",
-      year: "2024",
-      type: "EXHIBITION",
-      image: "./images/Art/art-3.jpg"
-    },
-  ];
+  // Firebase에서 프로젝트 데이터 로드
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        setLoading(true);
+        const [projectsData, typesData] = await Promise.all([
+          contentService.getContents('Art'),
+          projectTypeService.getProjectTypes()
+        ]);
+        
+        setProjects(projectsData);
+        setTypeOptions(typesData.Art || []);
+      } catch (error) {
+        console.error('프로젝트 데이터 로딩 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProjects();
+  }, []);
 
   const filteredProjects = projects.filter(project => {
     const yearMatch = selectedYear === '' || project.year === selectedYear;
@@ -45,7 +44,6 @@ function Art({ onNavigate }) {
   });
 
   const years = [...new Set(projects.map(project => project.year))].sort((a, b) => b - a);
-  const types = [...new Set(projects.map(project => project.type))].sort();
 
   const navigate = useNavigate();
 
@@ -89,6 +87,13 @@ function Art({ onNavigate }) {
     setSelectedType(type);
   };
 
+  if (loading) {
+    return (
+      <div className="art-container">
+      </div>
+    );
+  }
+
   return (
     <div className="art-container">
       <div className="controls-bar">
@@ -100,19 +105,17 @@ function Art({ onNavigate }) {
             ALL
           </button>
           <span className="art-type-separator">/</span>
-          <button 
-            className={`art-type-btn exhibition ${selectedType === 'EXHIBITION' ? 'active' : ''}`}
-            onClick={() => handleTypeFilter('EXHIBITION')}
-          >
-            EXHIBITION
-          </button>
-          <span className="art-type-separator">/</span>
-          <button 
-            className={`art-type-btn artwork ${selectedType === 'ARTWORK' ? 'active' : ''}`}
-            onClick={() => handleTypeFilter('ARTWORK')}
-          >
-            ARTWORK
-          </button>
+          {typeOptions.map((type, index) => (
+            <React.Fragment key={type}>
+              <button 
+                className={`art-type-btn ${selectedType === type ? 'active' : ''}`}
+                onClick={() => handleTypeFilter(type)}
+              >
+                {type}
+              </button>
+              {index < typeOptions.length - 1 && <span className="art-type-separator">/</span>}
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
@@ -128,7 +131,7 @@ function Art({ onNavigate }) {
               >
                 <div className="art-project-image-wrapper">
                   <img 
-                    src={project.image} 
+                    src={project.thumbnailImage || project.mainImage} 
                     alt={project.title}
                     className="art-project-image"
                     onClick={() => handleProjectClick(project.id)}

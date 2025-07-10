@@ -231,7 +231,7 @@
 
 .project-title {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
   font-family: Pretendard, sans-serif;
 }
 
@@ -246,7 +246,7 @@
 /* 리스트 뷰 */
 .projects-list {
   background: white;
-  padding: 4rem;
+  padding: 2rem 4rem 4rem 4rem;
 }
 
 .list-item {
@@ -301,7 +301,7 @@
 }
 
 .hover-thumbnail-image {
-  width: 30rem;
+  width: 16rem;
   aspect-ratio: 4/3;
   object-fit: cover;
 }
@@ -310,6 +310,7 @@
   font-size: 1.8rem;
   color: black;
   font-family: Pretendard, sans-serif;
+  padding: 4rem;
 }
 
 @keyframes fadeInThumbnail {
@@ -359,12 +360,12 @@
   }
 
   .select-value {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .select-option {
     padding: 0.8rem 1.2rem;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .view-options {
@@ -372,7 +373,7 @@
   }
 
   .view-btn {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .view-btn.active {
@@ -387,6 +388,10 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
+  }
+
+  .projects-list {
+    padding: 0 4rem 4rem 4rem;
   }
 }
 

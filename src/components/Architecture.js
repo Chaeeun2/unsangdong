@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Architecture.css';
+import { contentService, projectTypeService } from '../services/dataService';
 
 function Architecture({ onNavigate }) {
   const [selectedYear, setSelectedYear] = useState('');
@@ -9,58 +10,31 @@ function Architecture({ onNavigate }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const projects = [
-    {
-      id: 101,
-      title: "오동숲속도서관",
-      titleEn: "Odong Public Library",
-      year: "2024",
-      type: "House",
-      image: "./images/Architecture/arch-1.jpg"
-    },
-    {
-      id: 102,
-      title: "이상봉 타워",
-      titleEn: "Lie Sang Bong Tower",
-      year: "2023",
-      type: "Cultural",
-      image: "./images/Architecture/arch-2.jpg"
-    },
-    {
-      id: 103,
-      title: "헤이리, 코스미코",
-      titleEn: "Heyri COSMICO",
-      year: "2022",
-      type: "Museum",
-      image: "./images/Architecture/arch-3.jpg"
-    },
-    {
-      id: 104,
-      title: "오동숲속도서관",
-      titleEn: "Odong Public Library",
-      year: "2024",
-      type: "House",
-      image: "./images/Architecture/arch-1.jpg"
-    },
-    {
-      id: 105,
-      title: "이상봉 타워",
-      titleEn: "Lie Sang Bong Tower",
-      year: "2023",
-      type: "Cultural",
-      image: "./images/Architecture/arch-2.jpg"
-    },
-    {
-      id: 106,
-      title: "헤이리, 코스미코",
-      titleEn: "Heyri COSMICO",
-      year: "2022",
-      type: "Museum",
-      image: "./images/Architecture/arch-3.jpg"
+  // Firebase에서 프로젝트 데이터 로드
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        setLoading(true);
+        const [projectsData, typesData] = await Promise.all([
+          contentService.getContents('Architecture'),
+          projectTypeService.getProjectTypes()
+        ]);
+        
+        setProjects(projectsData);
+        setTypeOptions(typesData.Architecture || []);
+      } catch (error) {
+        console.error('프로젝트 데이터 로딩 실패:', error);
+      } finally {
+        setLoading(false);
+      }
     }
-    
-  ];
+
+    loadProjects();
+  }, []);
 
   // 필터링된 프로젝트 목록
   const filteredProjects = projects.filter(project => {
@@ -71,7 +45,7 @@ function Architecture({ onNavigate }) {
 
   // 유니크한 년도와 타입 추출
   const years = [...new Set(projects.map(project => project.year))].sort((a, b) => b - a);
-  const types = [...new Set(projects.map(project => project.type))].sort();
+  const types = typeOptions;
 
   // 마우스 위치 추적
   useEffect(() => {
@@ -138,6 +112,13 @@ function Architecture({ onNavigate }) {
   const handleProjectLeave = () => {
     setHoveredProject(null);
   };
+
+  if (loading) {
+    return (
+      <div className="architecture-container">
+      </div>
+    );
+  }
 
   return (
     <div className="architecture-container">
@@ -248,13 +229,13 @@ function Architecture({ onNavigate }) {
           ) : (
             filteredProjects.map((project) => (
               <div 
-                key={project.id} 
+                key={project.id}
                 className="project-item"
                 onClick={() => handleProjectClick(project.id)}
               >
                 <div className="project-image-wrapper">
                   <img 
-                    src={project.image} 
+                    src={project.thumbnailImage || project.mainImage} 
                     alt={project.title}
                     className="project-image"
                   />
@@ -285,7 +266,7 @@ function Architecture({ onNavigate }) {
           ) : (
             filteredProjects.map((project) => (
               <div 
-                key={project.id} 
+                key={project.id}
                 className="list-item"
                 onClick={() => handleProjectClick(project.id)}
                 onMouseEnter={() => handleProjectHover(project)}
@@ -297,7 +278,7 @@ function Architecture({ onNavigate }) {
                   <span className="list-project-title-en">
                     {project.titleEn}
                     </span>
-                    </div>
+                  </div>
                 </div>
                 <div className="list-col-year">{project.year}</div>
                 <div className="list-col-type">{project.type}</div>
@@ -313,11 +294,11 @@ function Architecture({ onNavigate }) {
           className="hover-thumbnail"
           style={{
             left: mousePosition.x + 20,
-            top: mousePosition.y - 100,
+            top: mousePosition.y + 20,
           }}
         >
           <img 
-            src={hoveredProject.image} 
+            src={hoveredProject.thumbnailImage || hoveredProject.mainImage} 
             alt={hoveredProject.title}
             className="hover-thumbnail-image"
           />

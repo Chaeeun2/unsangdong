@@ -232,6 +232,17 @@ a:hover {
   opacity: 0.3;
 }
 
+@media (max-width: 1200px) {
+  .logo {
+    transform: translateY(0%);
+    transition: transform 0.5s ease;
+  }
+
+  .logo.scrolling {
+    transform: translateY(-150%);
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 1.2rem 2.5rem;

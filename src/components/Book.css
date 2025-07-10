@@ -21,7 +21,7 @@
   margin-bottom: 10rem;
   display: flex;
   flex-direction: column;
-  gap: 9rem;
+  gap: 12rem;
 }
 
 .book-row {
@@ -32,12 +32,17 @@
 
 .book-images {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  border-bottom: 1.5px solid black;
+  padding: 0 4rem;
+  gap: 4rem;
 }
 
 .book-infos {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 0 4rem;
+  gap: 4rem;
 }
 
 .book-item {
@@ -46,22 +51,21 @@
   justify-content: flex-end;
   align-items: center;
   flex-direction: column;
-  width: 33.3%;
-  border-bottom: 1.5px solid black;
-  padding: 0 4rem;
+  width: calc(25% - 3rem);
+  max-width: calc(25% - 3rem);
 }
 
 /* 개별 책 크기 설정 */
 .book-item-small .book-image-wrapper {
-  width: 60%;
-}
-
-.book-item-medium .book-image-wrapper {
   width: 70%;
 }
 
+.book-item-medium .book-image-wrapper {
+  width: 85%;
+}
+
 .book-item-large .book-image-wrapper {
-  width: 80%;
+  width: 100%;
 }
 
 .book-image-wrapper {
@@ -79,8 +83,9 @@
 
 .book-info {
   text-align: center;
-  width: 100%;
-  padding: 2.5rem 4rem;
+  width: calc(25% - 3rem);
+  max-width: calc(25% - 3rem);
+  padding-top: 2.5rem;
 }
 
 .book-title {
@@ -94,6 +99,20 @@
   word-break: keep-all;
 }
 
+@media (max-width: 1200px) {
+  .book-grid {
+    gap: 8rem;
+  }
+
+  .book-title {
+    font-size: 1.6rem;
+  }
+
+  .book-info {
+    padding-top: 2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .book-page-title {
     font-size: 3rem;
@@ -102,38 +121,50 @@
 
   /* 모바일용 그리드 스타일 */
   .book-grid {
-    gap: 4rem;
+    gap: 6rem;
     margin-top: 7rem;
     margin-bottom: 7rem;
   }
 
   .book-item {
     flex: 1;
-    width: 50%;
+    width: calc(50% - 1rem);
+    max-width: calc(50% - 1rem);
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-bottom: 1.5px solid black;
     padding: 0;
   }
 
   .book-item-small .book-image-wrapper {
-    width: 60%;
-  }
-
-  .book-item-medium .book-image-wrapper {
     width: 70%;
   }
 
+  .book-item-medium .book-image-wrapper {
+    width: 85%;
+  }
+
   .book-item-large .book-image-wrapper {
-    width: 80%;
+    width: 100%;
   }
 
   .book-info {
-    padding: 2rem;
+    padding-top: 2rem;
+    width: calc(50% - 1rem);
+    max-width: calc(50% - 1rem);
   }
 
   .book-title {
     font-size: 1.5rem;
+  }
+
+  .book-infos {
+    padding: 0 2.5rem;
+    gap: 2.5rem;
+  }
+
+  .book-images {
+    padding: 0 2.5rem;
+    gap: 2.5rem;
   }
 }

@@ -5,6 +5,7 @@ function Header({ currentPage, onNavigate }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -58,12 +59,38 @@ function Header({ currentPage, onNavigate }) {
     onNavigate('main');
   };
 
+  // 스크롤 이벤트 처리
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // 아래로 스크롤할 때만 scrolling 클래스 추가
+      if (currentScrollY > lastScrollY && currentScrollY > 0) {
+        setIsScrolling(true);
+      } else {
+        setIsScrolling(false);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    // 스크롤 이벤트 리스너 추가
+    window.addEventListener('scroll', handleScroll);
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <header className="header">
         <div className="header-content">
           <img 
-            className="logo" 
+            className={`logo ${isScrolling ? 'scrolling' : ''}`}
             src="https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/logo.png" 
             alt="로고" 
             onClick={handleLogoClick}
@@ -100,7 +127,7 @@ function Header({ currentPage, onNavigate }) {
               <img src="https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/search.png" alt="검색" />
             </button>
           <img 
-            className="logo" 
+            className={`logo ${isScrolling ? 'scrolling' : ''}`}
             src="https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/logo.png" 
             alt="로고" 
             onClick={handleLogoClick}

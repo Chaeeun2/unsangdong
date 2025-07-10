@@ -66,7 +66,7 @@ const Book = () => {
   };
 
   // 책을 3개씩 묶어서 row로 구성 (데스크톱용)
-  const createRows = (books, itemsPerRow = 3) => {
+  const createRows = (books, itemsPerRow = 4) => {
     const rows = [];
     for (let i = 0; i < books.length; i += itemsPerRow) {
       rows.push(books.slice(i, i + itemsPerRow));

@@ -1,3 +1,10 @@
+.lang-btn:focus,
+.lang-btn:active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
 .awards-container {
   position: relative;
   padding: 4rem 4rem 10rem 4rem;
@@ -14,13 +21,66 @@
   }
 }
 
-.awards-title {
+.awards-header {
   position: absolute;
   top: 11rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(100% - 8rem);
+}
+
+.awards-title {
   font-size: 4.8rem;
-  font-weight: 700;
+  font-weight: 400;
   color: black;
   letter-spacing: -0.03em;
+}
+
+.award-title.title-ko {
+  font-size: 1.8rem;
+  font-family: Pretendard;
+  line-height: 1.5;
+  letter-spacing: 0em;
+}
+
+.awards-lang-btn:focus,
+.awards-lang-btn:active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.awards-lang-options {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.awards-lang-btn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  outline: none;
+  font-family: Roboto Mono;
+  padding: 0;
+}
+
+.awards-lang-btn.active {
+  color: black;
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 0.6rem;
+  text-decoration-thickness: 0.15rem;
+}
+
+.awards-lang-separator {
+  color: black;
+  font-size: 1.6rem;
 }
 
 .awards-content {
@@ -43,7 +103,7 @@
 }
 
 .awards-year {
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   font-weight: 400;
   color: black;
   min-width: 8rem;
@@ -54,7 +114,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1.5rem;
+}
+
+.awards-items:has(.title-ko) {
+  gap: 1rem;
 }
 
 .award-item {
@@ -65,7 +129,6 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
 }
 
 .award-title {
@@ -73,8 +136,9 @@
   font-weight: 400;
   color: black;
   letter-spacing: -0.02em;
-  line-height: 1.3;
+  line-height: 1.4;
   flex: 1;
+  word-break: keep-all;
 }
 
 .award-type {
@@ -113,103 +177,39 @@
   background: #e0e0e0;
 }
 
-/* Competitions Section */
-.awards-competitions {
-  border-top: 2px solid black;
-  padding-top: 4rem;
-}
-
-.competitions-title {
-  font-size: 2.8rem;
-  font-weight: 700;
-  color: black;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
-  font-family: Pretendard;
-}
-
-.competitions-subtitle {
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: #666;
-  margin-bottom: 4rem;
-  letter-spacing: -0.02em;
-}
-
-.competitions-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-}
-
-.competition-item {
-  display: flex;
-  gap: 4rem;
-  padding: 2rem 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.competition-item:last-child {
-  border-bottom: none;
-}
-
-.competition-year {
-  font-size: 2rem;
-  font-weight: 700;
-  color: black;
-  min-width: 6rem;
-  letter-spacing: -0.02em;
-}
-
-.competition-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.competition-name {
-  font-size: 1.9rem;
-  font-weight: 600;
-  color: black;
-  letter-spacing: -0.02em;
-  line-height: 1.4;
-  font-family: Pretendard;
-}
-
-.competition-name-en {
-  font-size: 1.6rem;
-  font-weight: 500;
-  color: #666;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-}
-
-.competition-result {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #2c5aa0;
-  margin-top: 0.5rem;
-}
-
 @media (max-width: 768px) {
   .awards-container {
     margin-top: 7rem;
     padding: 2.5rem 0;
   }
 
-  .awards-title {
+  .awards-header {
     position: static;
-    font-size: 3.2rem;
     width: 100%;
     text-align: center;
-    line-height: 1;
     margin-top: 1rem;
+    flex-direction: column;
+    gap: 5rem;
+  }
+
+  .awards-title {
+    font-size: 3.2rem;
+    line-height: 1;
+  }
+
+  .award-title.title-ko {
+    font-size: 1.6rem;
+  }
+
+  .awards-lang-options {
+    padding: 0 2.5rem;
+    justify-content: flex-end;
+    width: 100%;
   }
 
   .awards-content {
     margin-left: 0%;
-    margin-top: 6rem;
+    margin-top: 0rem;
     padding: 0 2.5rem;
     margin-bottom: 6rem;
   }
@@ -220,19 +220,19 @@
   }
 
   .awards-year {
-    font-size: 1.5rem;
-    transform: translateX(45px);
+    font-size: 1.6rem;
+    transform: translateX(35px);
     width: calc(100% - 45px);
   }
 
   .awards-year::before {
     content: "";
     position: absolute;
-    left: -45px; /* 텍스트 왼쪽 바깥으로 라인 배치 */
+    left: -35px; /* 텍스트 왼쪽 바깥으로 라인 배치 */
     top: 50%;
     transform-origin: left;
-    width: 25px;
-    height: 1.5px;
+    width: 20px;
+    height: 1px;
     background-color: black;
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 1;

@@ -1,115 +1,244 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Contact.css';
+import { contactService } from '../admin/services/dataService';
 
 function Contact() {
-  return (
+  const [loading, setLoading] = useState(true);
+  const [contactInfo, setContactInfo] = useState(null);
+  const [formData, setFormData] = useState({
+    companyName: '',
+    contactName: '',
+    email: '',
+    phoneNumber: '',
+    inquiryTitle: '',
+    inquiryContent: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  // Firebase에서 Contact 정보 로드
+  useEffect(() => {
+    async function loadContactInfo() {
+      try {
+        setLoading(true);
+        const data = await contactService.getContactInfo();
+        setContactInfo(data);
+      } catch (error) {
+        console.error('Contact 정보 로딩 실패:', error);
+        // 실패 시 기본값 사용
+        setContactInfo(contactService.getDefaultContactInfo());
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadContactInfo();
+  }, []);
+
+  // 폼 입력 처리
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // 폼 제출 처리
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (submitting) return;
+
+    // 필수 필드 검증
+    if (!formData.companyName || !formData.contactName || !formData.email || 
+        !formData.phoneNumber || !formData.inquiryTitle || !formData.inquiryContent) {
+      alert('모든 필드를 입력해주세요.');
+      return;
+    }
+
+    // 이메일 형식 검증
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('올바른 이메일 형식을 입력해주세요.');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      await contactService.saveInquiry(formData);
+      
+      alert('문의사항이 성공적으로 전송되었습니다. 빠른 시일 내에 답변드리겠습니다.');
+      
+      // 폼 초기화
+      setFormData({
+        companyName: '',
+        contactName: '',
+        email: '',
+        phoneNumber: '',
+        inquiryTitle: '',
+        inquiryContent: ''
+      });
+    } catch (error) {
+      console.error('문의사항 전송 실패:', error);
+      alert('문의사항 전송에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading || !contactInfo) {
+    return (
       <div className="contact-container">
-          <div className="contact-left-wrap">
-              <div className="contact-title">CONTACT</div>
-              <div className="contact-info">
-                  <div className="contact-address">
-                      <p className="contact-address-ko">서울특별시 성북구 창경궁로 43길 41</p>
-                      <p className="contact-address-en">41, Changgyeonggung-ro 43-gil, Seongbuk-gu, Seoul, South Korea</p>
-                  </div>
-                  <div className="contact-number-wrap">
-                      <div className="contact-number-title-wrap">
-                            <p className="contact-number-title">Email</p>
-                            <p className="contact-number-title">Tel</p>
-                            <p className="contact-number-title">Fax</p>
-                            <p className="contact-number-title">SNS</p>
-                      </div>
-                      <div className="contact-number-content-wrap">
-                            <p className="contact-number-content"><a href="mailto:usdspace2007@naver.com">usdspace2007@naver.com</a></p>
-                            <p className="contact-number-content">+82 2-764-8401</p>
-                            <p className="contact-number-content">+82 2-764-8403</p>
-                            <p className="contact-number-content"><a href="https://www.instagram.com/unsangdong/" target="_blank">@unsangdong</a></p>
-                      </div>
-                  </div>
+        <div className="contact-left-wrap">
+          <div className="contact-title">CONTACT</div>
+          <div className="contact-info">
+            로딩 중...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="contact-container">
+      <div className="contact-left-wrap">
+        <div className="contact-title">CONTACT</div>
+        <div className="contact-info">
+          <div className="contact-address">
+            <p className="contact-address-ko">{contactInfo.address.ko}</p>
+            <p className="contact-address-en">{contactInfo.address.en}</p>
+          </div>
+          <div className="contact-number-wrap">
+            <div className="contact-number-title-wrap">
+              <p className="contact-number-title">Email</p>
+              <p className="contact-number-title">Tel</p>
+              <p className="contact-number-title">Fax</p>
+              <p className="contact-number-title">SNS</p>
+            </div>
+            <div className="contact-number-content-wrap">
+              <p className="contact-number-content">
+                <a href={`mailto:${contactInfo.email}`}>{contactInfo.email}</a>
+              </p>
+              <p className="contact-number-content">{contactInfo.tel}</p>
+              <p className="contact-number-content">{contactInfo.fax}</p>
+              <p className="contact-number-content">
+                <a href={contactInfo.sns.url} target="_blank" rel="noopener noreferrer">
+                  {contactInfo.sns.instagram}
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="contact-right-wrap">
+        <div className="contact-form-section">
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <div className="form-row company-name">
+              <div className="form-group">
+                <label className="form-label">회사명</label>
+                <input 
+                  type="text" 
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleInputChange}
+                  className="form-input" 
+                  placeholder="Company name"
+                  required
+                  disabled={submitting}
+                />
               </div>
+            </div>
+            
+            <div className="form-row your-name">
+              <div className="form-group">
+                <label className="form-label">담당자 성함</label>
+                <input 
+                  type="text" 
+                  name="contactName"
+                  value={formData.contactName}
+                  onChange={handleInputChange}
+                  className="form-input" 
+                  placeholder="Your name"
+                  required
+                  disabled={submitting}
+                />
               </div>
-             <div className="contact-right-wrap">
-         <div className="contact-form-section">
-           <form className="contact-form">
-             <div className="form-row company-name">
-               <div className="form-group">
-                 <label className="form-label">회사명</label>
-                 <input 
-                   type="text" 
-                   className="form-input" 
-                   placeholder="Company name"
-                   required
-                 />
-               </div>
-             </div>
-             
-             <div className="form-row your-name">
-               <div className="form-group">
-                 <label className="form-label">담당자 성함</label>
-                 <input 
-                   type="text" 
-                   className="form-input" 
-                   placeholder="Your name"
-                   required
-                 />
-               </div>
-             </div>
-             
-             <div className="form-row e-mail">
-               <div className="form-group">
-                 <label className="form-label">이메일</label>
-                 <input 
-                   type="email" 
-                   className="form-input" 
-                   placeholder="E-mail"
-                   required
-                 />
-               </div>
-             </div>
-             
-             <div className="form-row phone-number">
-               <div className="form-group">
-                 <label className="form-label">담당자 연락처</label>
-                 <input 
-                   type="tel" 
-                   className="form-input" 
-                   placeholder="Phone Number"
-                   required
-                 />
-               </div>
-             </div>
-             
-             <div className="form-row">
-               <div className="form-group">
-                 <label className="form-label">문의 제목</label>
-                 <input 
-                   type="text" 
-                   className="form-input" 
-                   placeholder="Inquiry title"
-                   required
-                 />
-               </div>
-             </div>
-             
-             <div className="form-row">
-               <div className="form-group">
-                 <label className="form-label">문의 내용</label>
-                 <textarea 
-                   className="form-textarea" 
-                   rows="8"
-                   placeholder="Describe your inquiry"
-                   required
-                 ></textarea>
-               </div>
-             </div>
-             
-             <div className="form-row">
-               <button type="submit" className="form-submit-btn">
-                 CONTACT<span className="form-submit-btn-arrow">→</span>
-               </button>
-             </div>
-           </form>
-         </div>
-       </div>
+            </div>
+            
+            <div className="form-row e-mail">
+              <div className="form-group">
+                <label className="form-label">이메일</label>
+                <input 
+                  type="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="form-input" 
+                  placeholder="E-mail"
+                  required
+                  disabled={submitting}
+                />
+              </div>
+            </div>
+            
+            <div className="form-row phone-number">
+              <div className="form-group">
+                <label className="form-label">담당자 연락처</label>
+                <input 
+                  type="tel" 
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  className="form-input" 
+                  placeholder="Phone Number"
+                  required
+                  disabled={submitting}
+                />
+              </div>
+            </div>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">문의 제목</label>
+                <input 
+                  type="text" 
+                  name="inquiryTitle"
+                  value={formData.inquiryTitle}
+                  onChange={handleInputChange}
+                  className="form-input" 
+                  placeholder="Inquiry title"
+                  required
+                  disabled={submitting}
+                />
+              </div>
+            </div>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">문의 내용</label>
+                <textarea 
+                  name="inquiryContent"
+                  value={formData.inquiryContent}
+                  onChange={handleInputChange}
+                  className="form-textarea" 
+                  rows="8"
+                  placeholder="Describe your inquiry"
+                  required
+                  disabled={submitting}
+                ></textarea>
+              </div>
+            </div>
+            
+            <div className="form-row">
+              <button type="submit" className="form-submit-btn" disabled={submitting}>
+                {submitting ? '전송 중...' : 'SEND'}
+                {!submitting && <span className="form-submit-btn-arrow">→</span>}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

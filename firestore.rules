@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 허용된 관리자 이메일 목록 (함수로 정의)
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email in [
+               'admin@unsangdong.com',
+               'jang@unsangdong.com', 
+               'shin@unsangdong.com'
+             ];
+    }
+    
+    // 인증된 사용자인지 확인
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // === 공개 읽기 허용 컬렉션 (웹사이트 방문자용) ===
+    
+    // 메뉴 컬렉션
+    match /menus/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
+    // 콘텐츠 컬렉션 (프로젝트, 뉴스 등)
+    match /contents/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
+    // 공지사항 컬렉션
+    match /notices/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
+    // 메인 이미지 컬렉션
+    match /mainImages/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
+    // About 페이지 컬렉션
+    match /about/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
+    // Awards 페이지 컬렉션
+    match /awards/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
+    // Contact 페이지 컬렉션
+    match /contact/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
+    // 문의사항 컬렉션
+    match /inquiries/{document} {
+      allow read: if isAdmin();  // 관리자만 읽기
+      allow create: if true;  // 모든 사용자가 문의 등록 가능
+      allow update, delete: if isAdmin();  // 관리자만 수정/삭제
+    }
+    
+    // === 관리자 전용 컬렉션 ===
+    
+    // 프로젝트 타입 컬렉션 (관리자만 읽기/쓰기)
+    match /projectTypes/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    // 관리자 설정 컬렉션 (완전 비공개)
+    match /admin-settings/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    // 사용자 로그 컬렉션 (관리자만 읽기)
+    match /user-logs/{document} {
+      allow read: if isAdmin();
+      allow write: if false;  // 시스템에서만 쓰기
+    }
+    
+    // === 기본 보안 규칙 (모든 다른 경로 차단) ===
+    match /{document=**} {
+      allow read, write: if false;  // 명시적으로 정의되지 않은 모든 경로 차단
+    }
+  }
+} 

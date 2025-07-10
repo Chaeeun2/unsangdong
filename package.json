@@ -10,8 +10,12 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.842.0",
+    "@aws-sdk/s3-request-presigner": "^3.842.0",
     "@glidejs/glide": "^3.7.1",
+    "firebase": "^11.10.0",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-player": "^3.0.0",
     "react-router-dom": "^7.6.3",
