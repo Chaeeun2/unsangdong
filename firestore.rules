@@ -36,6 +36,12 @@ service cloud.firestore {
       allow write: if isAdmin();  // 관리자만 쓰기
     }
     
+    // 뉴스 컬렉션
+    match /news/{document} {
+      allow read: if true;  // 공개 읽기
+      allow write: if isAdmin();  // 관리자만 쓰기
+    }
+    
     // 메인 이미지 컬렉션
     match /mainImages/{document} {
       allow read: if true;  // 공개 읽기

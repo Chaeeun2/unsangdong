@@ -19,13 +19,15 @@ function Architecture({ onNavigate }) {
     async function loadProjects() {
       try {
         setLoading(true);
-        const [projectsData, typesData] = await Promise.all([
+        const [projectsData, typesData, yearsData] = await Promise.all([
           contentService.getContents('Architecture'),
-          projectTypeService.getProjectTypes()
+          projectTypeService.getProjectTypes(),
+          projectTypeService.getYearsByCategory('Architecture')
         ]);
         
         setProjects(projectsData);
         setTypeOptions(typesData.Architecture || []);
+        setYears(yearsData);
       } catch (error) {
         console.error('프로젝트 데이터 로딩 실패:', error);
       } finally {
@@ -43,8 +45,8 @@ function Architecture({ onNavigate }) {
     return yearMatch && typeMatch;
   });
 
-  // 유니크한 년도와 타입 추출
-  const years = [...new Set(projects.map(project => project.year))].sort((a, b) => b - a);
+  // 년도와 타입 옵션 (Firebase에서 가져옴)
+  const [years, setYears] = useState([]);
   const types = typeOptions;
 
   // 마우스 위치 추적

@@ -6,7 +6,9 @@ import {
   getDoc, 
   orderBy, 
   query, 
-  where 
+  where,
+  limit,
+  updateDoc
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
@@ -80,6 +82,112 @@ export const projectTypeService = {
         Art: ['Exhibition', 'Artwork', 'Installation', 'Sculpture', 'Painting', 'Performance'],
         Design: ['Interior', 'Furniture', 'Product', 'Branding', 'Graphic', 'Web']
       };
+    }
+  },
+
+  // 카테고리별 사용 중인 연도 목록 가져오기
+  async getYearsByCategory(category) {
+    try {
+      const q = query(
+        collection(db, 'contents'),
+        where('category', '==', category)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const years = new Set();
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.year && data.year.toString().trim() !== '') {
+          years.add(data.year.toString());
+        }
+      });
+      
+      // 연도를 내림차순으로 정렬하여 반환
+      return Array.from(years).sort((a, b) => b - a);
+    } catch (error) {
+      console.error('카테고리별 연도 가져오기 실패:', error);
+      return [];
+    }
+  }
+};
+
+// 뉴스 서비스 (홈페이지용)
+export const newsService = {
+  // 뉴스 목록 가져오기
+  async getNews(options = {}) {
+    try {
+      const { page = 1, limit: limitCount = 10 } = options;
+      
+      const q = query(
+        collection(db, 'news'),
+        orderBy('createdAt', 'desc')
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const allNews = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate()
+      }));
+      
+      // 클라이언트 측 페이지네이션
+      const startIndex = (page - 1) * limitCount;
+      const endIndex = startIndex + limitCount;
+      const paginatedNews = allNews.slice(startIndex, endIndex);
+      
+      return {
+        news: paginatedNews,
+        totalCount: allNews.length,
+        totalPages: Math.ceil(allNews.length / limitCount),
+        currentPage: page
+      };
+    } catch (error) {
+      console.error('뉴스 불러오기 실패:', error);
+      throw error;
+    }
+  },
+
+  // 뉴스 상세 가져오기
+  async getNewsById(id) {
+    try {
+      const docRef = doc(db, 'news', id);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const newsData = { id: docSnap.id, ...docSnap.data() };
+        
+        return {
+          ...newsData,
+          createdAt: newsData.createdAt?.toDate()
+        };
+      } else {
+        throw new Error('뉴스를 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('뉴스 상세 불러오기 실패:', error);
+      throw error;
+    }
+  },
+
+  // 최근 뉴스 가져오기
+  async getRecentNews(limitCount = 5) {
+    try {
+      const q = query(
+        collection(db, 'news'),
+        orderBy('createdAt', 'desc'),
+        limit(limitCount)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate()
+      }));
+    } catch (error) {
+      console.error('최근 뉴스 불러오기 실패:', error);
+      throw error;
     }
   }
 }; 

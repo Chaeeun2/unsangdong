@@ -7,6 +7,7 @@ import AwardsManager from './pages/AwardsManager'
 import ProjectManager from './pages/ProjectManager'
 import AboutManager from './pages/AboutManager'
 import ContactManager from './pages/ContactManager'
+import NewsManager from './pages/NewsManager'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './contexts/AuthContext'
 import { MobileProvider } from './contexts/MobileContext'
@@ -46,6 +47,11 @@ function AdminApp() {
           <Route path="/admin/contact" element={
             <ProtectedRoute>
               <ContactManager />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/news" element={
+            <ProtectedRoute>
+              <NewsManager />
             </ProtectedRoute>
           } />
         </Routes>

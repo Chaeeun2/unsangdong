@@ -41,6 +41,9 @@ export const imageService = {
       // 브라우저 환경에서 File을 ArrayBuffer로 변환
       const arrayBuffer = await file.arrayBuffer();
 
+      // 파일명을 안전하게 인코딩 (한국어 처리) - 브라우저 호환
+      const safeOriginalName = btoa(encodeURIComponent(file.name));
+      
       // R2에 업로드
       const uploadCommand = new PutObjectCommand({
         Bucket: R2_BUCKET_NAME,
@@ -48,10 +51,20 @@ export const imageService = {
         Body: arrayBuffer,
         ContentType: file.type,
         Metadata: {
-          originalName: file.name,
+          originalName: safeOriginalName, // Base64로 인코딩된 파일명
           uploadedAt: new Date().toISOString(),
           source: metadata.source || 'admin-panel',
-          ...metadata
+                     // 추가 메타데이터도 안전하게 처리 - 브라우저 호환
+           ...(metadata && Object.keys(metadata).reduce((acc, key) => {
+             const value = metadata[key];
+             if (typeof value === 'string') {
+               // 문자열 값은 ASCII 문자만 포함하는지 확인
+               acc[key] = /^[\x00-\x7F]*$/.test(value) ? value : btoa(encodeURIComponent(value));
+             } else {
+               acc[key] = value;
+             }
+             return acc;
+           }, {}))
         }
       });
 
@@ -72,6 +85,63 @@ export const imageService = {
       };
     } catch (error) {
       console.error('이미지 업로드 오류:', error);
+      throw error;
+    }
+  },
+
+  // 일반 파일 업로드 (이미지 검증 없음)
+  async uploadFile(file, metadata = {}) {
+    try {
+      // 고유한 파일명 생성
+      const fileName = this.generateFileName(file, metadata.prefix || '');
+      const key = `files/${fileName}`;
+
+      // 브라우저 환경에서 File을 ArrayBuffer로 변환
+      const arrayBuffer = await file.arrayBuffer();
+
+      // 파일명을 안전하게 인코딩 (한국어 처리) - 브라우저 호환
+      const safeOriginalName = btoa(encodeURIComponent(file.name));
+      
+      // R2에 업로드
+      const uploadCommand = new PutObjectCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key,
+        Body: arrayBuffer,
+        ContentType: file.type || 'application/octet-stream',
+        Metadata: {
+          originalName: safeOriginalName, // Base64로 인코딩된 파일명
+          uploadedAt: new Date().toISOString(),
+          source: metadata.source || 'admin-panel',
+          // 추가 메타데이터도 안전하게 처리 - 브라우저 호환
+          ...(metadata && Object.keys(metadata).reduce((acc, key) => {
+            const value = metadata[key];
+            if (typeof value === 'string') {
+              // 문자열 값은 ASCII 문자만 포함하는지 확인
+              acc[key] = /^[\x00-\x7F]*$/.test(value) ? value : btoa(encodeURIComponent(value));
+            } else {
+              acc[key] = value;
+            }
+            return acc;
+          }, {}))
+        }
+      });
+
+      await r2Client.send(uploadCommand);
+
+      // 공개 URL 생성
+      const publicUrl = `${R2_PUBLIC_URL}/${key}`;
+      
+      return {
+        success: true,
+        fileId: fileName.split('.')[0], // 확장자 제외한 파일명을 ID로 사용
+        fileName: fileName,
+        key: key,
+        fileUrl: publicUrl,
+        publicUrl: publicUrl,
+        originalUrl: publicUrl
+      };
+    } catch (error) {
+      console.error('파일 업로드 오류:', error);
       throw error;
     }
   },
@@ -141,22 +211,23 @@ export const imageService = {
   },
 
   // URL에서 키 추출하는 헬퍼 함수
-  extractKeyFromUrl(imageUrl) {
-    if (!imageUrl) return null;
+  extractKeyFromUrl(fileUrl) {
+    if (!fileUrl) return null;
     
     try {
       // R2 Public URL에서 키 추출
-      const url = new URL(imageUrl);
+      const url = new URL(fileUrl);
       let key = url.pathname.substring(1); // 맨 앞의 '/' 제거
       
-      // 이미 images/로 시작하지 않으면 추가
-      if (!key.startsWith('images/')) {
-        key = `images/${key}`;
+      // 이미 images/ 또는 files/로 시작하면 그대로 사용
+      if (key.startsWith('images/') || key.startsWith('files/')) {
+        return key;
       }
       
-      return key;
+      // 폴더 경로가 없으면 images/를 기본으로 추가 (기존 호환성)
+      return `images/${key}`;
     } catch (error) {
-      console.warn('URL에서 키 추출 실패:', imageUrl, error);
+      console.warn('URL에서 키 추출 실패:', fileUrl, error);
       return null;
     }
   },
@@ -244,7 +315,7 @@ export const imageService = {
   // 파일 검증
   validateImageFile(file) {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-    const maxSize = 2 * 2000 * 2000; // 2MB
+    const maxSize = 2 * 1024 * 1024; // 2MB (2,097,152 bytes)
 
     if (!allowedTypes.includes(file.type)) {
       throw new Error('지원되지 않는 이미지 형식입니다. (JPG, PNG, WebP, GIF만 허용)');
@@ -255,5 +326,42 @@ export const imageService = {
     }
 
     return true;
+  },
+
+  // 메타데이터에서 원본 파일명 디코딩 - 브라우저 호환
+  decodeOriginalFileName(encodedName) {
+    try {
+      if (!encodedName) return null;
+      // Base64로 인코딩된 파일명을 디코딩
+      return decodeURIComponent(atob(encodedName));
+    } catch (error) {
+      console.warn('파일명 디코딩 실패:', error);
+      return encodedName; // 디코딩 실패시 원본 반환
+    }
+  },
+
+  // 문자열이 안전한 ASCII 문자열인지 확인
+  isAsciiSafe(str) {
+    return /^[\x00-\x7F]*$/.test(str);
+  },
+
+  // 문자열을 안전하게 인코딩 - 브라우저 호환
+  encodeMetadataValue(value) {
+    if (typeof value !== 'string') return value;
+    return this.isAsciiSafe(value) ? value : btoa(encodeURIComponent(value));
+  },
+
+  // 인코딩된 메타데이터 값을 디코딩 - 브라우저 호환
+  decodeMetadataValue(value) {
+    if (typeof value !== 'string') return value;
+    try {
+      // Base64로 인코딩된 값인지 확인하고 디코딩
+      if (!this.isAsciiSafe(value)) {
+        return decodeURIComponent(atob(value));
+      }
+      return value;
+    } catch (error) {
+      return value; // 디코딩 실패시 원본 반환
+    }
   }
 }; 

@@ -296,6 +296,32 @@ export const projectTypeService = {
       console.error('타입 사용 여부 확인 실패:', error);
       return false;
     }
+  },
+
+  // 카테고리별 사용 중인 연도 목록 가져오기
+  async getYearsByCategory(category) {
+    try {
+      const q = query(
+        collection(db, 'contents'),
+        where('category', '==', category)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const years = new Set();
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.year && data.year.toString().trim() !== '') {
+          years.add(data.year.toString());
+        }
+      });
+      
+      // 연도를 내림차순으로 정렬하여 반환
+      return Array.from(years).sort((a, b) => b - a);
+    } catch (error) {
+      console.error('카테고리별 연도 가져오기 실패:', error);
+      return [];
+    }
   }
 };
 
@@ -347,6 +373,87 @@ export const noticeService = {
   // 공지사항 삭제
   async deleteNotice(id) {
     await deleteDoc(doc(db, 'notices', id));
+  }
+};
+
+// 뉴스 관리
+export const newsService = {
+  // 모든 뉴스 가져오기 (페이지네이션 지원)
+  async getNews(options = {}) {
+    const { page = 1, limit = 10 } = options;
+    
+    const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'));
+    
+    const querySnapshot = await getDocs(q);
+    const allNews = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    // 클라이언트 측 페이지네이션
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedNews = allNews.slice(startIndex, endIndex);
+    
+    return {
+      news: paginatedNews,
+      totalCount: allNews.length,
+      totalPages: Math.ceil(allNews.length / limit),
+      currentPage: page
+    };
+  },
+
+  // 뉴스 상세 가져오기
+  async getNewsById(id) {
+    const docRef = doc(db, 'news', id);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      throw new Error('뉴스를 찾을 수 없습니다.');
+    }
+  },
+
+  // 최근 뉴스 가져오기
+  async getRecentNews(limitCount = 5) {
+    const q = query(
+      collection(db, 'news'), 
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  },
+
+  // 뉴스 추가
+  async addNews(newsData) {
+    const docRef = await addDoc(collection(db, 'news'), {
+      title: newsData.title,
+      content: newsData.content,
+      images: newsData.images || [],
+      files: newsData.files || [],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    return docRef.id;
+  },
+
+  // 뉴스 수정
+  async updateNews(id, newsData) {
+    const newsRef = doc(db, 'news', id);
+    await updateDoc(newsRef, {
+      ...newsData,
+      updatedAt: serverTimestamp()
+    });
+  },
+
+  // 뉴스 삭제
+  async deleteNews(id) {
+    await deleteDoc(doc(db, 'news', id));
   }
 };
 

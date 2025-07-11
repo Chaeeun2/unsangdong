@@ -247,12 +247,9 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
   // 업로드된 이미지 추적 (삭제용)
   const [uploadedImages, setUploadedImages] = useState([]);
 
-  // 연도 및 타입 옵션 관리
-  const [yearOptions, setYearOptions] = useState(['2024', '2023', '2022', '2021', '2020']);
+  // 타입 옵션 관리
   const [typeOptionsByCategory, setTypeOptionsByCategory] = useState({});
   const [loadingTypes, setLoadingTypes] = useState(true);
-  const [newYear, setNewYear] = useState('');
-  const [showYearInput, setShowYearInput] = useState(false);
 
       // Firebase에서 프로젝트 타입 옵션 가져오기
   useEffect(() => {
@@ -450,15 +447,7 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
     }));
   };
 
-  // 연도 추가
-  const addYear = () => {
-    if (newYear.trim() && !yearOptions.includes(newYear.trim())) {
-      setYearOptions(prev => [newYear.trim(), ...prev].sort((a, b) => b - a));
-      setFormData(prev => ({ ...prev, year: newYear.trim() }));
-      setNewYear('');
-      setShowYearInput(false);
-    }
-  };
+
 
   // 타입 추가 (Firebase 연동)
   const addType = async () => {
@@ -576,7 +565,8 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
           <button className="admin-modal-close-btn" onClick={handleModalClose}>&times;</button>
         </div>
         <form onSubmit={handleSubmit} className="admin-modal-body">
-          <div className="admin-form-grid">
+
+                  
             <div className="admin-form-column">
               <div className="admin-form-group">
                 <label>프로젝트명 (국문)</label>
@@ -604,60 +594,23 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
                 />
               </div>
 
-              <div className="admin-form-row">
+                            <div className="admin-form-row">
                 <div className="admin-form-group">
                   <label>Year</label>
-                  <div className="admin-select-with-add">
-                    <select
-                      value={formData.year}
-                      onChange={(e) => handleInputChange('year', e.target.value)}
-                      className="admin-input"
-                      disabled={loading}
-                    >
-                      <option value="">연도 선택</option>
-                      {yearOptions.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => setShowYearInput(!showYearInput)}
-                      className="admin-button admin-button-secondary admin-button-small add-year-btn"
-                      disabled={loading}
-                    >
-                      추가
-                    </button>
-                  </div>
-                  {showYearInput && (
-                    <div className="admin-add-option">
-                      <input
-                        type="text"
-                        value={newYear}
-                        onChange={(e) => setNewYear(e.target.value)}
-                        placeholder="새 연도"
-                        className="admin-input admin-input-small"
-                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addYear())}
-                      />
-                      <button
-                        type="button"
-                        onClick={addYear}
-                        className="admin-button admin-button-primary admin-button-small"
-                      >
-                        확인
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setShowYearInput(false); setNewYear(''); }}
-                        className="admin-button admin-button-secondary admin-button-small"
-                      >
-                        취소
-                      </button>
-                    </div>
-                  )}
-                              </div>
+                  <input
+                    type="number"
+                    value={formData.year}
+                    onChange={(e) => handleInputChange('year', e.target.value)}
+                    placeholder="연도 입력 (예: 2024)"
+                    className="admin-input"
+                    disabled={loading}
+                    min="1900"
+                    max="2100"
+                  />
+                </div>
                               
                                             <div className="admin-form-group">
-                <label>Type ({category})</label>
+                <label>Type</label>
                 <select
                   value={formData.type}
                   onChange={(e) => handleInputChange('type', e.target.value)}
@@ -743,7 +696,7 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
                     이미지 추가
                   </button>
                   <small className="admin-upload-caption">
-                    지원 포맷: JPG, PNG, WebP, GIF ㅣ 최대 용량: 2MB ㅣ 권장 크기: 1200 * 900px
+                    지원 포맷: JPG, PNG, WebP, GIF ㅣ 최대 용량: 2MB
                   </small>
                 </div>
                 {formData.thumbnailImage && (
@@ -886,7 +839,6 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
                 ))}
               </div>
             </div>
-          </div>
 
           <div className="admin-form-group">
             <label>설명 (국문)</label>
@@ -960,12 +912,9 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
   // 업로드된 이미지 추적 (삭제용)
   const [uploadedImages, setUploadedImages] = useState([]);
 
-  // 연도 및 타입 옵션 관리
-  const [yearOptions, setYearOptions] = useState(['2024', '2023', '2022', '2021', '2020']);
+  // 타입 옵션 관리
   const [typeOptionsByCategory, setTypeOptionsByCategory] = useState({});
   const [loadingTypes, setLoadingTypes] = useState(true);
-  const [newYear, setNewYear] = useState('');
-  const [showYearInput, setShowYearInput] = useState(false);
 
   // Firebase에서 프로젝트 타입 옵션 가져오기
   useEffect(() => {
@@ -1146,15 +1095,7 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
     }));
   };
 
-  // 연도 추가
-  const addYear = () => {
-    if (newYear.trim() && !yearOptions.includes(newYear.trim())) {
-      setYearOptions(prev => [newYear.trim(), ...prev].sort((a, b) => b - a));
-      setFormData(prev => ({ ...prev, year: newYear.trim() }));
-      setNewYear('');
-      setShowYearInput(false);
-    }
-  };
+
 
   // 타입 추가 기능 제거 (Type 관리 모달에서 별도 관리)
 
@@ -1251,7 +1192,6 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
           <button className="admin-modal-close-btn" onClick={handleModalClose}>&times;</button>
         </div>
         <form onSubmit={handleSubmit} className="admin-modal-body">
-          <div className="admin-form-grid">
             <div className="admin-form-column">
               <div className="admin-form-group">
                 <label>프로젝트명 (국문)</label>
@@ -1281,57 +1221,20 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
               <div className="admin-form-row">
                 <div className="admin-form-group">
                   <label>Year</label>
-                  <div className="admin-select-with-add">
-                    <select
-                      value={formData.year}
-                      onChange={(e) => handleInputChange('year', e.target.value)}
-                      className="admin-input"
-                      disabled={loading}
-                    >
-                      <option value="">연도 선택</option>
-                      {yearOptions.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => setShowYearInput(!showYearInput)}
-                      className="admin-button admin-button-secondary admin-button-small add-year-btn"
-                      disabled={loading}
-                    >
-                      추가
-                    </button>
-                  </div>
-                  {showYearInput && (
-                    <div className="admin-add-option">
-                      <input
-                        type="text"
-                        value={newYear}
-                        onChange={(e) => setNewYear(e.target.value)}
-                        placeholder="새 연도"
-                        className="admin-input admin-input-small"
-                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addYear())}
-                      />
-                      <button
-                        type="button"
-                        onClick={addYear}
-                        className="admin-button admin-button-primary admin-button-small"
-                      >
-                        확인
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setShowYearInput(false); setNewYear(''); }}
-                        className="admin-button admin-button-secondary admin-button-small"
-                      >
-                        취소
-                      </button>
-                    </div>
-                  )}
-                              </div>
+                  <input
+                    type="number"
+                    value={formData.year}
+                    onChange={(e) => handleInputChange('year', e.target.value)}
+                    placeholder="연도 입력 (예: 2024)"
+                    className="admin-input"
+                    disabled={loading}
+                    min="1900"
+                    max="2100"
+                  />
+                </div>
                               
                                             <div className="admin-form-group">
-                <label>Type ({category})</label>
+                <label>Type</label>
                 <select
                   value={formData.type}
                   onChange={(e) => handleInputChange('type', e.target.value)}
@@ -1530,7 +1433,7 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
               </div>
 
               <div className="admin-form-group">
-                              <label>비디오 URL (유튜브(</label>
+                              <label>비디오 URL (유튜브)</label>
                                               <div className="admin-upload-button-container">
                   <button 
                     type="button" 
@@ -1563,7 +1466,6 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
                 ))}
               </div>
             </div>
-          </div>
 
           <div className="admin-form-group">
             <label>설명 (국문)</label>

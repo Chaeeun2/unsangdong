@@ -1,73 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { db } from '../lib/firebase';
+import { collection, query, orderBy, getDocs, where } from 'firebase/firestore';
 import './News.css';
 
 const News = ({ onNavigate }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [newsData, setNewsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const itemsPerPage = 10;
 
-  // 샘플 뉴스 데이터
-  const newsData = [
-    {
-      id: 1,
-      title: "2023 운생동건축사사무소 신입사원 공개채용",
-      created_at: "2024-01-20"
-    },
-    {
-      id: 2,
-      title: "국립디자인박물관 국제설계 공모 당선작 발표",
-      created_at: "2024-01-18"
-    },
-    {
-      id: 3,
-      title: "종로구 통합청사 설계공모(리모델링 및 증축) 당선작 발표",
-      created_at: "2024-01-16"
-      },
-    {
-      id: 4,
-      title: "2023 운생동건축사사무소 신입사원 공개채용",
-      created_at: "2024-01-20"
-    },
-    {
-      id: 5,
-      title: "국립디자인박물관 국제설계 공모 당선작 발표",
-      created_at: "2024-01-18"
-    },
-    {
-      id: 6,
-      title: "종로구 통합청사 설계공모(리모델링 및 증축) 당선작 발표",
-      created_at: "2024-01-16"
-      },
-    {
-      id: 7,
-      title: "2023 운생동건축사사무소 신입사원 공개채용",
-      created_at: "2024-01-20"
-    },
-    {
-      id: 8,
-      title: "국립디자인박물관 국제설계 공모 당선작 발표",
-      created_at: "2024-01-18"
-    },
-    {
-      id: 9,
-      title: "종로구 통합청사 설계공모(리모델링 및 증축) 당선작 발표",
-      created_at: "2024-01-16"
-      },
-    {
-      id: 10,
-      title: "2023 운생동건축사사무소 신입사원 공개채용",
-      created_at: "2024-01-20"
-    },
-    {
-      id: 11,
-      title: "국립디자인박물관 국제설계 공모 당선작 발표",
-      created_at: "2024-01-18"
-    },
-    {
-      id: 12,
-      title: "종로구 통합청사 설계공모(리모델링 및 증축) 당선작 발표",
-      created_at: "2024-01-16"
-    }
-  ];
+  // Firebase에서 뉴스 데이터 가져오기
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // 모든 뉴스 가져오기
+        const q = query(
+          collection(db, 'news'),
+          orderBy('createdAt', 'desc')
+        );
+        
+        const querySnapshot = await getDocs(q);
+        const newsArray = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          // Firestore Timestamp를 JavaScript Date로 변환
+          created_at: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
+        }));
+        
+        setNewsData(newsArray);
+      } catch (err) {
+        console.error('뉴스 데이터 로딩 실패:', err);
+        setError('뉴스를 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   const totalCount = newsData.length;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -90,7 +64,6 @@ const News = ({ onNavigate }) => {
     const day = String(date.getDate()).padStart(2, '0'); // 일 2자리
     return `${month}/${day}`;
   };
-
 
   const handleNewsClick = (news) => {
     console.log('뉴스 클릭:', news.title);
@@ -143,7 +116,7 @@ const News = ({ onNavigate }) => {
       onClick={() => handleNewsClick(news)} 
       style={{ cursor: 'pointer' }}
     >
-            <td className="news-title">
+      <td className="news-title">
         {news.title}
       </td>
       <td className="news-date">{formatDate(news.created_at)}</td>
@@ -155,6 +128,28 @@ const News = ({ onNavigate }) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentNews = newsData.slice(startIndex, endIndex);
+
+  if (loading) {
+    return (
+      <div className="news-container">
+        <h1 className="news-page-title">NEWS</h1>
+        <div className="news-board">
+          <div className="loading-message">뉴스를 불러오는 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="news-container">
+        <h1 className="news-page-title">NEWS</h1>
+        <div className="news-board">
+          <div className="error-message">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="news-container">

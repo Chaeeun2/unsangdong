@@ -13,6 +13,7 @@ function Art({ onNavigate }) {
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const [projects, setProjects] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
+  const [years, setYears] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Firebase에서 프로젝트 데이터 로드
@@ -20,13 +21,15 @@ function Art({ onNavigate }) {
     async function loadProjects() {
       try {
         setLoading(true);
-        const [projectsData, typesData] = await Promise.all([
+        const [projectsData, typesData, yearsData] = await Promise.all([
           contentService.getContents('Art'),
-          projectTypeService.getProjectTypes()
+          projectTypeService.getProjectTypes(),
+          projectTypeService.getYearsByCategory('Art')
         ]);
         
         setProjects(projectsData);
         setTypeOptions(typesData.Art || []);
+        setYears(yearsData);
       } catch (error) {
         console.error('프로젝트 데이터 로딩 실패:', error);
       } finally {
@@ -42,8 +45,6 @@ function Art({ onNavigate }) {
     const typeMatch = selectedType === '' || project.type === selectedType;
     return yearMatch && typeMatch;
   });
-
-  const years = [...new Set(projects.map(project => project.year))].sort((a, b) => b - a);
 
   const navigate = useNavigate();
 
@@ -85,6 +86,10 @@ function Art({ onNavigate }) {
 
   const handleTypeFilter = (type) => {
     setSelectedType(type);
+  };
+
+  const handleYearFilter = (year) => {
+    setSelectedYear(year);
   };
 
   if (loading) {
