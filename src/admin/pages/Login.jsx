@@ -21,20 +21,12 @@ export default function Login() {
 
   // 이미 인증된 관리자면 자동으로 admin 홈으로 이동
   useEffect(() => {
-    console.log('Login useEffect 호출 - user:', user);
-    
     if (user && user.email) {
-      console.log('사용자 확인:', user.email);
-      console.log('허용된 이메일 목록:', ALLOWED_ADMIN_EMAILS);
-      
       // 관리자 권한 확인
       const isAdmin = (user.role === 'admin' && ALLOWED_ADMIN_EMAILS.includes(user.email)) ||
                       (ALLOWED_ADMIN_EMAILS.includes(user.email));
       
-      console.log('관리자 권한 확인 결과:', isAdmin);
-      
       if (isAdmin) {
-        console.log('이미 로그인된 관리자, admin 홈으로 이동');
         navigate('/admin');
       }
     }
@@ -45,21 +37,11 @@ export default function Login() {
     setLoading(true);
     setError(null);
 
-    // 디버깅: 환경변수와 입력값 확인
-    console.log('환경변수 이메일:', process.env.REACT_APP_ADMIN_EMAIL);
-    console.log('입력된 이메일:', credentials.email);
-    console.log('환경변수 비밀번호:', process.env.REACT_APP_ADMIN_PASSWORD);
-    console.log('입력된 비밀번호:', credentials.password);
-
     try {
       const result = await login(credentials.email, credentials.password);
-      console.log('로그인 결과:', result);
-      console.log('localStorage 확인:', localStorage.getItem('adminToken'), localStorage.getItem('adminUser'));
       // 로그인 성공 후 admin 홈으로 이동
-      console.log('로그인 성공, admin 홈으로 이동');
       navigate('/admin');
     } catch (error) {
-      console.error('로그인 오류:', error);
       setError(error.message || '로그인에 실패했습니다.');
     } finally {
       setLoading(false);

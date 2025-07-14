@@ -8,6 +8,8 @@ import ProjectManager from './pages/ProjectManager'
 import AboutManager from './pages/AboutManager'
 import ContactManager from './pages/ContactManager'
 import NewsManager from './pages/NewsManager'
+import BookManager from './pages/BookManager'
+import PressManager from './pages/PressManager'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './contexts/AuthContext'
 import { MobileProvider } from './contexts/MobileContext'
@@ -52,6 +54,16 @@ function AdminApp() {
           <Route path="/admin/news" element={
             <ProtectedRoute>
               <NewsManager />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/books" element={
+            <ProtectedRoute>
+              <BookManager />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/press" element={
+            <ProtectedRoute>
+              <PressManager />
             </ProtectedRoute>
           } />
         </Routes>

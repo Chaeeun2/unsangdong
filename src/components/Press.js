@@ -1,55 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { pressService } from '../services/dataService';
 import './Press.css';
 
 const Press = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [pressData, setPressData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 10;
 
-  // 샘플 프레스 데이터
-  const pressData = [
-    {
-      id: 1,
-      title: `미술 전시 연 건축가 장윤규 "사람이 만들어가는 풍경 그렸죠", '인간산수' 장윤규 개인전`,
-      created_at: "2024-01-20",
-      link: "https://www.joongang.co.kr/article/25251334#home",
-      newspaper: "중앙일보"
-    },
-    {
-      id: 2,
-      title: `투명한 'ㅅ' 빌리지, 삼송1957`,
-      created_at: "2024-01-18",
-      link: "https://www.c3ka.com/samsong-bakery-by-unsangdong-architects/",
-      newspaper: "C3"
-      },
-    {
-      id: 3,
-      title: `미술 전시 연 건축가 장윤규 "사람이 만들어가는 풍경 그렸죠", '인간산수' 장윤규 개인전`,
-      created_at: "2023-01-20",
-      link: "https://www.joongang.co.kr/article/25251334#home",
-      newspaper: "중앙일보"
-    },
-    {
-      id: 4,
-      title: `투명한 'ㅅ' 빌리지, 삼송1957`,
-      created_at: "2023-01-18",
-      link: "https://www.c3ka.com/samsong-bakery-by-unsangdong-architects/",
-      newspaper: "C3"
-      },
-    {
-      id: 5,
-      title: `미술 전시 연 건축가 장윤규 "사람이 만들어가는 풍경 그렸죠", '인간산수' 장윤규 개인전`,
-      created_at: "2022-01-20",
-      link: "https://www.joongang.co.kr/article/25251334#home",
-      newspaper: "중앙일보"
-    },
-    {
-      id: 6,
-      title: `투명한 'ㅅ' 빌리지, 삼송1957`,
-      created_at: "2022-01-18",
-      link: "https://www.c3ka.com/samsong-bakery-by-unsangdong-architects/",
-      newspaper: "C3"
-    }
-  ];
+  // 컴포넌트 마운트 시 Press 데이터 로드
+  useEffect(() => {
+    const loadPressData = async () => {
+      try {
+        setLoading(true);
+        const data = await pressService.getPress();
+        setPressData(data);
+      } catch (error) {
+        console.error('Press 데이터 로딩 실패:', error);
+        setPressData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPressData();
+  }, []);
 
   const totalCount = pressData.length;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -58,17 +33,8 @@ const Press = () => {
   const startPage = currentGroup * pageGroupSize + 1;
   const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear().toString().slice(-2); // 년도 뒤 2자리
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월 2자리
-    const day = String(date.getDate()).padStart(2, '0'); // 일 2자리
-    return `${year}/${month}/${day}`;
-  };
-
-  const formatYear = (dateString) => {
-    const date = new Date(dateString);
-    return date.getFullYear().toString(); // 4자리 연도
+  const formatYear = (year) => {
+    return year ? year.toString() : '';
   };
 
   const truncateTitle = (title, maxLength = 40) => {
@@ -77,8 +43,9 @@ const Press = () => {
   };
 
   const handlePressClick = (press) => {
-    console.log('프레스 클릭:', press.title);
-    window.open(press.link, '_blank', 'noopener,noreferrer');
+    if (press.url) {
+      window.open(press.url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const handlePageChange = (page) => {
@@ -125,13 +92,13 @@ const Press = () => {
     <tr 
       key={press.id} 
       onClick={() => handlePressClick(press)} 
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: press.url ? 'pointer' : 'default' }}
     >
-      <td className="press-year">{formatYear(press.created_at)}</td>
+      <td className="press-year">{formatYear(press.year)}</td>
       <td className="press-title">
         {truncateTitle(press.title)}
       </td>
-      <td className="press-newspaper">{press.newspaper}</td>
+      <td className="press-newspaper">{press.media}</td>
     </tr>
   );
 
@@ -139,6 +106,17 @@ const Press = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentPress = pressData.slice(startIndex, endIndex);
+
+  if (loading) {
+    return (
+      <div className="press-container">
+        <h1 className="press-page-title">PRESS</h1>
+        <div className="press-board">
+          <div className="loading-message"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="press-container">

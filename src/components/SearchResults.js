@@ -171,11 +171,9 @@ function SearchResults({ searchQuery, onNavigate }) {
 
   // 컴포넌트 마운트 시와 searchQuery가 변경될 때마다 필터링 업데이트
   useEffect(() => {
-    console.log('SearchResults: searchQuery changed to:', searchQuery);
     const newSearchTerm = searchQuery || '';
     setSearchTerm(newSearchTerm);
     const newFilteredProjects = filterProjects(newSearchTerm);
-    console.log('SearchResults: filtered projects count:', newFilteredProjects.length);
     setFilteredProjects(newFilteredProjects);
   }, [searchQuery]);
 

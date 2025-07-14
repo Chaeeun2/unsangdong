@@ -318,12 +318,10 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
     if (uploadedImages.length === 0) return;
 
     try {
-      console.log('업로드된 이미지 정리 시작:', uploadedImages);
       const keys = uploadedImages.map(imageUrl => imageService.extractKeyFromUrl(imageUrl)).filter(Boolean);
       
       if (keys.length > 0) {
         await imageService.deleteMultipleImages(keys);
-        console.log('업로드된 이미지 정리 완료:', keys);
       }
     } catch (error) {
       console.error('이미지 정리 실패:', error);
@@ -965,12 +963,10 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
     if (uploadedImages.length === 0) return;
 
     try {
-      console.log('업로드된 이미지 정리 시작:', uploadedImages);
       const keys = uploadedImages.map(imageUrl => imageService.extractKeyFromUrl(imageUrl)).filter(Boolean);
       
       if (keys.length > 0) {
         await imageService.deleteMultipleImages(keys);
-        console.log('업로드된 이미지 정리 완료:', keys);
       }
     } catch (error) {
       console.error('이미지 정리 실패:', error);
@@ -1319,7 +1315,7 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
                     이미지 추가
                   </button>
                   <small className="admin-upload-caption">
-                    지원 포맷: JPG, PNG, WebP, GIF ㅣ 최대 용량: 2MB ㅣ 권장 크기: 1200 * 900px
+                    지원 포맷: JPG, PNG, WebP, GIF ㅣ 최대 용량: 2MB
                   </small>
                 </div>
                 {formData.thumbnailImage && (
@@ -1649,7 +1645,6 @@ export default function ProjectManager() {
       try {
         const projectIds = items.map(item => item.id);
         await contentService.updateProjectOrder(projectIds);
-        console.log('프로젝트 순서 변경 성공:', projectIds);
       } catch (error) {
         console.error('프로젝트 순서 변경 실패:', error);
         // 실패 시 원래 상태로 복구

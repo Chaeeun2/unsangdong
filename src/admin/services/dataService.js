@@ -1100,15 +1100,248 @@ export const contactService = {
   }
 };
 
+// Book 관리 서비스
+export const bookService = {
+  // 모든 Book 가져오기
+  async getBooks() {
+    try {
+      const q = query(collection(db, 'books'));
+      const querySnapshot = await getDocs(q);
+      const books = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      // 클라이언트에서 정렬: order 필드가 있으면 order로, 없으면 createdAt으로
+      return books.sort((a, b) => {
+        if (a.order !== undefined && b.order !== undefined) {
+          return a.order - b.order;
+        }
+        if (a.order !== undefined) return -1;
+        if (b.order !== undefined) return 1;
+        return new Date(b.createdAt?.toDate()) - new Date(a.createdAt?.toDate());
+      });
+    } catch (error) {
+      console.error('Book 목록 조회 오류:', error);
+      throw error;
+    }
+  },
+
+  // Book 상세 가져오기
+  async getBook(id) {
+    try {
+      const docRef = doc(db, 'books', id);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      } else {
+        throw new Error('Book을 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('Book 조회 오류:', error);
+      throw error;
+    }
+  },
+
+  // Book 추가
+  async addBook(bookData) {
+    try {
+      const docRef = await addDoc(collection(db, 'books'), {
+        title: bookData.title,
+        size: bookData.size,
+        externalLink: bookData.externalLink || '',
+        thumbnailImage: bookData.thumbnailImage,
+        detailImages: bookData.detailImages || [],
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error('Book 추가 오류:', error);
+      throw error;
+    }
+  },
+
+  // Book 수정
+  async updateBook(id, bookData) {
+    try {
+      const bookRef = doc(db, 'books', id);
+      await updateDoc(bookRef, {
+        title: bookData.title,
+        size: bookData.size,
+        externalLink: bookData.externalLink || '',
+        thumbnailImage: bookData.thumbnailImage,
+        detailImages: bookData.detailImages || [],
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Book 수정 오류:', error);
+      throw error;
+    }
+  },
+
+  // Book 삭제
+  async deleteBook(id) {
+    try {
+      await deleteDoc(doc(db, 'books', id));
+    } catch (error) {
+      console.error('Book 삭제 오류:', error);
+      throw error;
+    }
+  },
+
+  // Book 순서 업데이트
+  async updateBookOrder(bookIds) {
+    const batch = [];
+    
+    for (let i = 0; i < bookIds.length; i++) {
+      const bookRef = doc(db, 'books', bookIds[i]);
+      batch.push(updateDoc(bookRef, {
+        order: i,
+        updatedAt: serverTimestamp()
+      }));
+    }
+    
+    // 모든 업데이트를 병렬로 실행
+    await Promise.all(batch);
+  },
+
+  // Book 순서 업데이트
+  async updateBooksOrder(updates) {
+    const batch = [];
+    
+    updates.forEach(({ id, order }) => {
+      const bookRef = doc(db, 'books', id);
+      batch.push(updateDoc(bookRef, {
+        order,
+        updatedAt: serverTimestamp()
+      }));
+    });
+    
+    // 모든 업데이트를 병렬로 실행
+    await Promise.all(batch);
+  }
+};
+
+// Press 관리 서비스
+export const pressService = {
+  // 모든 Press 가져오기
+  async getPress() {
+    try {
+      const q = query(collection(db, 'press'), orderBy('order', 'asc'));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error fetching press:', error);
+      throw error;
+    }
+  },
+
+  // 특정 Press 아이템 가져오기
+  async getPressItem(id) {
+    try {
+      const docRef = doc(db, 'press', id);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return {
+          id: docSnap.id,
+          ...docSnap.data()
+        };
+      } else {
+        throw new Error('Press item not found');
+      }
+    } catch (error) {
+      console.error('Error fetching press item:', error);
+      throw error;
+    }
+  },
+
+  // Press 아이템 추가
+  async addPressItem(pressData) {
+    try {
+      // 현재 최대 order 값 가져오기
+      const q = query(collection(db, 'press'), orderBy('order', 'desc'), limit(1));
+      const querySnapshot = await getDocs(q);
+      let maxOrder = 0;
+      
+      if (!querySnapshot.empty) {
+        maxOrder = querySnapshot.docs[0].data().order || 0;
+      }
+
+      const data = {
+        ...pressData,
+        order: maxOrder + 1,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+
+      const docRef = await addDoc(collection(db, 'press'), data);
+      return docRef.id;
+    } catch (error) {
+      console.error('Error adding press item:', error);
+      throw error;
+    }
+  },
+
+  // Press 아이템 수정
+  async updatePressItem(id, pressData) {
+    try {
+      const docRef = doc(db, 'press', id);
+      const updateData = {
+        ...pressData,
+        updatedAt: serverTimestamp()
+      };
+      
+      await updateDoc(docRef, updateData);
+    } catch (error) {
+      console.error('Error updating press item:', error);
+      throw error;
+    }
+  },
+
+  // Press 아이템 삭제
+  async deletePressItem(id) {
+    try {
+      await deleteDoc(doc(db, 'press', id));
+    } catch (error) {
+      console.error('Error deleting press item:', error);
+      throw error;
+    }
+  },
+
+  // Press 순서 업데이트
+  async updatePressOrder(updates) {
+    const batch = [];
+    
+    updates.forEach(({ id, order }) => {
+      const pressRef = doc(db, 'press', id);
+      batch.push(updateDoc(pressRef, {
+        order,
+        updatedAt: serverTimestamp()
+      }));
+    });
+    
+    // 모든 업데이트를 병렬로 실행
+    await Promise.all(batch);
+  }
+};
+
 // 통계 서비스
 export const statsService = {
   // 전체 통계 가져오기
   async getStats() {
-    const [menus, contents, notices, mainImages] = await Promise.all([
+    const [menus, contents, notices, mainImages, books, press] = await Promise.all([
       getDocs(collection(db, 'menus')),
       getDocs(collection(db, 'contents')),
       getDocs(collection(db, 'notices')),
-      getDocs(collection(db, 'mainImages'))
+      getDocs(collection(db, 'mainImages')),
+      getDocs(collection(db, 'books')),
+      getDocs(collection(db, 'press'))
     ]);
 
     return {
@@ -1116,6 +1349,8 @@ export const statsService = {
       contentCount: contents.size,
       noticeCount: notices.size,
       mainImagesCount: mainImages.size,
+      bookCount: books.size,
+      pressCount: press.size,
       todayVisits: 0, // 방문자 추적 기능 구현 시 업데이트
       monthlyVisits: 0
     };

@@ -6,35 +6,32 @@ import { statsService } from '../services/dataService';
 export default function Dashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
+    menuCount: 0,
+    contentCount: 0,
+    noticeCount: 0,
     mainImagesCount: 0,
+    bookCount: 0,
+    pressCount: 0,
     todayVisits: 0,
     monthlyVisits: 0
   });
   const [loading, setLoading] = useState(true);
 
-  console.log('Dashboard 컴포넌트 렌더링');
-  console.log('loading 상태:', loading);
-  console.log('stats:', stats);
-
   useEffect(() => {
-    console.log('Dashboard useEffect 실행');
     loadDashboardData();
   }, []);
 
   async function loadDashboardData() {
     try {
-      console.log('대시보드 데이터 로딩 시작');
       setLoading(true);
       
       // 통계 데이터 로드
       const statsData = await statsService.getStats();
-      console.log('대시보드 데이터 로딩 성공:', statsData);
       setStats(statsData);
 
     } catch (error) {
       console.error('대시보드 데이터 로딩 실패:', error);
     } finally {
-      console.log('대시보드 데이터 로딩 완료 - loading을 false로 설정');
       setLoading(false);
     }
   }

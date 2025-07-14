@@ -32,6 +32,12 @@ export default function AdminLayout({ children }) {
             <li className={location.pathname === '/admin/news' ? 'active' : ''}>
               <Link to="/admin/news">News</Link>
             </li>
+            <li className={location.pathname === '/admin/books' ? 'active' : ''}>
+              <Link to="/admin/books">Book</Link>
+            </li>
+            <li className={location.pathname === '/admin/press' ? 'active' : ''}>
+              <Link to="/admin/press">Press</Link>
+            </li>
           </ul>
         </nav>
       </aside>

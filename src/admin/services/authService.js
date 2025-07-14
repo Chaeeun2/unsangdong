@@ -9,8 +9,6 @@ export const authService = {
   // Firebase Authentication으로 로그인
   async signIn(email, password) {
     try {
-      console.log('Firebase Authentication 로그인 시도:', email);
-      
       // Firebase Authentication으로 로그인
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -20,8 +18,6 @@ export const authService = {
         await signOut(auth);
         throw new Error('관리자 권한이 없습니다.');
       }
-      
-      console.log('Firebase 인증 성공:', user.email);
       
       // 관리자 정보를 localStorage에 저장 (선택사항)
       localStorage.setItem('adminUser', JSON.stringify({
@@ -54,12 +50,12 @@ export const authService = {
   // 관리자 계정 생성 (개발용 - 실제로는 Firebase Console에서 생성)
   async createAdminUser(email, password) {
     try {
+      // Firebase에서 관리자 계정 생성
       if (!ALLOWED_ADMIN_EMAILS.includes(email)) {
         throw new Error('허용되지 않은 관리자 이메일입니다.');
       }
       
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('관리자 계정 생성 완료:', userCredential.user.email);
       return { success: true, user: userCredential.user };
     } catch (error) {
       console.error('관리자 계정 생성 실패:', error);
@@ -70,15 +66,12 @@ export const authService = {
   // Firebase 로그아웃
   async signOut() {
     try {
-      console.log('Firebase 로그아웃 시도');
-      
       // Firebase 로그아웃
       await signOut(auth);
       
       // 로컬 저장소 정리
       localStorage.removeItem('adminUser');
       
-      console.log('로그아웃 완료');
       return { success: true };
     } catch (error) {
       console.error('로그아웃 실패:', error);
@@ -116,19 +109,11 @@ export const authService = {
 
   // Firebase 인증 상태 리스너
   onAuthStateChange(callback) {
-    console.log('authService: onAuthStateChange 리스너 설정');
     return onAuthStateChanged(auth, (user) => {
-      console.log('authService: onAuthStateChanged 콜백 호출');
-      console.log('authService: user:', user);
-      console.log('authService: user?.email:', user?.email);
-      console.log('authService: ALLOWED_ADMIN_EMAILS:', ALLOWED_ADMIN_EMAILS);
-      
       // 관리자 권한 확인 후 콜백 실행
       if (user && ALLOWED_ADMIN_EMAILS.includes(user.email)) {
-        console.log('authService: 관리자 이메일 확인됨, 사용자 콜백 호출');
         callback(user);
       } else {
-        console.log('authService: 관리자 이메일 아님 또는 사용자 없음, null 콜백 호출');
         callback(null);
       }
     });
@@ -137,13 +122,8 @@ export const authService = {
   // 관리자 권한 확인
   isAdmin(user = null) {
     const targetUser = user || auth.currentUser;
-    console.log('authService: isAdmin 호출');
-    console.log('authService: targetUser:', targetUser);
-    console.log('authService: targetUser?.email:', targetUser?.email);
-    console.log('authService: ALLOWED_ADMIN_EMAILS:', ALLOWED_ADMIN_EMAILS);
     
     const result = targetUser && ALLOWED_ADMIN_EMAILS.includes(targetUser.email);
-    console.log('authService: isAdmin 결과:', result);
     return result;
   }
 }; 

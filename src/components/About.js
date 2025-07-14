@@ -87,7 +87,9 @@ function About() {
     return (
       <div className="about-container">
         <div className="about-title">ABOUT</div>
-
+        <div className="about-content">
+        <div className="loading-message"></div>
+      </div>
       </div>
     );
   }

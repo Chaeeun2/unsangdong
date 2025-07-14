@@ -46,7 +46,6 @@ function Header({ currentPage, onNavigate }) {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      console.log('검색어:', searchTerm);
       // 검색 결과 페이지로 이동
       onNavigate('search', null, searchTerm);
       closeSearch();

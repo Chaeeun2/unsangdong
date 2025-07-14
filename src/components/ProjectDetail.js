@@ -162,7 +162,6 @@ function ProjectDetail({ projectId, onNavigate }) {
 
       glide.on('run.after', () => {
         const currentIndex = glide.index;
-        console.log(`현재 슬라이드: ${currentIndex + 1}`);
       });
 
       glide.mount();

@@ -66,7 +66,7 @@ const News = ({ onNavigate }) => {
   };
 
   const handleNewsClick = (news) => {
-    console.log('뉴스 클릭:', news.title);
+
     onNavigate('news-detail', news.id);
   };
 
@@ -134,7 +134,7 @@ const News = ({ onNavigate }) => {
       <div className="news-container">
         <h1 className="news-page-title">NEWS</h1>
         <div className="news-board">
-          <div className="loading-message">뉴스를 불러오는 중...</div>
+          <div className="loading-message"></div>
         </div>
       </div>
     );

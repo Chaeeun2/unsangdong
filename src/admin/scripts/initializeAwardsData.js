@@ -318,13 +318,10 @@ const initialAwardsData = [
 
 export async function initializeAwardsData() {
   try {
-    console.log('Awards 초기 데이터 저장 시작...');
-    await awardsService.saveAwardsData(initialAwardsData);
-    console.log('Awards 초기 데이터 저장 완료!');
-    return true;
+    const docRef = doc(db, 'awards', 'default');
+    await setDoc(docRef, awardsData);
   } catch (error) {
-    console.error('Awards 초기 데이터 저장 실패:', error);
-    return false;
+    throw error;
   }
 }
 

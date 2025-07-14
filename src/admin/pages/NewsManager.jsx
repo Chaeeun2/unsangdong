@@ -663,13 +663,13 @@ const NewsManager = () => {
   return (
     <AdminLayout>
       <div className="admin-content">
-        <h2 className="admin-page-title">뉴스 관리</h2>
+        <h2 className="admin-page-title">News 관리</h2>
         
         <div className="admin-content-layout">
           <div className="admin-content-main">
             <div className="admin-content-header">
               <div className="admin-content-title-section">
-                <h3 className="admin-content-title">뉴스 목록</h3>
+                <h3 className="admin-content-title">News 목록</h3>
               </div>
               <div className="admin-header-buttons">
                 <button
@@ -704,7 +704,7 @@ const NewsManager = () => {
                       {newsList.map((news, index) => (
                         <tr key={news.id}>
                           <td style={{width: '70px'}}>{totalCount - ((currentPage - 1) * itemsPerPage) - index}</td>
-                          <td className="admin-table-title">
+                          <td className="admin-table-title" style={{width: '50%'}}>
                             {news.title}
                           </td>
                           <td style={{width: '250px'}}>{formatDate(news.createdAt)}</td>

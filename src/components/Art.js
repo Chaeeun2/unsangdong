@@ -77,11 +77,7 @@ function Art({ onNavigate }) {
   }, []);
 
   const handleProjectClick = (projectId) => {
-    console.log('=== ART PROJECT CLICK ===');
-    console.log('Clicked project ID:', projectId);
-    console.log('About to call onNavigate with project-detail and projectId:', projectId);
     onNavigate('project-detail', projectId);
-    console.log('=== END ART PROJECT CLICK ===');
   };
 
   const handleTypeFilter = (type) => {
