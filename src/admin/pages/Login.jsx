@@ -27,7 +27,7 @@ export default function Login() {
                       (ALLOWED_ADMIN_EMAILS.includes(user.email));
       
       if (isAdmin) {
-        navigate('/admin');
+        navigate('/admin/mainpage');
       }
     }
   }, [user, navigate]);
@@ -40,7 +40,7 @@ export default function Login() {
     try {
       const result = await login(credentials.email, credentials.password);
       // 로그인 성공 후 admin 홈으로 이동
-      navigate('/admin');
+      navigate('/admin/mainpage');
     } catch (error) {
       setError(error.message || '로그인에 실패했습니다.');
     } finally {
@@ -55,10 +55,10 @@ export default function Login() {
   return (
     <div className="admin-login">
       <form onSubmit={handleLogin} className="admin-form">
-        <h2 className="admin-page-title">UNSANGDONG Admin</h2>
-        <div className="admin-login-guide">관리자 계정은 개발자에게 문의 바랍니다.<br />시크릿 브라우저에서는 로그인이 불가능합니다.</div>
+        <h2 className="admin-page-title">운생동 Admin</h2>
+        <div className="admin-login-guide">관리자 계정은 제작사에 문의 바랍니다.</div>
         {error && <div className="admin-error-message">{error}</div>}
-        <div className="admin-form-group">
+        <div className="admin-form-group" style={{marginBottom: "20px"}}>
           <label htmlFor="email">이메일</label>
           <input
             type="email"
@@ -70,7 +70,7 @@ export default function Login() {
             autoComplete="username"
           />
         </div>
-        <div className="admin-form-group">
+        <div className="admin-form-group" style={{marginBottom: "20px"}}>
           <label htmlFor="password">비밀번호</label>
           <input
             type="password"

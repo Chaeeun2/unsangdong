@@ -236,7 +236,9 @@ export default function AboutManager() {
                     </div>
 
                     <div className="admin-about-wrap">
-                      <h3>조직도</h3>
+                                              <h3>조직도
+                                                  <br/><a style={{fontSize: "1.6rem", color: "black", textDecoration: "underline", fontWeight: "500"}} href="https://drive.google.com/file/d/1vciFmetRYtQvuJLgjQd07-_MMtPja2pp/view?usp=sharing" target="_blank">조직도 템플릿 다운로드</a>
+                                              </h3>
                       {/* 조직도 이미지 (데스크탑) */}
                       <div className="admin-form-section">
                         <div className="admin-form-wrap">

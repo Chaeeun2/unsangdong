@@ -1,7 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
 import MainPageManager from './pages/MainPageManager'
 import AwardsManager from './pages/AwardsManager'
 import ProjectManager from './pages/ProjectManager'
@@ -23,7 +22,7 @@ function AdminApp() {
           <Route path="/admin/login" element={<Login />} />
           <Route path="/admin" element={
             <ProtectedRoute>
-              <Dashboard />
+              <MainPageManager />
             </ProtectedRoute>
           } />
           <Route path="/admin/mainpage" element={

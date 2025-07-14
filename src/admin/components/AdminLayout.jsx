@@ -11,9 +11,6 @@ export default function AdminLayout({ children }) {
         <h2>운생동 Admin</h2>
         <nav>
           <ul>
-            <li className={location.pathname === '/admin' ? 'active' : ''}>
-              <Link to="/admin">대시보드</Link>
-            </li>
             <li className={location.pathname === '/admin/mainpage' ? 'active' : ''}>
               <Link to="/admin/mainpage">Main</Link>
             </li>
