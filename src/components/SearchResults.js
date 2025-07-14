@@ -1,133 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import './SearchResults.css';
+import { contentService } from '../services/dataService';
 
 function SearchResults({ searchQuery, onNavigate }) {
   const [searchTerm, setSearchTerm] = useState(searchQuery || '');
   const [hoveredProject, setHoveredProject] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [allProjects, setAllProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 모든 프로젝트 데이터 (Architecture, Art, Design)
-  const allProjects = [
-    // Architecture 프로젝트 (100-199)
-    {
-      id: 101,
-      title: "오동숲속도서관",
-      titleEn: "Odong Public Library",
-      year: "2024",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "HOUSE",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Architecture",
-      image: "./images/Architecture/arch-1.jpg"
-    },
-    {
-      id: 102,
-      title: "이상봉 타워",
-      titleEn: "Lie Sang Bong Tower",
-      year: "2023",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "Cultural",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Architecture",
-      image: "./images/Architecture/arch-2.jpg"
-    },
-    {
-      id: 103,
-      title: "헤이리, 코스미코",
-      titleEn: "Heyri COSMICO",
-      year: "2022",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "Museum",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Architecture",
-      image: "./images/Architecture/arch-3.jpg"
-    },
-    {
-      id: 104,
-      title: "오동숲속도서관",
-      titleEn: "Odong Public Library",
-      year: "2024",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "House",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Architecture",
-      image: "./images/Architecture/arch-1.jpg"
-    },
-    {
-      id: 105,
-      title: "이상봉 타워",
-      titleEn: "Lie Sang Bong Tower",
-      year: "2023",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "Cultural",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Architecture",
-      image: "./images/Architecture/arch-2.jpg"
-    },
-    {
-      id: 106,
-      title: "헤이리, 코스미코",
-      titleEn: "Heyri COSMICO",
-      year: "2022",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "Museum",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Architecture",
-      image: "./images/Architecture/arch-3.jpg"
-    },
-    // Art 프로젝트 (200-299)
-    {
-      id: 201,
-      title: "인간산수",
-      titleEn: "Human, Space, Mountain, Water",
-      year: "2024",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "HOUSE",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Art",
-      image: "./images/Art/art-1.jpg"
-    },
-    {
-      id: 202,
-      title: "인간산수",
-      titleEn: "Human, Space, Mountain, Water",
-      year: "2024",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "HOUSE",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Art",
-      image: "./images/Art/art-2.jpg"
-    },
-    {
-      id: 203,
-      title: "인간산수",
-      titleEn: "Human, Space, Mountain, Water",
-      year: "2024",
-      location: "서울 성북구 Seoul Seongbuk-gu",
-      type: "EXHIBITION",
-      client: "Client name",
-      director: "Yoongyoo Jang, Changhoon Shin",
-      status: "Completed",
-      category: "Art",
-      image: "./images/Art/art-3.jpg"
+  // Firebase에서 모든 프로젝트 데이터 로드
+  useEffect(() => {
+    async function loadAllProjects() {
+      try {
+        setLoading(true);
+        const [archProjects, artProjects, designProjects] = await Promise.all([
+          contentService.getContents('Architecture'),
+          contentService.getContents('Art'),
+          contentService.getContents('Design')
+        ]);
+        
+        // 모든 프로젝트를 하나의 배열로 합치기
+        const allProjectsData = [
+          ...(archProjects || []),
+          ...(artProjects || []),
+          ...(designProjects || [])
+        ];
+        
+        setAllProjects(allProjectsData);
+      } catch (error) {
+        console.error('프로젝트 데이터 로딩 실패:', error);
+      } finally {
+        setLoading(false);
+      }
     }
-  ];
+
+    loadAllProjects();
+  }, []);
 
   // 검색 필터링 함수
   const filterProjects = (query) => {
@@ -139,15 +48,15 @@ function SearchResults({ searchQuery, onNavigate }) {
     
     return allProjects.filter(project => {
       return (
-        project.title.toLowerCase().includes(searchTermLower) ||
-        project.titleEn.toLowerCase().includes(searchTermLower) ||
-        project.type.toLowerCase().includes(searchTermLower) ||
-        project.category.toLowerCase().includes(searchTermLower) ||
-        project.year.includes(searchTermLower) ||
-        project.location.toLowerCase().includes(searchTermLower) ||
-        project.client.toLowerCase().includes(searchTermLower) ||
-        project.director.toLowerCase().includes(searchTermLower) ||
-        project.status.toLowerCase().includes(searchTermLower)
+        project.title?.toLowerCase().includes(searchTermLower) ||
+        project.titleEn?.toLowerCase().includes(searchTermLower) ||
+        project.type?.toLowerCase().includes(searchTermLower) ||
+        project.category?.toLowerCase().includes(searchTermLower) ||
+        project.year?.toString().includes(searchTermLower) ||
+        project.location?.toLowerCase().includes(searchTermLower) ||
+        project.client?.toLowerCase().includes(searchTermLower) ||
+        project.director?.toLowerCase().includes(searchTermLower) ||
+        project.status?.toLowerCase().includes(searchTermLower)
       );
     });
   };
@@ -175,7 +84,7 @@ function SearchResults({ searchQuery, onNavigate }) {
     setSearchTerm(newSearchTerm);
     const newFilteredProjects = filterProjects(newSearchTerm);
     setFilteredProjects(newFilteredProjects);
-  }, [searchQuery]);
+  }, [searchQuery, allProjects]);
 
   const handleProjectClick = (projectId) => {
     onNavigate('project-detail', projectId);
@@ -189,7 +98,13 @@ function SearchResults({ searchQuery, onNavigate }) {
     setHoveredProject(null);
   };
 
-
+  if (loading) {
+    return (
+      <div className="search-results-container">
+        <div className="loading-message">검색 데이터를 불러오는 중...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="search-results-container">
@@ -249,7 +164,7 @@ function SearchResults({ searchQuery, onNavigate }) {
           }}
         >
           <img 
-            src={hoveredProject.image} 
+            src={hoveredProject.thumbnailImage || hoveredProject.mainImage} 
             alt={hoveredProject.title}
             className="hover-thumbnail-image"
           />

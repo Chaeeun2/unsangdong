@@ -54,6 +54,14 @@
   font-family: Pretendard;
 }
 
+.loading-message {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+  font-size: 1.8rem;
+  font-family: Pretendard;
+}
+
 .search-line {
   width: 3.5rem;
   height: 1.5px;

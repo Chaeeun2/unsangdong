@@ -17,8 +17,19 @@ function Header({ currentPage, onNavigate }) {
   };
 
   const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
-    if (!isSearchOpen) {
+    if (isSearchOpen) {
+      // 검색창이 열린 상태에서 search-btn을 다시 누를 때
+      if (searchTerm.trim()) {
+        // 검색어가 있으면 검색 실행
+        onNavigate('search', null, searchTerm);
+        closeSearch();
+      } else {
+        // 검색어가 없으면 검색창 닫기
+        closeSearch();
+      }
+    } else {
+      // 검색창이 닫힌 상태에서 search-btn을 누를 때
+      setIsSearchOpen(true);
       setSearchTerm(''); // 검색창 열 때 검색어 초기화
     }
     closeMenu();
