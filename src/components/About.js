@@ -7,26 +7,26 @@ function About() {
   const [langMode, setLangMode] = useState('KO');
   const [loading, setLoading] = useState(true);
   const [companyInfo, setCompanyInfo] = useState({
-    mainImage: 'https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/about.jpg',
+    mainImage: '',
     descriptionKo: '',
     descriptionEn: '',
-    organizationImage: 'https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/organization.png',
-    organizationImageMo: 'https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/organization-mo.png'
+    organizationImage: '',
+    organizationImageMo: ''
   });
   const [ceoData, setCeoData] = useState({
     jang: {
-      nameEn: 'Yoongyoo Jang',
-      nameKo: '장윤규',
-      title: '건축가그룹 운생동 대표, 국민대 건축대학 교수, 갤러리 정미소 대표',
-      titleEn: 'Principal of Unsangdong Architects Cooperation, Professor of Kookmin University, Representative of Gallery Jungmiso, Seoul, Korea',
+      nameEn: '',
+      nameKo: '',
+      title: '',
+      titleEn: '',
       description: '',
       descriptionEn: ''
     },
     shin: {
-      nameEn: 'Changhoon Shin',
-      nameKo: '신창훈',
-      title: '건축가그룹 운생동 공동대표',
-      titleEn: 'Principal of Unsangdong Architects Cooperation',
+      nameEn: '',
+      nameKo: '',
+      title: '',
+      titleEn: '',
       description: '',
       descriptionEn: ''
     }
