@@ -393,6 +393,12 @@
   .projects-list {
     padding: 0 4rem 4rem 4rem;
   }
+
+  .project-overlay {
+    padding: 2.5rem;
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }
 
 @media (max-width: 768px) {
