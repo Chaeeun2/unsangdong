@@ -59,8 +59,6 @@ export default function MainPageManager() {
       // 이미지 목록 다시 로드
       await loadMainImages();
       
-      alert(`가로 이미지 ${results.length}개가 성공적으로 업로드되었습니다.`);
-      
     } catch (error) {
       console.error('가로 이미지 업로드 실패:', error);
       alert(`가로 이미지 업로드에 실패했습니다: ${error.message}`);
@@ -92,8 +90,6 @@ export default function MainPageManager() {
       // 이미지 목록 다시 로드
       await loadMainImages();
       
-      alert(`세로 이미지 ${results.length}개가 성공적으로 업로드되었습니다.`);
-      
     } catch (error) {
       console.error('세로 이미지 업로드 실패:', error);
       alert(`세로 이미지 업로드에 실패했습니다: ${error.message}`);
@@ -103,9 +99,6 @@ export default function MainPageManager() {
   }
 
   async function deleteImage(imageData) {
-    if (!window.confirm('정말로 이 이미지를 삭제하시겠습니까?')) {
-      return;
-    }
 
     try {
       // 1. Cloudflare R2에서 이미지 삭제
@@ -116,9 +109,7 @@ export default function MainPageManager() {
       
       // 3. 이미지 목록 다시 로드
       await loadMainImages();
-      
-      alert('이미지가 삭제되었습니다.');
-      
+
     } catch (error) {
       console.error('이미지 삭제 실패:', error);
       alert(`이미지 삭제에 실패했습니다: ${error.message}`);

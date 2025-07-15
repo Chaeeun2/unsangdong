@@ -104,10 +104,6 @@ function TypeManagementModal({ isOpen, onClose, category }) {
         return;
       }
 
-      if (!window.confirm(`"${typeToDelete}"을 삭제하시겠습니까?`)) {
-        return;
-      }
-
       await projectTypeService.removeProjectType(category, typeToDelete);
       setTypeOptions(prev => prev.filter(type => type !== typeToDelete));
     } catch (error) {
@@ -1567,7 +1563,6 @@ export default function ProjectManager() {
       }));
       
       setIsAddModalOpen(false);
-      alert('프로젝트가 성공적으로 추가되었습니다.');
     } catch (error) {
       console.error('프로젝트 추가 실패:', error);
       alert('프로젝트 추가에 실패했습니다: ' + error.message);
@@ -1592,7 +1587,6 @@ export default function ProjectManager() {
       
       setIsEditModalOpen(false);
       setEditingProject(null);
-      alert('프로젝트가 성공적으로 수정되었습니다.');
     } catch (error) {
       console.error('프로젝트 수정 실패:', error);
       alert('프로젝트 수정에 실패했습니다: ' + error.message);
@@ -1616,7 +1610,6 @@ export default function ProjectManager() {
         [activeTab]: prev[activeTab].filter(p => p.id !== projectId)
       }));
       
-      alert('프로젝트가 삭제되었습니다.');
     } catch (error) {
       console.error('프로젝트 삭제 실패:', error);
       alert('프로젝트 삭제에 실패했습니다.');

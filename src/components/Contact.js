@@ -28,7 +28,6 @@ function Contact() {
         const data = await contactService.getContactInfo();
         setContactInfo(data);
       } catch (error) {
-        console.error('Contact 정보 로딩 실패:', error);
         // 실패 시 기본값 사용
         setContactInfo(contactService.getDefaultContactInfo());
       } finally {
@@ -91,18 +90,13 @@ function Contact() {
 
     try {
       setSubmitting(true);
-      console.log('문의사항 전송 시작...');
       
       // 1. 문의사항을 inquiries 컬렉션에 저장
-      console.log('1. inquiries 컬렉션에 저장 중...');
       await contactService.saveInquiry(formData);
-      console.log('1. inquiries 컬렉션 저장 완료');
       
       // 2. EmailJS를 사용한 이메일 발송
-      console.log('2. EmailJS로 이메일 발송 중...');
       await sendEmailViaEmailJS(formData);
-      console.log('2. EmailJS 이메일 발송 완료');
-      
+
       alert('문의사항이 성공적으로 전송되었습니다. 빠른 시일 내에 답변드리겠습니다.');
       
       // 폼 초기화
@@ -115,7 +109,6 @@ function Contact() {
         inquiryContent: ''
       });
     } catch (error) {
-      console.error('문의사항 전송 실패:', error);
       alert('문의사항 전송에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setSubmitting(false);
