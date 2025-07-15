@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './Contact.css';
 import { contactService } from '../admin/services/dataService';
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import emailjs from '@emailjs/browser';
+
+// EmailJS 초기화
+emailjs.init(process.env.REACT_APP_EMAILJS_PUBLIC_KEY);
 
 function Contact() {
   const [loading, setLoading] = useState(true);
@@ -43,6 +48,27 @@ function Contact() {
     }));
   };
 
+  // EmailJS를 사용한 이메일 발송
+  const sendEmailViaEmailJS = async (formData) => {
+    const templateParams = {
+      to_email: 'ryuchaeun.design@gmail.com', // 받을 이메일 주소
+      company_name: formData.companyName,
+      contact_name: formData.contactName,
+      email: formData.email,
+      phone_number: formData.phoneNumber,
+      inquiry_title: formData.inquiryTitle,
+      inquiry_content: formData.inquiryContent,
+      timestamp: new Date().toLocaleString()
+    };
+
+    await emailjs.send(
+      process.env.REACT_APP_EMAILJS_SERVICE_ID, // 실제 Service ID로 변경
+      process.env.REACT_APP_EMAILJS_TEMPLATE_ID, // 실제 Template ID로 변경
+      templateParams,
+      process.env.REACT_APP_EMAILJS_PUBLIC_KEY // 실제 Public Key로 변경
+    );
+  };
+
   // 폼 제출 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,8 +91,17 @@ function Contact() {
 
     try {
       setSubmitting(true);
+      console.log('문의사항 전송 시작...');
       
+      // 1. 문의사항을 inquiries 컬렉션에 저장
+      console.log('1. inquiries 컬렉션에 저장 중...');
       await contactService.saveInquiry(formData);
+      console.log('1. inquiries 컬렉션 저장 완료');
+      
+      // 2. EmailJS를 사용한 이메일 발송
+      console.log('2. EmailJS로 이메일 발송 중...');
+      await sendEmailViaEmailJS(formData);
+      console.log('2. EmailJS 이메일 발송 완료');
       
       alert('문의사항이 성공적으로 전송되었습니다. 빠른 시일 내에 답변드리겠습니다.');
       

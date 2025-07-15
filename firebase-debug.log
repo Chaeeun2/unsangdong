@@ -1,0 +1,329 @@
+[debug] [2025-07-15T04:36:26.883Z] ----------------------------------------------------------------------
+[debug] [2025-07-15T04:36:26.885Z] Command:       /opt/homebrew/Cellar/node/23.11.0/bin/node /opt/homebrew/bin/firebase deploy --only functions
+[debug] [2025-07-15T04:36:26.885Z] CLI Version:   14.9.0
+[debug] [2025-07-15T04:36:26.885Z] Platform:      darwin
+[debug] [2025-07-15T04:36:26.885Z] Node Version:  v23.11.0
+[debug] [2025-07-15T04:36:26.886Z] Time:          Tue Jul 15 2025 13:36:26 GMT+0900 (대한민국 표준시)
+[debug] [2025-07-15T04:36:26.886Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-15T04:36:26.980Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-15T04:36:26.980Z] > authorizing via signed-in user (contact@alolot.kr)
+[debug] [2025-07-15T04:36:26.980Z] [iam] checking project unsangdong-92e6f for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-07-15T04:36:26.981Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:26.981Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:26.981Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions [none]
+[debug] [2025-07-15T04:36:26.981Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions x-goog-quota-user=projects/unsangdong-92e6f
+[debug] [2025-07-15T04:36:26.981Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-07-15T04:36:27.350Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions 200
+[debug] [2025-07-15T04:36:27.351Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-07-15T04:36:27.351Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:27.351Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:27.351Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/unsangdong-92e6f/serviceAccounts/unsangdong-92e6f@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-07-15T04:36:27.351Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/unsangdong-92e6f/serviceAccounts/unsangdong-92e6f@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-07-15T04:36:28.477Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/unsangdong-92e6f/serviceAccounts/unsangdong-92e6f@appspot.gserviceaccount.com:testIamPermissions 404
+[debug] [2025-07-15T04:36:28.477Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/unsangdong-92e6f/serviceAccounts/unsangdong-92e6f@appspot.gserviceaccount.com:testIamPermissions {"error":{"code":404,"message":"Unknown service account","status":"NOT_FOUND"}}
+[debug] [2025-07-15T04:36:28.477Z] [functions] service account IAM check errored, deploy may fail: Request to https://iam.googleapis.com/v1/projects/unsangdong-92e6f/serviceAccounts/unsangdong-92e6f@appspot.gserviceaccount.com:testIamPermissions had HTTP Error: 404, Unknown service account {"name":"FirebaseError","children":[],"context":{"body":{"error":{"code":404,"message":"Unknown service account","status":"NOT_FOUND"}},"response":{"statusCode":404}},"exit":1,"message":"Request to https://iam.googleapis.com/v1/projects/unsangdong-92e6f/serviceAccounts/unsangdong-92e6f@appspot.gserviceaccount.com:testIamPermissions had HTTP Error: 404, Unknown service account","status":404}
+[info] 
+[info] === Deploying to 'unsangdong-92e6f'...
+[info] 
+[info] i  deploying functions 
+[debug] [2025-07-15T04:36:28.479Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:28.479Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:28.479Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f [none]
+[debug] [2025-07-15T04:36:28.724Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f 200
+[debug] [2025-07-15T04:36:28.724Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f {"projectNumber":"690232958826","projectId":"unsangdong-92e6f","lifecycleState":"ACTIVE","name":"unsangdong","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-07-01T09:19:01.238367Z","parent":{"type":"organization","id":"530347753323"}}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-07-15T04:36:28.726Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:28.726Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:28.726Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/unsangdong-92e6f/adminSdkConfig [none]
+[debug] [2025-07-15T04:36:29.140Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/unsangdong-92e6f/adminSdkConfig 200
+[debug] [2025-07-15T04:36:29.140Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/unsangdong-92e6f/adminSdkConfig {"projectId":"unsangdong-92e6f","storageBucket":"unsangdong-92e6f.firebasestorage.app"}
+[debug] [2025-07-15T04:36:29.141Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:29.141Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:29.141Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs [none]
+[debug] [2025-07-15T04:36:29.607Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs 200
+[debug] [2025-07-15T04:36:29.607Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs {"configs":[{"name":"projects/unsangdong-92e6f/configs/gmail"}]}
+[debug] [2025-07-15T04:36:29.607Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:29.608Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:29.608Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs/gmail/variables [none]
+[debug] [2025-07-15T04:36:30.504Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs/gmail/variables 200
+[debug] [2025-07-15T04:36:30.504Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs/gmail/variables {"variables":[{"name":"projects/unsangdong-92e6f/configs/gmail/variables/password","updateTime":"2025-07-15T04:10:50.147656789Z"}]}
+[debug] [2025-07-15T04:36:30.504Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:30.504Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:30.504Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs/gmail/variables/password [none]
+[debug] [2025-07-15T04:36:30.783Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs/gmail/variables/password 200
+[debug] [2025-07-15T04:36:30.783Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/unsangdong-92e6f/configs/gmail/variables/password {"name":"projects/unsangdong-92e6f/configs/gmail/variables/password","updateTime":"2025-07-15T04:10:50.147656789Z","text":"실제_GMAIL_앱_비밀번호"}
+[debug] [2025-07-15T04:36:30.784Z] Validating nodejs source
+[warn] ⚠  functions: Runtime Node.js 18 was deprecated on 2025-04-30 and will be decommissioned on 2025-10-30, after which you will not be able to deploy without upgrading. Consider upgrading now to avoid disruption. See https://cloud.google.com/functions/docs/runtime-support for full details on the lifecycle policy 
+[debug] [2025-07-15T04:36:31.365Z] > [functions] package.json contents: {
+  "name": "functions",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": "18"
+  },
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^6.3.2"
+  }
+}
+[debug] [2025-07-15T04:36:31.365Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2025-07-15T04:36:31.366Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-07-15T04:36:31.371Z] Found firebase-functions binary at '/Users/lyuchaeeun/Desktop/unsangdong/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8343
+
+[debug] [2025-07-15T04:36:31.723Z] Got response from /__/functions.yaml {"endpoints":{"helloWorld":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"httpsTrigger":{},"entryPoint":"helloWorld"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled... 
+[debug] [2025-07-15T04:36:35.745Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-15T04:36:35.745Z] > authorizing via signed-in user (contact@alolot.kr)
+[debug] [2025-07-15T04:36:35.745Z] [iam] checking project unsangdong-92e6f for permissions ["firebase.projects.get","firebaseextensions.instances.list"]
+[debug] [2025-07-15T04:36:35.745Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:35.745Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:35.745Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions [none]
+[debug] [2025-07-15T04:36:35.745Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions x-goog-quota-user=projects/unsangdong-92e6f
+[debug] [2025-07-15T04:36:35.745Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2025-07-15T04:36:35.966Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions 200
+[debug] [2025-07-15T04:36:35.966Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2025-07-15T04:36:35.967Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:35.967Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:35.967Z] >>> [apiv2][query] GET https://firebaseextensions.googleapis.com/v1beta/projects/unsangdong-92e6f/instances pageSize=100&pageToken=
+[debug] [2025-07-15T04:36:37.012Z] <<< [apiv2][status] GET https://firebaseextensions.googleapis.com/v1beta/projects/unsangdong-92e6f/instances 200
+[debug] [2025-07-15T04:36:37.012Z] <<< [apiv2][body] GET https://firebaseextensions.googleapis.com/v1beta/projects/unsangdong-92e6f/instances {}
+[info] i  functions: preparing functions directory for uploading... 
+[info] i  functions: packaged /Users/lyuchaeeun/Desktop/unsangdong/functions (29.79 KB) for uploading 
+[debug] [2025-07-15T04:36:37.038Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:37.038Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:37.038Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/unsangdong-92e6f/locations/-/functions [none]
+[debug] [2025-07-15T04:36:38.046Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/unsangdong-92e6f/locations/-/functions 200
+[debug] [2025-07-15T04:36:38.047Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/unsangdong-92e6f/locations/-/functions {}
+[debug] [2025-07-15T04:36:38.047Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:38.047Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:38.047Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2025-07-15T04:36:39.411Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/-/functions 200
+[debug] [2025-07-15T04:36:39.411Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/-/functions {}
+[info] i  functions: ensuring required API run.googleapis.com is enabled... 
+[debug] [2025-07-15T04:36:39.414Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:39.414Z] Checked if tokens are valid: true, expires at: 1752556228994
+[info] i  functions: ensuring required API eventarc.googleapis.com is enabled... 
+[debug] [2025-07-15T04:36:39.414Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:39.414Z] Checked if tokens are valid: true, expires at: 1752556228994
+[info] i  functions: ensuring required API pubsub.googleapis.com is enabled... 
+[debug] [2025-07-15T04:36:39.414Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:39.414Z] Checked if tokens are valid: true, expires at: 1752556228994
+[info] i  functions: ensuring required API storage.googleapis.com is enabled... 
+[debug] [2025-07-15T04:36:39.415Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:39.415Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:39.415Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/run.googleapis.com [none]
+[debug] [2025-07-15T04:36:39.415Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/run.googleapis.com x-goog-quota-user=projects/690232958826
+[debug] [2025-07-15T04:36:39.416Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/eventarc.googleapis.com [none]
+[debug] [2025-07-15T04:36:39.416Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/eventarc.googleapis.com x-goog-quota-user=projects/690232958826
+[debug] [2025-07-15T04:36:39.417Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/pubsub.googleapis.com [none]
+[debug] [2025-07-15T04:36:39.418Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/pubsub.googleapis.com x-goog-quota-user=projects/690232958826
+[debug] [2025-07-15T04:36:39.418Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/storage.googleapis.com [none]
+[debug] [2025-07-15T04:36:39.418Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/storage.googleapis.com x-goog-quota-user=projects/690232958826
+[debug] [2025-07-15T04:36:40.617Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/run.googleapis.com 200
+[debug] [2025-07-15T04:36:40.617Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/run.googleapis.com [omitted]
+[info] ✔  functions: required API run.googleapis.com is enabled 
+[debug] [2025-07-15T04:36:40.626Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/pubsub.googleapis.com 200
+[debug] [2025-07-15T04:36:40.627Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/pubsub.googleapis.com [omitted]
+[info] ✔  functions: required API pubsub.googleapis.com is enabled 
+[debug] [2025-07-15T04:36:40.635Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/storage.googleapis.com 200
+[debug] [2025-07-15T04:36:40.635Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/storage.googleapis.com [omitted]
+[info] ✔  functions: required API storage.googleapis.com is enabled 
+[debug] [2025-07-15T04:36:40.654Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/eventarc.googleapis.com 200
+[debug] [2025-07-15T04:36:40.654Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/690232958826/services/eventarc.googleapis.com [omitted]
+[info] ✔  functions: required API eventarc.googleapis.com is enabled 
+[info] i  functions: generating the service identity for pubsub.googleapis.com... 
+[debug] [2025-07-15T04:36:40.661Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:40.661Z] Checked if tokens are valid: true, expires at: 1752556228994
+[info] i  functions: generating the service identity for eventarc.googleapis.com... 
+[debug] [2025-07-15T04:36:40.661Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:40.661Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:40.661Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/pubsub.googleapis.com:generateServiceIdentity [none]
+[debug] [2025-07-15T04:36:40.661Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/pubsub.googleapis.com:generateServiceIdentity x-goog-quota-user=projects/690232958826
+[debug] [2025-07-15T04:36:40.661Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/pubsub.googleapis.com:generateServiceIdentity {}
+[debug] [2025-07-15T04:36:40.661Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/eventarc.googleapis.com:generateServiceIdentity [none]
+[debug] [2025-07-15T04:36:40.661Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/eventarc.googleapis.com:generateServiceIdentity x-goog-quota-user=projects/690232958826
+[debug] [2025-07-15T04:36:40.661Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/eventarc.googleapis.com:generateServiceIdentity {}
+[debug] [2025-07-15T04:36:41.044Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/eventarc.googleapis.com:generateServiceIdentity 200
+[debug] [2025-07-15T04:36:41.044Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/eventarc.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-690232958826@gcp-sa-eventarc.iam.gserviceaccount.com","uniqueId":"107856716293701241853"}}
+[debug] [2025-07-15T04:36:41.233Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/pubsub.googleapis.com:generateServiceIdentity 200
+[debug] [2025-07-15T04:36:41.233Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/690232958826/services/pubsub.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-690232958826@gcp-sa-pubsub.iam.gserviceaccount.com","uniqueId":"118380771064647652542"}}
+[debug] [2025-07-15T04:36:41.234Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:41.234Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:41.234Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f [none]
+[debug] [2025-07-15T04:36:42.005Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f 200
+[debug] [2025-07-15T04:36:42.005Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f {"projectNumber":"690232958826","projectId":"unsangdong-92e6f","lifecycleState":"ACTIVE","name":"unsangdong","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-07-01T09:19:01.238367Z","parent":{"type":"organization","id":"530347753323"}}
+[debug] [2025-07-15T04:36:42.006Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:42.006Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:42.006Z] >>> [apiv2][query] GET https://compute.googleapis.com/compute/v1/projects/690232958826 [none]
+[debug] [2025-07-15T04:36:42.549Z] <<< [apiv2][status] GET https://compute.googleapis.com/compute/v1/projects/690232958826 200
+[debug] [2025-07-15T04:36:42.549Z] <<< [apiv2][body] GET https://compute.googleapis.com/compute/v1/projects/690232958826 {"kind":"compute#project","id":"4960982105222285083","creationTimestamp":"2025-07-14T19:16:20.536-07:00","name":"unsangdong-92e6f","commonInstanceMetadata":{"kind":"compute#metadata","fingerprint":"nr9VujPznx8="},"quotas":[{"metric":"SNAPSHOTS","limit":1000,"usage":0},{"metric":"NETWORKS","limit":5,"usage":1},{"metric":"FIREWALLS","limit":100,"usage":4},{"metric":"IMAGES","limit":100,"usage":0},{"metric":"STATIC_ADDRESSES","limit":8,"usage":0},{"metric":"ROUTES","limit":200,"usage":0},{"metric":"FORWARDING_RULES","limit":15,"usage":0},{"metric":"TARGET_POOLS","limit":50,"usage":0},{"metric":"HEALTH_CHECKS","limit":75,"usage":0},{"metric":"IN_USE_ADDRESSES","limit":4,"usage":0},{"metric":"TARGET_INSTANCES","limit":50,"usage":0},{"metric":"TARGET_HTTP_PROXIES","limit":10,"usage":0},{"metric":"URL_MAPS","limit":10,"usage":0},{"metric":"BACKEND_SERVICES","limit":50,"usage":0},{"metric":"INSTANCE_TEMPLATES","limit":100,"usage":0},{"metric":"TARGET_VPN_GATEWAYS","limit":5,"usage":0},{"metric":"VPN_TUNNELS","limit":10,"usage":0},{"metric":"BACKEND_BUCKETS","limit":3,"usage":0},{"metric":"ROUTERS","limit":10,"usage":0},{"metric":"TARGET_SSL_PROXIES","limit":10,"usage":0},{"metric":"TARGET_HTTPS_PROXIES","limit":10,"usage":0},{"metric":"SSL_CERTIFICATES","limit":10,"usage":0},{"metric":"SUBNETWORKS","limit":100,"usage":0},{"metric":"TARGET_TCP_PROXIES","limit":10,"usage":0},{"metric":"CPUS_ALL_REGIONS","limit":12,"usage":0},{"metric":"SECURITY_POLICIES","limit":0,"usage":0},{"metric":"SECURITY_POLICY_RULES","limit":0,"usage":0},{"metric":"XPN_SERVICE_PROJECTS","limit":1000,"usage":0},{"metric":"PACKET_MIRRORINGS","limit":20,"usage":0},{"metric":"NETWORK_ENDPOINT_GROUPS","limit":100,"usage":0},{"metric":"INTERCONNECTS","limit":6,"usage":0},{"metric":"SSL_POLICIES","limit":10,"usage":0},{"metric":"GLOBAL_INTERNAL_ADDRESSES","limit":5000,"usage":0},{"metric":"VPN_GATEWAYS","limit":5,"usage":0},{"metric":"MACHINE_IMAGES","limit":100,"usage":0},{"metric":"SECURITY_POLICY_CEVAL_RULES","limit":0,"usage":0},{"metric":"GPUS_ALL_REGIONS","limit":0,"usage":0},{"metric":"EXTERNAL_VPN_GATEWAYS","limit":5,"usage":0},{"metric":"PUBLIC_ADVERTISED_PREFIXES","limit":1,"usage":0},{"metric":"PUBLIC_DELEGATED_PREFIXES","limit":10,"usage":0},{"metric":"STATIC_BYOIP_ADDRESSES","limit":128,"usage":0},{"metric":"NETWORK_FIREWALL_POLICIES","limit":10,"usage":0},{"metric":"INTERNAL_TRAFFIC_DIRECTOR_FORWARDING_RULES","limit":15,"usage":0},{"metric":"GLOBAL_EXTERNAL_MANAGED_FORWARDING_RULES","limit":15,"usage":0},{"metric":"GLOBAL_INTERNAL_MANAGED_BACKEND_SERVICES","limit":50,"usage":0},{"metric":"GLOBAL_EXTERNAL_MANAGED_BACKEND_SERVICES","limit":50,"usage":0},{"metric":"GLOBAL_EXTERNAL_PROXY_LB_BACKEND_SERVICES","limit":50,"usage":0},{"metric":"GLOBAL_INTERNAL_TRAFFIC_DIRECTOR_BACKEND_SERVICES","limit":100,"usage":0}],"selfLink":"https://www.googleapis.com/compute/v1/projects/unsangdong-92e6f","defaultServiceAccount":"690232958826-compute@developer.gserviceaccount.com","xpnProjectStatus":"UNSPECIFIED_XPN_PROJECT_STATUS","defaultNetworkTier":"PREMIUM","vmDnsSetting":"ZONAL_ONLY","cloudArmorTier":"CA_STANDARD"}
+[debug] [2025-07-15T04:36:42.550Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:42.550Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:42.550Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/unsangdong-92e6f/billingInfo [none]
+[debug] [2025-07-15T04:36:43.817Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/unsangdong-92e6f/billingInfo 200
+[debug] [2025-07-15T04:36:43.817Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/unsangdong-92e6f/billingInfo {"name":"projects/unsangdong-92e6f/billingInfo","projectId":"unsangdong-92e6f","billingAccountName":"billingAccounts/013815-545A8A-83FA34","billingEnabled":true}
+[debug] [2025-07-15T04:36:43.818Z] [functions] found 1 new HTTP functions, testing setIamPolicy permission...
+[debug] [2025-07-15T04:36:43.818Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:43.818Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:43.819Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions [none]
+[debug] [2025-07-15T04:36:43.819Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions x-goog-quota-user=projects/unsangdong-92e6f
+[debug] [2025-07-15T04:36:43.819Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions {"permissions":["cloudfunctions.functions.setIamPolicy"]}
+[debug] [2025-07-15T04:36:43.984Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions 200
+[debug] [2025-07-15T04:36:43.984Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/unsangdong-92e6f:testIamPermissions {"permissions":["cloudfunctions.functions.setIamPolicy"]}
+[debug] [2025-07-15T04:36:43.984Z] [functions] found setIamPolicy permission, proceeding with deploy
+[debug] [2025-07-15T04:36:43.985Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:43.985Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:43.985Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/functions:generateUploadUrl [none]
+[debug] [2025-07-15T04:36:45.673Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/functions:generateUploadUrl 200
+[debug] [2025-07-15T04:36:45.673Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/functions:generateUploadUrl {"uploadUrl":"https://storage.googleapis.com/gcf-v2-uploads-690232958826.us-central1.cloudfunctions.appspot.com/9f427c45-97b6-4b33-b7e8-7ad1c6815837.zip?GoogleAccessId=service-690232958826@gcf-admin-robot.iam.gserviceaccount.com&Expires=1752556005&Signature=Hn3%2FxP508upUKpnshdayIWMvKJgKMNMhK%2FQZi6Ej7gdVI084JUL0eT0MVD%2FoysNbzBSq1lgaT6sGVE4Jnmrnf7H0Vc368LFUVP2GVmb8wz9FlOzIXj1sN6sTfnDcmyTCa5wG8xt%2BKFsmo42M7XKU484MF3e3gP8gYF%2FaHQO5Rc9EmyTirIi6X6lRXZR8GjilSGLJ4hCKR4De%2FGvstBGHIJlKOkC%2F6Ae1qvfKZl1EZplT%2FsDYnNgL6hLwpyeZW7xCLN7sG%2F010MMA6Z2ms%2Baz4Af3iFko6J4LUdkt94YsICx4JiKccRUKjzsoyVEMCamApfHywhmCRvVphFITrw%2BvrQ%3D%3D","storageSource":{"bucket":"gcf-v2-uploads-690232958826.us-central1.cloudfunctions.appspot.com","object":"9f427c45-97b6-4b33-b7e8-7ad1c6815837.zip"}}
+[debug] [2025-07-15T04:36:45.674Z] >>> [apiv2][query] PUT https://storage.googleapis.com/gcf-v2-uploads-690232958826.us-central1.cloudfunctions.appspot.com/9f427c45-97b6-4b33-b7e8-7ad1c6815837.zip GoogleAccessId=service-690232958826%40gcf-admin-robot.iam.gserviceaccount.com&Expires=1752556005&Signature=Hn3%2FxP508upUKpnshdayIWMvKJgKMNMhK%2FQZi6Ej7gdVI084JUL0eT0MVD%2FoysNbzBSq1lgaT6sGVE4Jnmrnf7H0Vc368LFUVP2GVmb8wz9FlOzIXj1sN6sTfnDcmyTCa5wG8xt%2BKFsmo42M7XKU484MF3e3gP8gYF%2FaHQO5Rc9EmyTirIi6X6lRXZR8GjilSGLJ4hCKR4De%2FGvstBGHIJlKOkC%2F6Ae1qvfKZl1EZplT%2FsDYnNgL6hLwpyeZW7xCLN7sG%2F010MMA6Z2ms%2Baz4Af3iFko6J4LUdkt94YsICx4JiKccRUKjzsoyVEMCamApfHywhmCRvVphFITrw%2BvrQ%3D%3D
+[debug] [2025-07-15T04:36:45.675Z] >>> [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-690232958826.us-central1.cloudfunctions.appspot.com/9f427c45-97b6-4b33-b7e8-7ad1c6815837.zip [stream]
+[debug] [2025-07-15T04:36:46.075Z] <<< [apiv2][status] PUT https://storage.googleapis.com/gcf-v2-uploads-690232958826.us-central1.cloudfunctions.appspot.com/9f427c45-97b6-4b33-b7e8-7ad1c6815837.zip 200
+[debug] [2025-07-15T04:36:46.075Z] <<< [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-690232958826.us-central1.cloudfunctions.appspot.com/9f427c45-97b6-4b33-b7e8-7ad1c6815837.zip [omitted]
+[info] ✔  functions: functions folder uploaded successfully 
+[info] i  functions: creating Node.js 18 (2nd Gen) function helloWorld(us-central1)... 
+[debug] [2025-07-15T04:36:46.080Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:46.080Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:46.080Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/functions functionId=helloWorld
+[debug] [2025-07-15T04:36:46.080Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/functions {"name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-uploads-690232958826.us-central1.cloudfunctions.appspot.com","object":"9f427c45-97b6-4b33-b7e8-7ad1c6815837.zip"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""}},"serviceConfig":{"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":null,"timeoutSeconds":null,"serviceAccountEmail":null,"availableMemory":"256Mi","minInstanceCount":null,"maxInstanceCount":null,"maxInstanceRequestConcurrency":80,"availableCpu":"1","vpcConnector":null,"vpcConnectorEgressSettings":null},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"}}
+[debug] [2025-07-15T04:36:47.617Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/functions 200
+[debug] [2025-07-15T04:36:47.617Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/functions {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2"},"done":false}
+[debug] [2025-07-15T04:36:47.617Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:47.617Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:47.617Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 [none]
+[debug] [2025-07-15T04:36:48.670Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 200
+[debug] [2025-07-15T04:36:48.670Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2","requestResource":{"@type":"type.googleapis.com/google.cloud.functions.v2.Function","name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-sources-690232958826-us-central1","object":"helloWorld/function-source.zip","generation":"1752554207269679"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"serviceAccount":"projects/unsangdong-92e6f/serviceAccounts/690232958826-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","serviceAccountEmail":"690232958826-compute@developer.gserviceaccount.com","availableMemory":"256Mi","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"},"environment":"GEN_2"},"stages":[{"name":"BUILD","message":"Build in progress","state":"IN_PROGRESS","resource":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add","resourceUri":"https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826"},{"name":"SERVICE","state":"NOT_STARTED"}],"operationType":"CREATE_FUNCTION","buildName":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add"},"done":false}
+[debug] [2025-07-15T04:36:49.171Z] [create-default-us-central1-helloWorld] Retrying task index 0
+[debug] [2025-07-15T04:36:49.171Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:49.171Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:49.172Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 [none]
+[debug] [2025-07-15T04:36:49.435Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 200
+[debug] [2025-07-15T04:36:49.435Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2","requestResource":{"@type":"type.googleapis.com/google.cloud.functions.v2.Function","name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-sources-690232958826-us-central1","object":"helloWorld/function-source.zip","generation":"1752554207269679"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"serviceAccount":"projects/unsangdong-92e6f/serviceAccounts/690232958826-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","serviceAccountEmail":"690232958826-compute@developer.gserviceaccount.com","availableMemory":"256Mi","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"},"environment":"GEN_2"},"stages":[{"name":"BUILD","message":"Build in progress","state":"IN_PROGRESS","resource":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add","resourceUri":"https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826"},{"name":"SERVICE","state":"NOT_STARTED"}],"operationType":"CREATE_FUNCTION","buildName":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add"},"done":false}
+[debug] [2025-07-15T04:36:50.436Z] [create-default-us-central1-helloWorld] Retrying task index 0
+[debug] [2025-07-15T04:36:50.437Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:50.437Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:50.437Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 [none]
+[debug] [2025-07-15T04:36:51.483Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 200
+[debug] [2025-07-15T04:36:51.483Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2","requestResource":{"@type":"type.googleapis.com/google.cloud.functions.v2.Function","name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-sources-690232958826-us-central1","object":"helloWorld/function-source.zip","generation":"1752554207269679"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"serviceAccount":"projects/unsangdong-92e6f/serviceAccounts/690232958826-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","serviceAccountEmail":"690232958826-compute@developer.gserviceaccount.com","availableMemory":"256Mi","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"},"environment":"GEN_2"},"stages":[{"name":"BUILD","message":"Build in progress","state":"IN_PROGRESS","resource":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add","resourceUri":"https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826"},{"name":"SERVICE","state":"NOT_STARTED"}],"operationType":"CREATE_FUNCTION","buildName":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add"},"done":false}
+[debug] [2025-07-15T04:36:53.484Z] [create-default-us-central1-helloWorld] Retrying task index 0
+[debug] [2025-07-15T04:36:53.485Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:53.485Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:53.485Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 [none]
+[debug] [2025-07-15T04:36:54.487Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 200
+[debug] [2025-07-15T04:36:54.487Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2","requestResource":{"@type":"type.googleapis.com/google.cloud.functions.v2.Function","name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-sources-690232958826-us-central1","object":"helloWorld/function-source.zip","generation":"1752554207269679"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"serviceAccount":"projects/unsangdong-92e6f/serviceAccounts/690232958826-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","serviceAccountEmail":"690232958826-compute@developer.gserviceaccount.com","availableMemory":"256Mi","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"},"environment":"GEN_2"},"stages":[{"name":"BUILD","message":"Build in progress","state":"IN_PROGRESS","resource":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add","resourceUri":"https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826"},{"name":"SERVICE","state":"NOT_STARTED"}],"operationType":"CREATE_FUNCTION","buildName":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add"},"done":false}
+[debug] [2025-07-15T04:36:58.496Z] [create-default-us-central1-helloWorld] Retrying task index 0
+[debug] [2025-07-15T04:36:58.501Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:58.501Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:36:58.501Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 [none]
+[debug] [2025-07-15T04:36:59.539Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 200
+[debug] [2025-07-15T04:36:59.539Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2","requestResource":{"@type":"type.googleapis.com/google.cloud.functions.v2.Function","name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-sources-690232958826-us-central1","object":"helloWorld/function-source.zip","generation":"1752554207269679"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"serviceAccount":"projects/unsangdong-92e6f/serviceAccounts/690232958826-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","serviceAccountEmail":"690232958826-compute@developer.gserviceaccount.com","availableMemory":"256Mi","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"},"environment":"GEN_2"},"stages":[{"name":"BUILD","message":"Build in progress","state":"IN_PROGRESS","resource":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add","resourceUri":"https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826"},{"name":"SERVICE","state":"NOT_STARTED"}],"operationType":"CREATE_FUNCTION","buildName":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add"},"done":false}
+[debug] [2025-07-15T04:37:07.539Z] [create-default-us-central1-helloWorld] Retrying task index 0
+[debug] [2025-07-15T04:37:07.540Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:07.540Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:07.540Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 [none]
+[debug] [2025-07-15T04:37:08.643Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 200
+[debug] [2025-07-15T04:37:08.644Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2","requestResource":{"@type":"type.googleapis.com/google.cloud.functions.v2.Function","name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-sources-690232958826-us-central1","object":"helloWorld/function-source.zip","generation":"1752554207269679"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"serviceAccount":"projects/unsangdong-92e6f/serviceAccounts/690232958826-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","serviceAccountEmail":"690232958826-compute@developer.gserviceaccount.com","availableMemory":"256Mi","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"},"environment":"GEN_2"},"stages":[{"name":"BUILD","message":"Build in progress","state":"IN_PROGRESS","resource":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add","resourceUri":"https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826"},{"name":"SERVICE","state":"NOT_STARTED"}],"operationType":"CREATE_FUNCTION","buildName":"projects/690232958826/locations/us-central1/builds/8da4a0f7-0bde-49c6-accf-d65b2f005add"},"done":false}
+[debug] [2025-07-15T04:37:18.645Z] [create-default-us-central1-helloWorld] Retrying task index 0
+[debug] [2025-07-15T04:37:18.646Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:18.646Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:18.646Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 [none]
+[debug] [2025-07-15T04:37:19.707Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 200
+[debug] [2025-07-15T04:37:19.708Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33 {"name":"projects/unsangdong-92e6f/locations/us-central1/operations/operation-1752554207003-639f052f54474-2d688fe2-48c36d33","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v2.OperationMetadata","createTime":"2025-07-15T04:36:47.505552162Z","endTime":"2025-07-15T04:37:13.515497284Z","target":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","verb":"create","cancelRequested":false,"apiVersion":"v2","requestResource":{"@type":"type.googleapis.com/google.cloud.functions.v2.Function","name":"projects/unsangdong-92e6f/locations/us-central1/functions/helloWorld","buildConfig":{"runtime":"nodejs18","entryPoint":"helloWorld","source":{"storageSource":{"bucket":"gcf-v2-sources-690232958826-us-central1","object":"helloWorld/function-source.zip","generation":"1752554207269679"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"serviceAccount":"projects/unsangdong-92e6f/serviceAccounts/690232958826-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}","GCLOUD_PROJECT":"unsangdong-92e6f","EVENTARC_CLOUD_EVENT_SOURCE":"projects/unsangdong-92e6f/locations/us-central1/services/helloWorld","FUNCTION_TARGET":"helloWorld","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","serviceAccountEmail":"690232958826-compute@developer.gserviceaccount.com","availableMemory":"256Mi","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"8cc4092e3471d86b303afd2a25f9858d22cd4962"},"environment":"GEN_2"},"stages":[{"name":"ARTIFACT_REGISTRY","message":"Deleting function artifacts in Artifact Registry","state":"COMPLETE"},{"name":"SERVICE","message":"Deleting Cloud Run service","state":"COMPLETE","resource":"projects/unsangdong-92e6f/locations/us-central1/services/helloworld"}],"operationType":"CREATE_FUNCTION"},"done":true,"error":{"code":3,"message":"Build failed with status: FAILURE. Could not build the function due to a missing permission on the build service account. If you didn't revoke that permission explicitly, this could be caused by a change in the organization policies. Please refer to the following documentation for more details and resolution: https://cloud.google.com/functions/docs/troubleshooting#build-service-account\n You can also view the logs at https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826.\n"}}
+[debug] [2025-07-15T04:37:19.708Z] Got source token undefined for region us-central1
+[error] Build failed with status: FAILURE. Could not build the function due to a missing permission on the build service account. If you didn't revoke that permission explicitly, this could be caused by a change in the organization policies. Please refer to the following documentation for more details and resolution: https://cloud.google.com/functions/docs/troubleshooting#build-service-account
+ You can also view the logs at https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826.
+
+[debug] [2025-07-15T04:37:19.711Z] Total Function Deployment time: 33630
+[debug] [2025-07-15T04:37:19.711Z] 1 Functions Deployed
+[debug] [2025-07-15T04:37:19.711Z] 1 Functions Errored
+[debug] [2025-07-15T04:37:19.711Z] 0 Function Deployments Aborted
+[debug] [2025-07-15T04:37:19.711Z] Average Function Deployment time: 33629
+[info] 
+[info] Functions deploy had errors with the following functions:
+	helloWorld(us-central1)
+[debug] [2025-07-15T04:37:19.912Z] Not printing URL for HTTPS function. Typically this means it didn't match a filter or we failed deployment
+[debug] [2025-07-15T04:37:19.912Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:19.912Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:19.912Z] >>> [apiv2][query] GET https://artifactregistry.googleapis.com/v1/projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts [none]
+[debug] [2025-07-15T04:37:21.127Z] <<< [apiv2][status] GET https://artifactregistry.googleapis.com/v1/projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts 200
+[debug] [2025-07-15T04:37:21.127Z] <<< [apiv2][body] GET https://artifactregistry.googleapis.com/v1/projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts {"name":"projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2025-07-15T03:06:06.560320Z","updateTime":"2025-07-15T03:06:06.560320Z","mode":"STANDARD_REPOSITORY","vulnerabilityScanningConfig":{"lastEnableTime":"2025-07-15T03:05:53.192023902Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true,"registryUri":"us-central1-docker.pkg.dev/unsangdong-92e6f/gcf-artifacts"}
+[warn] ⚠  functions: No cleanup policy detected for repositories in us-central1. This may result in a small monthly bill as container images accumulate over time. 
+[info] i  functions: Configuring cleanup policy for repository in us-central1. Images older than 1 days will be automatically deleted. 
+[debug] [2025-07-15T04:37:38.562Z] Setting up artifact cleanup policy for region us-central1
+[debug] [2025-07-15T04:37:38.564Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:38.564Z] Checked if tokens are valid: true, expires at: 1752556228994
+[debug] [2025-07-15T04:37:38.564Z] >>> [apiv2][query] PATCH https://artifactregistry.googleapis.com/v1/projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts updateMask=name%2CcleanupPolicies%2CcleanupPolicyDryRun%2Clabels
+[debug] [2025-07-15T04:37:38.565Z] >>> [apiv2][body] PATCH https://artifactregistry.googleapis.com/v1/projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts {"name":"projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","condition":{"tagState":"ANY","olderThan":"86400s"},"action":"DELETE"}},"cleanupPolicyDryRun":false,"labels":{"goog-managed-by":"cloudfunctions"}}
+[debug] [2025-07-15T04:37:39.804Z] <<< [apiv2][status] PATCH https://artifactregistry.googleapis.com/v1/projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts 200
+[debug] [2025-07-15T04:37:39.804Z] <<< [apiv2][body] PATCH https://artifactregistry.googleapis.com/v1/projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts {"name":"projects/unsangdong-92e6f/locations/us-central1/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2025-07-15T03:06:06.560320Z","updateTime":"2025-07-15T04:37:39.640493Z","mode":"STANDARD_REPOSITORY","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","action":"DELETE","condition":{"tagState":"ANY","olderThan":"86400s"}}},"vulnerabilityScanningConfig":{"lastEnableTime":"2025-07-15T03:05:53.192023902Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true}
+[info] i  functions: Configured cleanup policy for repository in us-central1. 
+[debug] [2025-07-15T04:37:39.804Z] Functions deploy failed.
+[debug] [2025-07-15T04:37:39.804Z] {
+  "endpoint": {
+    "id": "helloWorld",
+    "project": "unsangdong-92e6f",
+    "region": "us-central1",
+    "entryPoint": "helloWorld",
+    "platform": "gcfv2",
+    "runtime": "nodejs18",
+    "httpsTrigger": {},
+    "labels": {
+      "deployment-tool": "cli-firebase"
+    },
+    "serviceAccount": null,
+    "ingressSettings": null,
+    "availableMemoryMb": null,
+    "timeoutSeconds": null,
+    "maxInstances": null,
+    "minInstances": null,
+    "concurrency": 80,
+    "vpc": null,
+    "environmentVariables": {
+      "FIREBASE_CONFIG": "{\"projectId\":\"unsangdong-92e6f\",\"storageBucket\":\"unsangdong-92e6f.firebasestorage.app\"}",
+      "GCLOUD_PROJECT": "unsangdong-92e6f",
+      "EVENTARC_CLOUD_EVENT_SOURCE": "projects/unsangdong-92e6f/locations/us-central1/services/helloWorld"
+    },
+    "codebase": "default",
+    "cpu": 1,
+    "targetedByOnly": false,
+    "hash": "8cc4092e3471d86b303afd2a25f9858d22cd4962"
+  },
+  "op": "create",
+  "original": {
+    "name": "FirebaseError",
+    "children": [],
+    "exit": 1,
+    "message": "Build failed with status: FAILURE. Could not build the function due to a missing permission on the build service account. If you didn't revoke that permission explicitly, this could be caused by a change in the organization policies. Please refer to the following documentation for more details and resolution: https://cloud.google.com/functions/docs/troubleshooting#build-service-account\n You can also view the logs at https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826.\n",
+    "original": {
+      "code": 3,
+      "message": "Build failed with status: FAILURE. Could not build the function due to a missing permission on the build service account. If you didn't revoke that permission explicitly, this could be caused by a change in the organization policies. Please refer to the following documentation for more details and resolution: https://cloud.google.com/functions/docs/troubleshooting#build-service-account\n You can also view the logs at https://console.cloud.google.com/cloud-build/builds;region=us-central1/8da4a0f7-0bde-49c6-accf-d65b2f005add?project=690232958826.\n"
+    },
+    "status": 3,
+    "code": 3
+  }
+}
+[debug] [2025-07-15T04:37:39.988Z] Error: Failed to create function helloWorld in region us-central1
+    at /opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:294:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Fabricator.createV2Function (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:278:30)
+    at async Fabricator.createEndpoint (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:137:13)
+    at async handle (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:89:17)
+[error] 
+[error] Error: There was an error deploying functions
