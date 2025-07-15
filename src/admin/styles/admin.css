@@ -661,13 +661,13 @@ select.admin-input,
 }
 
 .admin-mobile-warning-content h2 {
-  font-size: 1.5em;
+  font-size: 2.2em;
   font-weight: 700;
   margin-bottom: 18px;
 }
 
 .admin-mobile-warning-content p {
-  font-size: 0.9em;
+  font-size: 1.5em;
   word-break: keep-all;
   color: #444;
   margin-bottom: 20px;
@@ -676,7 +676,6 @@ select.admin-input,
 
 .admin-mobile-warning-icon {
   font-size: 64px;
-  margin-bottom: 20px;
 }
 
 /* 메뉴 관리 스타일 */
