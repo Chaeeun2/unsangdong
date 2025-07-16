@@ -1,8 +1,83 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import AdminLayout from '../components/AdminLayout';
 import { pressService } from '../services/dataService';
 import '../styles/admin.css';
+
+// SortablePressItem 컴포넌트
+function SortablePressItem({ id, item, onEdit, onDelete }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      className={`admin-press-table-row ${isDragging ? 'dragging' : ''}`}
+    >
+      <div className="admin-table-cell admin-table-title">
+        <div 
+          className="admin-project-drag-handle"
+          {...listeners}
+        >
+          ⠿
+        </div>
+        <div className="admin-project-title-info">
+          <div className="admin-project-title-main">{item.title || '제목 없음'}</div>
+        </div>
+      </div>
+      <div className="admin-table-cell admin-table-year">
+        {item.year || '-'}
+      </div>
+      <div className="admin-table-cell admin-table-size">
+        {item.media || '-'}
+      </div>
+      <div className="admin-table-cell admin-table-actions">
+        <button
+          className="admin-button admin-button-secondary admin-button-small"
+          onClick={() => onEdit(item)}
+        >
+          수정
+        </button>
+        <button
+          className="admin-button admin-button-danger admin-button-small"
+          onClick={() => onDelete(item.id)}
+        >
+          삭제
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // Press 모달 컴포넌트
 function PressModal({ isOpen, onClose, onSubmit, loading, pressItem = null }) {
@@ -220,29 +295,39 @@ const PressManager = () => {
     setIsModalOpen(true);
   };
 
-  const onDragEnd = async (result) => {
-    if (!result.destination) return;
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const items = Array.from(pressItems);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
 
-    // 즉시 UI 업데이트
-    setPressItems(items);
+    if (active.id !== over.id) {
+      const oldIndex = pressItems.findIndex(item => item.id === active.id);
+      const newIndex = pressItems.findIndex(item => item.id === over.id);
 
-    // Firebase 업데이트
-    try {
-      const updates = items.map((item, index) => ({
-        id: item.id,
-        order: index
-      }));
+      const newItems = arrayMove(pressItems, oldIndex, newIndex);
       
-      await pressService.updatePressOrder(updates);
-    } catch (error) {
-      console.error('Error updating press order:', error);
-      alert('순서 변경에 실패했습니다.');
-      // 에러 시 데이터 새로고침
-      loadPress();
+      // 즉시 UI 업데이트
+      setPressItems(newItems);
+
+      // Firebase 업데이트
+      try {
+        const updates = newItems.map((item, index) => ({
+          id: item.id,
+          order: index
+        }));
+        
+        await pressService.updatePressOrder(updates);
+      } catch (error) {
+        console.error('Error updating press order:', error);
+        alert('순서 변경에 실패했습니다.');
+        // 에러 시 데이터 새로고침
+        loadPress();
+      }
     }
   };
 
@@ -260,7 +345,7 @@ const PressManager = () => {
     <>
       <AdminLayout>
         <div className="admin-content">
-          <h2 className="admin-page-title">Press 관리</h2>
+          <h2 className="admin-page-title">PRESS 관리</h2>
           
           <div className="admin-content-layout">
             <div className="admin-content-main">
@@ -279,60 +364,30 @@ const PressManager = () => {
               </div>
 
               <div className="admin-content-body">
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <div className="admin-projects-table">
-                    <Droppable droppableId="press-list">
-                      {(provided, snapshot) => (
-                        <div
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          className={`admin-table-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
-                        >
-                          
-                          {pressItems.map((item, index) => (
-                            <Draggable key={item.id} draggableId={item.id} index={index}>
-                              {(provided, snapshot) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  className={`admin-press-table-row ${snapshot.isDragging ? 'dragging' : ''}`}
-                                >
-                                  <div className="admin-table-cell admin-project-drag-handle" {...provided.dragHandleProps}>
-                                    ⠿
-                                  </div>
-                                  <div className="admin-table-cell admin-press-table-title">
-                                    {item.title}
-                                          </div>
-                                          <div className="admin-table-cell admin-press-table-year">
-                                    {item.year}
-                                  </div>
-                                  <div className="admin-table-cell admin-press-table-media">
-                                    {item.media}
-                                  </div>
-                                  <div className="admin-table-cell admin-table-actions">
-                                    <button
-                                      onClick={() => handleEdit(item)}
-                                      className="admin-button admin-button-secondary admin-button-small"
-                                    >
-                                      수정
-                                    </button>
-                                    <button
-                                      onClick={() => handleDelete(item.id)}
-                                      className="admin-button admin-button-danger admin-button-small"
-                                    >
-                                      삭제
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </div>
-                </DragDropContext>
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={pressItems.map(item => item.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="admin-projects-table">
+                      <div className="admin-table-container">
+                        {pressItems.map((item) => (
+                          <SortablePressItem
+                            key={item.id}
+                            id={item.id}
+                            item={item}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </SortableContext>
+                </DndContext>
               </div>
             </div>
           </div>

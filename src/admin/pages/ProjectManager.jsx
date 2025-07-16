@@ -1,10 +1,135 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import AdminLayout from '../components/AdminLayout';
 import { contentService, projectTypeService } from '../services/dataService';
 import ImageUploader from '../components/ImageUploader';
 import { imageService } from '../services/imageService';
 import '../styles/admin.css';
+
+// SortableItem 컴포넌트
+function SortableItem({ id, imageUrl, index, onRemove }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition: 'none',
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      {...listeners}
+      className={`admin-detail-media-item ${isDragging ? 'dragging' : ''}`}
+    >
+      <img 
+        src={imageUrl} 
+        alt={`이미지 ${index + 1}`} 
+        style={{ pointerEvents: 'none' }}
+      />
+      <div className="media-index">
+        {index + 1}
+      </div>
+      <button 
+        type="button" 
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove(index);
+        }}
+        className="delete-media-button"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
+// SortableProjectItem 컴포넌트
+function SortableProjectItem({ id, project, onEdit, onDelete }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition: 'none',
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      className={`admin-table-row ${isDragging ? 'dragging' : ''}`}
+    >
+      <div className="admin-table-cell admin-table-title">
+        <div 
+          className="admin-project-drag-handle"
+          {...listeners}
+        >
+          ⠿
+        </div>
+        <div className="admin-project-title-info">
+          <div className="admin-project-title-main">{project.title || '제목 없음'}</div>
+          {project.titleEn && (
+            <div className="admin-project-title-en">{project.titleEn}</div>
+          )}
+        </div>
+      </div>
+      <div className="admin-table-cell admin-table-year">
+        {project.year || '-'}
+      </div>
+      <div className="admin-table-cell admin-table-type">
+        {project.type || '-'}
+      </div>
+      <div className="admin-table-cell admin-table-actions">
+        <button
+          className="admin-button admin-button-secondary admin-button-small"
+          onClick={() => onEdit(project)}
+        >
+          수정
+        </button>
+        <button
+          className="admin-button admin-button-danger admin-button-small"
+          onClick={() => onDelete(project.id)}
+        >
+          삭제
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // Type 관리 모달 컴포넌트
 function TypeManagementModal({ isOpen, onClose, category }) {
@@ -361,22 +486,26 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
   const getCurrentTypeOptions = () => typeOptionsByCategory[category] || [];
 
   // 드래그 앤 드롭 핸들러 (react-beautiful-dnd)
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const sourceDroppableId = result.source.droppableId;
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
 
-    // 새 프로젝트 추가 시 갤러리 이미지 순서 변경
-    if (sourceDroppableId === 'new-project-gallery-images') {
-      const items = Array.from(formData.galleryImages);
-      const [reorderedItem] = items.splice(result.source.index, 1);
-      items.splice(result.destination.index, 0, reorderedItem);
-      
-      setFormData(prev => ({
-        ...prev,
-        galleryImages: items
-      }));
-      return;
+    if (active.id !== over.id) {
+      setFormData((prev) => {
+        const oldIndex = prev.galleryImages.findIndex((_, index) => `new-gallery-${index}` === active.id);
+        const newIndex = prev.galleryImages.findIndex((_, index) => `new-gallery-${index}` === over.id);
+
+        return {
+          ...prev,
+          galleryImages: arrayMove(prev.galleryImages, oldIndex, newIndex),
+        };
+      });
     }
   };
 
@@ -726,75 +855,29 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
                 </div>
                 {formData.galleryImages.length > 0 && (
                   <div className="admin-gallery-preview">
-                    <DragDropContext onDragEnd={onDragEnd}>
-                      <Droppable 
-                        droppableId="new-project-gallery-images"
-                        direction="horizontal"
-                        isDropDisabled={false}
-                        isCombineEnabled={false}
-                        renderClone={(provided, snapshot, rubric) => (
-                          <div
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            ref={provided.innerRef}
-                            className={`admin-detail-media-item ${snapshot.isDragging ? 'dragging' : ''}`}
-                            style={{
-                              ...provided.draggableProps.style,
-                            }}
-                          >
-                            <img 
-                              src={formData.galleryImages[rubric.source.index]} 
-                              alt={`이미지 ${rubric.source.index + 1}`} 
-                            />
-                            <div className="media-index">
-                              {rubric.source.index + 1}
-                            </div>
-                          </div>
-                        )}
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                      animateLayoutChanges={false}
+                    >
+                      <SortableContext
+                        items={formData.galleryImages.map((_, index) => `new-gallery-${index}`)}
+                        strategy={rectSortingStrategy}
                       >
-                        {(provided, snapshot) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className={`admin-detail-media-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
-                          >
-                            {formData.galleryImages.map((imageUrl, index) => (
-                              <Draggable key={`new-gallery-${index}`} draggableId={`new-gallery-${index}`} index={index}>
-                                {(provided, snapshot) => (
-                                  <div 
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className={`admin-detail-media-item ${snapshot.isDragging ? 'dragging' : ''}`}
-                                    style={provided.draggableProps.style}
-                                  >
-                                    <img 
-                                      src={imageUrl} 
-                                      alt={`이미지 ${index + 1}`} 
-                                      style={{ pointerEvents: 'none' }}
-                                    />
-                                    <div className="media-index">
-                                      {index + 1}
-                                    </div>
-                                    <button 
-                                      type="button" 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeArrayItem('galleryImages', index);
-                                      }}
-                                      className="delete-media-button"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
+                        <div className="admin-detail-media-container">
+                          {formData.galleryImages.map((imageUrl, index) => (
+                            <SortableItem
+                              key={`new-gallery-${index}`}
+                              id={`new-gallery-${index}`}
+                              imageUrl={imageUrl}
+                              index={index}
+                              onRemove={(index) => removeArrayItem('galleryImages', index)}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   </div>
                 )}
               </div>
@@ -988,33 +1071,26 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
   const getCurrentTypeOptions = () => typeOptionsByCategory[category] || [];
 
   // 드래그 앤 드롭 핸들러 (react-beautiful-dnd)
-  const onEditDragEnd = (result) => {
-    if (!result.destination) return;
+  const editSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const sourceDroppableId = result.source.droppableId;
+  const handleEditDragEnd = (event) => {
+    const { active, over } = event;
 
-    // 수정 모달에서 갤러리 이미지 순서 변경
-    if (sourceDroppableId === `edit-gallery-images-${project?.id}`) {
-      const items = Array.from(formData.galleryImages);
-      const [reorderedItem] = items.splice(result.source.index, 1);
-      items.splice(result.destination.index, 0, reorderedItem);
+    if (active.id !== over.id) {
+      setFormData((prev) => {
+        const oldIndex = prev.galleryImages.findIndex((_, index) => `edit-gallery-${index}` === active.id);
+        const newIndex = prev.galleryImages.findIndex((_, index) => `edit-gallery-${index}` === over.id);
 
-      setFormData(prev => ({
-        ...prev,
-        galleryImages: items
-      }));
-
-      // 즉시 Firebase 업데이트 (alot 방식과 동일)
-      if (project?.id) {
-        // contentService.updateProjectImages가 있다면 사용, 없다면 일반 업데이트
-        // 현재는 일반 업데이트로 처리
-        const updateData = {
-          ...formData,
-          galleryImages: items
+        return {
+          ...prev,
+          galleryImages: arrayMove(prev.galleryImages, oldIndex, newIndex),
         };
-        // Firebase 업데이트는 저장 버튼 클릭 시에 하도록 유지
-      }
-      return;
+      });
     }
   };
 
@@ -1347,79 +1423,29 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
                 </div>
                 {formData.galleryImages.length > 0 && (
                   <div className="admin-gallery-preview">
-                    <DragDropContext onDragEnd={onEditDragEnd}>
-                      <Droppable 
-                        droppableId={`edit-gallery-images-${project?.id}`}
-                        direction="horizontal"
-                        isDropDisabled={false}
-                        isCombineEnabled={false}
-                        renderClone={(provided, snapshot, rubric) => (
-                          <div
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            ref={provided.innerRef}
-                            className={`admin-detail-media-item ${snapshot.isDragging ? 'dragging' : ''}`}
-                            style={{
-                              ...provided.draggableProps.style,
-                            }}
-                          >
-                            <img 
-                              src={formData.galleryImages[rubric.source.index]} 
-                              alt={`이미지 ${rubric.source.index + 1}`} 
-                            />
-                            <div className="media-index">
-                              {rubric.source.index + 1}
-                            </div>
-                          </div>
-                        )}
+                    <DndContext
+                      sensors={editSensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleEditDragEnd}
+                      animateLayoutChanges={false}
+                    >
+                      <SortableContext
+                        items={formData.galleryImages.map((_, index) => `edit-gallery-${index}`)}
+                        strategy={rectSortingStrategy}
                       >
-                        {(provided, snapshot) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className={`admin-detail-media-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
-                          >
-                            {formData.galleryImages.map((imageUrl, index) => (
-                              <Draggable 
-                                key={`edit-gallery-${index}`} 
-                                draggableId={`edit-gallery-${index}`} 
-                                index={index}
-                              >
-                                {(provided, snapshot) => (
-                                  <div 
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className={`admin-detail-media-item ${snapshot.isDragging ? 'dragging' : ''}`}
-                                    style={provided.draggableProps.style}
-                                  >
-                                    <img 
-                                      src={imageUrl} 
-                                      alt={`이미지 ${index + 1}`} 
-                                      style={{ pointerEvents: 'none' }}
-                                    />
-                                    <div className="media-index">
-                                      {index + 1}
-                                    </div>
-                                    <button 
-                                      type="button" 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeArrayItem('galleryImages', index);
-                                      }}
-                                      className="delete-media-button"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
+                        <div className="admin-detail-media-container">
+                          {formData.galleryImages.map((imageUrl, index) => (
+                            <SortableItem
+                              key={`edit-gallery-${index}`}
+                              id={`edit-gallery-${index}`}
+                              imageUrl={imageUrl}
+                              index={index}
+                              onRemove={(index) => removeArrayItem('galleryImages', index)}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   </div>
                 )}
               </div>
@@ -1616,27 +1642,32 @@ export default function ProjectManager() {
     }
   }
 
-  // 프로젝트 목록 드래그앤드롭 핸들러
-  const onProjectListDragEnd = async (result) => {
-    if (!result.destination) return;
+  const projectSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const sourceDroppableId = result.source.droppableId;
-    
-    // 프로젝트 리스트 순서 변경
-    if (sourceDroppableId === `project-list-${activeTab}`) {
-      const items = Array.from(currentProjects);
-      const [reorderedItem] = items.splice(result.source.index, 1);
-      items.splice(result.destination.index, 0, reorderedItem);
+  // 프로젝트 목록 드래그앤드롭 핸들러
+  const handleProjectListDragEnd = async (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const oldIndex = currentProjects.findIndex(project => project.id === active.id);
+      const newIndex = currentProjects.findIndex(project => project.id === over.id);
+
+      const newProjects = arrayMove(currentProjects, oldIndex, newIndex);
 
       // 로컬 상태 업데이트
       setProjects(prev => ({
         ...prev,
-        [activeTab]: items
+        [activeTab]: newProjects
       }));
 
       // 백엔드 업데이트 (순서 정보 저장)
       try {
-        const projectIds = items.map(item => item.id);
+        const projectIds = newProjects.map(item => item.id);
         await contentService.updateProjectOrder(projectIds);
       } catch (error) {
         console.error('프로젝트 순서 변경 실패:', error);
@@ -1717,71 +1748,31 @@ export default function ProjectManager() {
                     </button>
                   </div>
                 ) : (
-                  <DragDropContext onDragEnd={onProjectListDragEnd}>
-                    <div className="admin-projects-table">
-                      <Droppable droppableId={`project-list-${activeTab}`}>
-                        {(provided, snapshot) => (
-                          <div 
-                            className={`admin-table-body ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                          >
-                            {currentProjects.map((project, index) => (
-                              <Draggable 
-                                key={project.id} 
-                                draggableId={project.id} 
-                                index={index}
-                              >
-                                {(provided, snapshot) => (
-                                  <div 
-                                    className={`admin-table-row ${snapshot.isDragging ? 'dragging' : ''}`}
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                  >
-                                    <div className="admin-table-cell admin-table-title">
-                                      <div 
-                                        className="admin-project-drag-handle"
-                                        {...provided.dragHandleProps}
-                                      >
-                                        ⠿
-                                      </div>
-                                      <div className="admin-project-title-info">
-                                        <div className="admin-project-title-main">{project.title || '제목 없음'}</div>
-                                        {project.titleEn && (
-                                          <div className="admin-project-title-en">{project.titleEn}</div>
-                                        )}
-                                      </div>
-                                    </div>
-                                    <div className="admin-table-cell admin-table-year">
-                                      {project.year || '-'}
-                                    </div>
-                                    <div className="admin-table-cell admin-table-type">
-                                      {project.type || '-'}
-                                    </div>
-                                    <div className="admin-table-cell admin-table-actions">
-                                      <button
-                                        className="admin-button admin-button-secondary admin-button-small"
-                                        onClick={() => openEditModal(project)}
-                                      >
-                                        수정
-                                      </button>
-                                      <button
-                                        className="admin-button admin-button-danger admin-button-small"
-                                        onClick={() => handleDeleteProject(project.id)}
-                                      >
-                                        삭제
-                                      </button>
-                                    </div>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-                  </DragDropContext>
+                  <DndContext
+                    sensors={projectSensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleProjectListDragEnd}
+                    animateLayoutChanges={false}
+                  >
+                    <SortableContext
+                      items={currentProjects.map(project => project.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="admin-projects-table">
+                        <div className="admin-table-body">
+                          {currentProjects.map((project) => (
+                            <SortableProjectItem
+                              key={project.id}
+                              id={project.id}
+                              project={project}
+                              onEdit={openEditModal}
+                              onDelete={handleDeleteProject}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 )}
               </div>
             )}

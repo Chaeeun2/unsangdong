@@ -1,9 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import AdminLayout from '../components/AdminLayout';
 import { bookService } from '../services/dataService';
 import { imageService } from '../services/imageService';
 import '../styles/admin.css';
+
+// SortableBookItem 컴포넌트
+function SortableBookItem({ id, book, onEdit, onDelete }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      className={`admin-table-row ${isDragging ? 'dragging' : ''}`}
+    >
+      <div className="admin-table-cell admin-table-title">
+        <div 
+          className="admin-project-drag-handle"
+          {...listeners}
+        >
+          ⠿
+        </div>
+        <div className="admin-project-title-info">
+          <div className="admin-project-title-main">{book.title || '제목 없음'}</div>
+        </div>
+      </div>
+      <div className="admin-table-cell admin-table-size">
+        {book.size || '-'}
+      </div>
+      <div className="admin-table-cell admin-table-link">
+        {book.externalLink ? (
+          <a 
+            href={book.externalLink} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="external-link"
+          >
+            URL
+          </a>
+        ) : (
+          '-'
+        )}
+      </div>
+      <div className="admin-table-cell admin-table-actions">
+        <button
+          className="admin-button admin-button-secondary admin-button-small"
+          onClick={() => onEdit(book)}
+        >
+          수정
+        </button>
+        <button
+          className="admin-button admin-button-danger admin-button-small"
+          onClick={() => onDelete(book.id)}
+        >
+          삭제
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // Book 모달 컴포넌트
 function BookModal({ isOpen, onClose, onSubmit, loading, book = null }) {
@@ -272,35 +358,45 @@ const BookManager = () => {
     setShowModal(true);
   };
 
-  const onDragEnd = async (result) => {
-    if (!result.destination) return;
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const items = Array.from(books);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
 
-    // 즉시 UI 업데이트
-    setBooks(items);
+    if (active.id !== over.id) {
+      const oldIndex = books.findIndex(book => book.id === active.id);
+      const newIndex = books.findIndex(book => book.id === over.id);
 
-    // 서버에 순서 업데이트
-    try {
-      const updates = items.map((book, index) => ({
-        id: book.id,
-        order: index
-      }));
+      const newBooks = arrayMove(books, oldIndex, newIndex);
       
-      await bookService.updateBooksOrder(updates);
-    } catch (error) {
-      console.error('Error updating book order:', error);
-      // 실패 시 원래 상태로 복원
-      await loadBooks();
+      // 즉시 UI 업데이트
+      setBooks(newBooks);
+
+      // 서버에 순서 업데이트
+      try {
+        const updates = newBooks.map((book, index) => ({
+          id: book.id,
+          order: index
+        }));
+        
+        await bookService.updateBooksOrder(updates);
+      } catch (error) {
+        console.error('Error updating book order:', error);
+        // 실패 시 원래 상태로 복원
+        await loadBooks();
+      }
     }
   };
 
   if (loading) return (
     <AdminLayout>
       <div className="admin-content">
-        <h2 className="admin-page-title">도서 관리</h2>
+        <h2 className="admin-page-title">BOOK 관리</h2>
         <div className="admin-loading-state">
           <p>로딩 중...</p>
         </div>
@@ -311,7 +407,7 @@ const BookManager = () => {
   return (
     <AdminLayout>
       <div className="admin-content">
-        <h2 className="admin-page-title">Book 관리</h2>
+        <h2 className="admin-page-title">BOOK 관리</h2>
         
         <div className="admin-content-layout">
           <div className="admin-content-main">
@@ -329,7 +425,7 @@ const BookManager = () => {
               </div>
             </div>
             
-{books.length === 0 ? (
+            {books.length === 0 ? (
               <div className="admin-empty-state">
                 <p>등록된 도서가 없습니다.</p>
                 <button
@@ -341,79 +437,30 @@ const BookManager = () => {
               </div>
             ) : (
               <div className="admin-projects-container">
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <div className="admin-projects-table">
-                    <Droppable droppableId="books-list">
-                      {(provided, snapshot) => (
-                        <div 
-                          className={`admin-table-body ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                        >
-                          {books.map((book, index) => (
-                            <Draggable 
-                              key={book.id} 
-                              draggableId={book.id} 
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <div 
-                                  className={`admin-table-row ${snapshot.isDragging ? 'dragging' : ''}`}
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                >
-                                  <div className="admin-table-cell admin-table-title">
-                                    <div 
-                                      className="admin-project-drag-handle"
-                                      {...provided.dragHandleProps}
-                                    >
-                                      ⠿
-                                    </div>
-                                    <div className="admin-project-title-info">
-                                      <div className="admin-project-title-main">{book.title || '제목 없음'}</div>
-                                    </div>
-                                  </div>
-                                  <div className="admin-table-cell admin-table-size">
-                                    {book.size || '-'}
-                                  </div>
-                                  <div className="admin-table-cell admin-table-link">
-                                    {book.externalLink ? (
-                                      <a 
-                                        href={book.externalLink} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="external-link"
-                                      >
-                                        URL
-                                      </a>
-                                    ) : (
-                                      '-'
-                                    )}
-                                  </div>
-                                  <div className="admin-table-cell admin-table-actions">
-                                    <button
-                                      className="admin-button admin-button-secondary admin-button-small"
-                                      onClick={() => handleEdit(book)}
-                                    >
-                                      수정
-                                    </button>
-                                    <button
-                                      className="admin-button admin-button-danger admin-button-small"
-                                      onClick={() => handleDelete(book.id)}
-                                    >
-                                      삭제
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </div>
-                </DragDropContext>
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={books.map(book => book.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="admin-projects-table">
+                      <div className="admin-table-body">
+                        {books.map((book) => (
+                          <SortableBookItem
+                            key={book.id}
+                            id={book.id}
+                            book={book}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </SortableContext>
+                </DndContext>
               </div>
             )}
           </div>
