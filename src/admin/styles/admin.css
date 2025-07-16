@@ -2265,6 +2265,8 @@ select.admin-input,
   font-size: 1.8rem;
   z-index: 10;
   line-height: 1;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .delete-media-button:hover {

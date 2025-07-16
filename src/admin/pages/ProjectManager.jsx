@@ -62,6 +62,18 @@ function SortableItem({ id, imageUrl, index, onRemove }) {
           e.stopPropagation();
           onRemove(index);
         }}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
         className="delete-media-button"
       >
         ×
