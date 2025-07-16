@@ -3,10 +3,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 36.5rem;
+  width: 30rem;
   z-index: 100;
   transition: filter 0.5s ease;
   cursor: pointer;
+  mix-blend-mode: overlay;
 }
 
 .main-logo:hover {
@@ -55,38 +56,38 @@
 }
 
 .main-image1 {
-  width: 33vw;
+  width: 31vw;
   top: 15vw;
   right: 0;
 }
 
 .main-image2 {
-  width: 33vw;
+  width: 31vw;
   top: 100vw;
   left: 0;
 }
 
 .main-image3 {
-  width: 58vw;
+  width: 61vw;
   top: 0;
 }
 
 .main-image4 {
-  width: 48vw;
+  width: 51vw;
   left: 10vw;
   top: 50vw;
 }
 
 .main-image5 {
-  width: 58vw;
+  width: 60vw;
   right: 0;
-  top: 90vw;
+  top: 92vw;
 }
 
 .main-image6 {
   width: 50vw;
   right: 0;
-  top: 140vw;
+  top: 142vw;
 }
 
 .main-image7 {
@@ -108,7 +109,7 @@
   }
 
   .main-logo {
-    width: 25rem;
+    width: 22rem;
   }
 
   .main-logo:hover {

@@ -42,17 +42,25 @@ function App() {
   const [selectedProjectId, setSelectedProjectId] = useState(initialState.projectId);
   const [searchQuery, setSearchQuery] = useState('');
 
+
   // 브라우저 뒤로가기/앞으로가기 처리
   useEffect(() => {
     const handlePopState = (event) => {
       
       if (event.state) {
-        setCurrentPage(event.state.page);
+        const newPage = event.state.page;
+        setCurrentPage(newPage);
         setSelectedProjectId(event.state.projectId || null);
+        
+        // 브라우저 뒤로가기/앞으로가기 시 스크롤을 최상단으로 이동
+        window.scrollTo(0, 0);
       } else {
         // 초기 상태로 돌아감
         setCurrentPage('main');
         setSelectedProjectId(null);
+        
+        // 초기 상태로 돌아갈 때도 스크롤을 최상단으로 이동
+        window.scrollTo(0, 0);
       }
     };
 
@@ -73,6 +81,8 @@ function App() {
       window.history.replaceState(initialState, '', window.location.pathname);
     }
   }, []); // 빈 의존성 배열로 변경하여 한 번만 실행
+
+
 
   // 히스토리 정리 함수 추가
   const cleanupHistory = () => {
@@ -134,7 +144,7 @@ function App() {
       window.history.pushState(newState, '', url);
     }
     
-    // 페이지 이동 시 최상단으로 스크롤
+    // 모든 페이지 접근 시 스크롤을 최상단으로 이동
     window.scrollTo(0, 0);
     
   };

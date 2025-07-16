@@ -193,7 +193,7 @@ export default function ContactManager() {
                           </div>
                           <div className="admin-inquiry-field">
                             <p className="admin-inquiry-label">이메일</p> 
-                            <a href={`mailto:${inquiry.email}`}>{inquiry.email}</a>
+                            <a style={{paddingLeft: '4px'}} href={`mailto:${inquiry.email}`}>{inquiry.email}</a>
                           </div>
                           <div className="admin-inquiry-field">
                             <p className="admin-inquiry-label">연락처</p> {inquiry.phoneNumber}
