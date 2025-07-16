@@ -122,7 +122,9 @@ function BookModal({ isOpen, onClose, onSubmit, loading, book = null }) {
   }, [isOpen, book]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
@@ -151,8 +153,8 @@ function BookModal({ isOpen, onClose, onSubmit, loading, book = null }) {
 
     setUploading(true);
     try {
-      const url = await imageService.uploadImage(file, 'books');
-      setThumbnailImage(url);
+      const result = await imageService.uploadImage(file, { prefix: 'books-' });
+      setThumbnailImage(result.imageUrl || result.publicUrl);
     } catch (error) {
       console.error('Error uploading thumbnail:', error);
       alert('썸네일 업로드에 실패했습니다.');
@@ -178,11 +180,27 @@ function BookModal({ isOpen, onClose, onSubmit, loading, book = null }) {
   if (!isOpen) return null;
 
   return (
-    <div className="admin-modal-overlay">
+    <div className="admin-modal-overlay" onClick={(e) => e.stopPropagation()}>
       <div className="admin-modal-content admin-modal-large">
         <div className="admin-modal-header">
           <h3>{book ? '도서 수정' : '새 도서 추가'}</h3>
-          <button type="button" className="admin-modal-close-btn" onClick={onClose}>×</button>
+                    <div className="admin-form-actions">
+            <button
+              type="button"
+              onClick={onClose}
+              className="admin-button admin-button-secondary"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="admin-button admin-button-primary"
+              disabled={loading || uploading}
+            >
+              {loading ? '저장 중...' : (book ? '수정' : '추가')}
+            </button>
+          </div>
         </div>
         
         <form onSubmit={handleSubmit} className="admin-modal-body">
@@ -262,30 +280,11 @@ function BookModal({ isOpen, onClose, onSubmit, loading, book = null }) {
                 {thumbnailImage && (
                   <div className="admin-book-preview">
                     <img src={thumbnailImage} alt="썸네일 미리보기" />
-                    <div className="admin-image-controls">
-                    </div>
                   </div>
                 )}
               </div>
               
                           </div>
-
-          <div className="admin-form-actions">
-            <button
-              type="button"
-              onClick={onClose}
-              className="admin-button admin-button-secondary"
-            >
-              취소
-            </button>
-            <button
-              type="submit"
-              className="admin-button admin-button-primary"
-              disabled={loading || uploading}
-            >
-              {loading ? '저장 중...' : (book ? '수정' : '추가')}
-            </button>
-          </div>
         </form>
       </div>
     </div>
@@ -295,9 +294,16 @@ function BookModal({ isOpen, onClose, onSubmit, loading, book = null }) {
 const BookManager = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+
+  const bookSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     loadBooks();
@@ -306,66 +312,69 @@ const BookManager = () => {
   const loadBooks = async () => {
     try {
       setLoading(true);
-      const data = await bookService.getBooks();
-      setBooks(data || []);
+      const booksData = await bookService.getBooks();
+      setBooks(booksData || []);
     } catch (error) {
-      console.error('Error loading books:', error);
-      setBooks([]);
+      console.error('도서 로딩 실패:', error);
+      alert('도서 로딩에 실패했습니다.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSave = async (bookData) => {
-    setSaving(true);
+    setModalLoading(true);
     try {
       if (editingBook) {
+        // 수정
         await bookService.updateBook(editingBook.id, bookData);
+        setBooks(prev => prev.map(book => 
+          book.id === editingBook.id ? { id: editingBook.id, ...bookData } : book
+        ));
       } else {
-        await bookService.addBook(bookData);
+        // 새 추가
+        const newBookId = await bookService.addBook(bookData);
+        setBooks(prev => [
+          { id: newBookId, ...bookData },
+          ...prev
+        ]);
       }
-      
-      setShowModal(false);
+      setIsModalOpen(false);
       setEditingBook(null);
-      await loadBooks();
     } catch (error) {
-      console.error('Error saving book:', error);
-      alert('저장 중 오류가 발생했습니다.');
+      console.error('도서 저장 실패:', error);
+      alert('도서 저장에 실패했습니다.');
     } finally {
-      setSaving(false);
+      setModalLoading(false);
     }
   };
 
   const handleEdit = (book) => {
     setEditingBook(book);
-    setShowModal(true);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('정말로 이 도서를 삭제하시겠습니까?')) {
-      try {
-        await bookService.deleteBook(id);
-        await loadBooks();
-      } catch (error) {
-        console.error('Error deleting book:', error);
-        alert('삭제 중 오류가 발생했습니다.');
-      }
+    if (!window.confirm('이 도서를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      await bookService.deleteBook(id);
+      setBooks(prev => prev.filter(book => book.id !== id));
+    } catch (error) {
+      console.error('도서 삭제 실패:', error);
+      alert('도서 삭제에 실패했습니다.');
     }
   };
 
   const handleNewBook = () => {
     setEditingBook(null);
-    setShowModal(true);
+    setIsModalOpen(true);
   };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = async (event) => {
+  // 도서 목록 드래그앤드롭 핸들러
+  const handleBookListDragEnd = async (event) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
@@ -373,36 +382,22 @@ const BookManager = () => {
       const newIndex = books.findIndex(book => book.id === over.id);
 
       const newBooks = arrayMove(books, oldIndex, newIndex);
-      
-      // 즉시 UI 업데이트
+
+      // 로컬 상태 업데이트
       setBooks(newBooks);
 
-      // 서버에 순서 업데이트
+      // 백엔드 업데이트 (순서 정보 저장)
       try {
-        const updates = newBooks.map((book, index) => ({
-          id: book.id,
-          order: index
-        }));
-        
-        await bookService.updateBooksOrder(updates);
+        const bookIds = newBooks.map(item => item.id);
+        await bookService.updateBookOrder(bookIds);
       } catch (error) {
-        console.error('Error updating book order:', error);
-        // 실패 시 원래 상태로 복원
+        console.error('도서 순서 변경 실패:', error);
+        // 실패 시 원래 상태로 복구
         await loadBooks();
+        alert('순서 변경에 실패했습니다.');
       }
     }
   };
-
-  if (loading) return (
-    <AdminLayout>
-      <div className="admin-content">
-        <h2 className="admin-page-title">BOOK 관리</h2>
-        <div className="admin-loading-state">
-          <p>로딩 중...</p>
-        </div>
-      </div>
-    </AdminLayout>
-  );
 
   return (
     <AdminLayout>
@@ -412,71 +407,74 @@ const BookManager = () => {
         <div className="admin-content-layout">
           <div className="admin-content-main">
             <div className="admin-content-header">
-              <div className="admin-content-title-section">
-                <h3 className="admin-content-title">Book 목록</h3>
-              </div>
+              <h3 className="admin-content-title">도서 관리</h3>
               <div className="admin-header-buttons">
-                <button
-                  onClick={handleNewBook}
+                <button 
                   className="admin-button admin-button-primary"
+                  onClick={handleNewBook}
                 >
-                  새 도서 추가
+                  도서 추가
                 </button>
               </div>
             </div>
-            
-            {books.length === 0 ? (
-              <div className="admin-empty-state">
-                <p>등록된 도서가 없습니다.</p>
-                <button
-                  onClick={handleNewBook}
-                  className="admin-button admin-button-primary"
-                >
-                  첫 번째 도서 추가하기
-                </button>
-              </div>
+
+            {loading ? (
+              <p>로딩 중...</p>
             ) : (
               <div className="admin-projects-container">
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext
-                    items={books.map(book => book.id)}
-                    strategy={verticalListSortingStrategy}
+                {books.length === 0 ? (
+                  <div className="admin-empty-state">
+                    <p>등록된 도서가 없습니다.</p>
+                    <button 
+                      className="admin-button admin-button-primary"
+                      onClick={handleNewBook}
+                    >
+                      첫 번째 도서 추가
+                    </button>
+                  </div>
+                ) : (
+                  <DndContext
+                    sensors={bookSensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleBookListDragEnd}
+                    animateLayoutChanges={false}
                   >
-                    <div className="admin-projects-table">
-                      <div className="admin-table-body">
-                        {books.map((book) => (
-                          <SortableBookItem
-                            key={book.id}
-                            id={book.id}
-                            book={book}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                          />
-                        ))}
+                    <SortableContext
+                      items={books.map(book => book.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="admin-projects-table">
+                        <div className="admin-table-body" style={{ maxHeight: 'calc(100vh - 230px)' }}>
+                          {books.map((book) => (
+                            <SortableBookItem
+                              key={book.id}
+                              id={book.id}
+                              book={book}
+                              onEdit={handleEdit}
+                              onDelete={handleDelete}
+                            />
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                    </SortableContext>
+                  </DndContext>
+                )}
               </div>
             )}
           </div>
         </div>
-        
-        <BookModal
-          isOpen={showModal}
-          onClose={() => {
-            setShowModal(false);
-            setEditingBook(null);
-          }}
-          onSubmit={handleSave}
-          loading={saving}
-          book={editingBook}
-        />
       </div>
+
+      <BookModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingBook(null);
+        }}
+        onSubmit={handleSave}
+        loading={modalLoading}
+        book={editingBook}
+      />
     </AdminLayout>
   );
 };

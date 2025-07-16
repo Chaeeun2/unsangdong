@@ -161,7 +161,7 @@ export default function AboutManager() {
               <>
                 {/* 회사 정보 탭 */}
                 {activeTab === "company" && (
-                  <div className="admin-content-section">
+                  <div className="admin-content-section" style={{paddingBottom: "0px"}}>
                     <div className="admin-content-header">
                       <h3 className="admin-content-title">회사 소개 관리</h3>
                       <button
@@ -172,6 +172,7 @@ export default function AboutManager() {
                       </button>
                     </div>
 
+                      <div className="admin-about-container">
                     {/* 메인 이미지 */}
                     <div className="admin-form-section">
                       <div className="admin-form-wrap">
@@ -308,13 +309,14 @@ export default function AboutManager() {
                           />
                         </div>
                       </div>
-                    </div>
+                        </div>
+                        </div>
                   </div>
                 )}
 
                 {/* CEO 정보 탭 */}
                 {activeTab === "ceo" && (
-                  <div className="admin-content-section">
+                  <div className="admin-content-section" style={{paddingBottom: "0px"}}>
                     <div className="admin-content-header">
                       <h3 className="admin-content-title">대표 소개 관리</h3>
                       <button
@@ -325,6 +327,7 @@ export default function AboutManager() {
                       </button>
                     </div>
 
+                      <div className="admin-about-container">
                     {/* 장윤규 정보 */}
                     <div className="admin-ceo-section">
                       <h4>장윤규 (Yoongyoo Jang)</h4>
@@ -487,7 +490,8 @@ export default function AboutManager() {
                           rows="8"
                         />
                       </div>
-                    </div>
+                        </div>
+                        </div>
                   </div>
                 )}
               </>

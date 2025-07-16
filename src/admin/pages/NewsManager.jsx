@@ -333,7 +333,9 @@ function NewsModal({ isOpen, onClose, news, onSave, loading }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
@@ -358,11 +360,29 @@ function NewsModal({ isOpen, onClose, news, onSave, loading }) {
   if (!isOpen) return null;
 
   return (
-    <div className="admin-modal-overlay" onClick={onClose}>
+    <div className="admin-modal-overlay">
       <div className="admin-modal-content admin-modal-large" onClick={e => e.stopPropagation()}>
         <div className="admin-modal-header">
           <h3>{news ? '뉴스 수정' : '새 뉴스 작성'}</h3>
-          <button className="admin-modal-close-btn" onClick={onClose}>&times;</button>
+                    {/* 버튼 */}
+          <div className="admin-form-actions">
+            <button
+              type="button"
+              onClick={onClose}
+              className="admin-button admin-button-secondary"
+              disabled={loading}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="admin-button admin-button-primary"
+              disabled={loading || uploading}
+            >
+              {loading ? '저장 중...' : news ? '수정' : '저장'}
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="admin-modal-body">
@@ -485,25 +505,6 @@ function NewsModal({ isOpen, onClose, news, onSave, loading }) {
               </div>
             )}
           </div>
-
-          {/* 버튼 */}
-          <div className="admin-form-actions">
-            <button
-              type="button"
-              onClick={onClose}
-              className="admin-button admin-button-secondary"
-              disabled={loading}
-            >
-              취소
-            </button>
-            <button
-              type="submit"
-              className="admin-button admin-button-primary"
-              disabled={loading || uploading}
-            >
-              {loading ? '저장 중...' : news ? '수정' : '저장'}
-            </button>
-          </div>
         </form>
       </div>
     </div>
@@ -553,11 +554,9 @@ const NewsManager = () => {
       if (editingNews) {
         // 수정
         await newsService.updateNews(editingNews.id, newsData);
-        alert('뉴스가 수정되었습니다.');
       } else {
         // 새 뉴스 추가
         await newsService.addNews(newsData);
-        alert('뉴스가 추가되었습니다.');
       }
       
       setModalOpen(false);
@@ -624,7 +623,6 @@ const NewsManager = () => {
         }
       }
       
-      alert('뉴스가 삭제되었습니다.');
       await loadNews();
     } catch (error) {
       console.error('뉴스 삭제 실패:', error);

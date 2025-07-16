@@ -98,28 +98,43 @@ export const contentService = {
 
   // 콘텐츠 추가
   async addContent(contentData) {
-    // 해당 카테고리의 기존 프로젝트들을 가져와서 최대 order 값 계산
+    // 해당 카테고리의 기존 프로젝트들을 가져와서 order를 +1씩 증가
     const categoryQuery = query(
       collection(db, 'contents'),
       where('category', '==', contentData.category)
     );
     
     const categorySnapshot = await getDocs(categoryQuery);
-    const existingProjects = categorySnapshot.docs.map(doc => doc.data());
-    const maxOrder = existingProjects.length > 0 
-      ? Math.max(...existingProjects.map(p => p.order || 0)) + 1
-      : 0;
+    const existingProjects = categorySnapshot.docs;
+    
+    // 기존 프로젝트들의 order를 +1씩 증가시키는 배치 업데이트
+    const batch = [];
+    existingProjects.forEach(docSnapshot => {
+      const projectData = docSnapshot.data();
+      const projectRef = doc(db, 'contents', docSnapshot.id);
+      batch.push(updateDoc(projectRef, {
+        order: (projectData.order || 0) + 1,
+        updatedAt: serverTimestamp()
+      }));
+    });
 
+    // 새 프로젝트는 order 0으로 추가 (맨 위에 위치)
     const docRef = await addDoc(collection(db, 'contents'), {
       ...contentData,
       // 이미지 URL 필드들 추가
       mainImage: contentData.mainImage || '',
       thumbnailImage: contentData.thumbnailImage || '',
       galleryImages: contentData.galleryImages || [],
-      order: maxOrder, // 새 프로젝트는 맨 뒤에 추가
+      order: 0, // 새 프로젝트는 맨 위에 추가
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
+
+    // 기존 프로젝트들의 order 업데이트 실행
+    if (batch.length > 0) {
+      await Promise.all(batch);
+    }
+
     return docRef.id;
   },
 
@@ -1147,15 +1162,39 @@ export const bookService = {
   // Book 추가
   async addBook(bookData) {
     try {
+      // 기존 도서들을 가져와서 order를 +1씩 증가
+      const q = query(collection(db, 'books'));
+      const querySnapshot = await getDocs(q);
+      const existingBooks = querySnapshot.docs;
+      
+      // 기존 도서들의 order를 +1씩 증가시키는 배치 업데이트
+      const batch = [];
+      existingBooks.forEach(docSnapshot => {
+        const bookData = docSnapshot.data();
+        const bookRef = doc(db, 'books', docSnapshot.id);
+        batch.push(updateDoc(bookRef, {
+          order: (bookData.order || 0) + 1,
+          updatedAt: serverTimestamp()
+        }));
+      });
+
+      // 새 도서는 order 0으로 추가 (맨 위에 위치)
       const docRef = await addDoc(collection(db, 'books'), {
         title: bookData.title,
         size: bookData.size,
         externalLink: bookData.externalLink || '',
         thumbnailImage: bookData.thumbnailImage,
         detailImages: bookData.detailImages || [],
+        order: 0, // 새 도서는 맨 위에 추가
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
+
+      // 기존 도서들의 order 업데이트 실행
+      if (batch.length > 0) {
+        await Promise.all(batch);
+      }
+
       return docRef.id;
     } catch (error) {
       console.error('Book 추가 오류:', error);
@@ -1205,22 +1244,6 @@ export const bookService = {
     
     // 모든 업데이트를 병렬로 실행
     await Promise.all(batch);
-  },
-
-  // Book 순서 업데이트
-  async updateBooksOrder(updates) {
-    const batch = [];
-    
-    updates.forEach(({ id, order }) => {
-      const bookRef = doc(db, 'books', id);
-      batch.push(updateDoc(bookRef, {
-        order,
-        updatedAt: serverTimestamp()
-      }));
-    });
-    
-    // 모든 업데이트를 병렬로 실행
-    await Promise.all(batch);
   }
 };
 
@@ -1229,12 +1252,22 @@ export const pressService = {
   // 모든 Press 가져오기
   async getPress() {
     try {
-      const q = query(collection(db, 'press'), orderBy('order', 'asc'));
+      const q = query(collection(db, 'press'));
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
+      const pressItems = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      
+      // 클라이언트에서 정렬: order 필드가 있으면 order로, 없으면 createdAt으로
+      return pressItems.sort((a, b) => {
+        if (a.order !== undefined && b.order !== undefined) {
+          return a.order - b.order;
+        }
+        if (a.order !== undefined) return -1;
+        if (b.order !== undefined) return 1;
+        return new Date(b.createdAt?.toDate()) - new Date(a.createdAt?.toDate());
+      });
     } catch (error) {
       console.error('Error fetching press:', error);
       throw error;
@@ -1264,23 +1297,37 @@ export const pressService = {
   // Press 아이템 추가
   async addPressItem(pressData) {
     try {
-      // 현재 최대 order 값 가져오기
-      const q = query(collection(db, 'press'), orderBy('order', 'desc'), limit(1));
+      // 기존 Press들을 가져와서 order를 +1씩 증가
+      const q = query(collection(db, 'press'));
       const querySnapshot = await getDocs(q);
-      let maxOrder = 0;
+      const existingPress = querySnapshot.docs;
       
-      if (!querySnapshot.empty) {
-        maxOrder = querySnapshot.docs[0].data().order || 0;
-      }
+      // 기존 Press들의 order를 +1씩 증가시키는 배치 업데이트
+      const batch = [];
+      existingPress.forEach(docSnapshot => {
+        const pressData = docSnapshot.data();
+        const pressRef = doc(db, 'press', docSnapshot.id);
+        batch.push(updateDoc(pressRef, {
+          order: (pressData.order || 0) + 1,
+          updatedAt: serverTimestamp()
+        }));
+      });
 
+      // 새 Press는 order 0으로 추가 (맨 위에 위치)
       const data = {
         ...pressData,
-        order: maxOrder + 1,
+        order: 0, // 새 Press는 맨 위에 추가
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       };
 
       const docRef = await addDoc(collection(db, 'press'), data);
+
+      // 기존 Press들의 order 업데이트 실행
+      if (batch.length > 0) {
+        await Promise.all(batch);
+      }
+
       return docRef.id;
     } catch (error) {
       console.error('Error adding press item:', error);
@@ -1294,6 +1341,7 @@ export const pressService = {
       const docRef = doc(db, 'press', id);
       const updateData = {
         ...pressData,
+        order: pressData.order || 0, // order 필드가 없으면 0으로 설정
         updatedAt: serverTimestamp()
       };
       
@@ -1315,16 +1363,16 @@ export const pressService = {
   },
 
   // Press 순서 업데이트
-  async updatePressOrder(updates) {
+  async updatePressOrder(pressIds) {
     const batch = [];
     
-    updates.forEach(({ id, order }) => {
-      const pressRef = doc(db, 'press', id);
+    for (let i = 0; i < pressIds.length; i++) {
+      const pressRef = doc(db, 'press', pressIds[i]);
       batch.push(updateDoc(pressRef, {
-        order,
+        order: i,
         updatedAt: serverTimestamp()
       }));
-    });
+    }
     
     // 모든 업데이트를 병렬로 실행
     await Promise.all(batch);

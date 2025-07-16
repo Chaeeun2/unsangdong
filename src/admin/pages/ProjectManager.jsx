@@ -522,7 +522,9 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     if (formData.title.trim()) {
       onSubmit({
         ...formData,
@@ -693,11 +695,28 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
   if (!isOpen) return null;
 
   return (
-    <div className="admin-modal-overlay" onClick={handleModalClose}>
+    <div className="admin-modal-overlay">
       <div className="admin-modal-content admin-modal-large" onClick={e => e.stopPropagation()}>
         <div className="admin-modal-header">
           <h3>{title}</h3>
-          <button className="admin-modal-close-btn" onClick={handleModalClose}>&times;</button>
+                   <div className="admin-modal-footer">
+            <button 
+              type="button" 
+              className="admin-button admin-button-secondary"
+              onClick={handleModalClose}
+              disabled={loading}
+            >
+              취소
+            </button>
+            <button 
+              type="button" 
+              onClick={handleSubmit}
+              className="admin-button admin-button-primary"
+              disabled={loading || !formData.title.trim()}
+            >
+              {loading ? '저장 중...' : '저장'}
+            </button>
+          </div>
         </div>
         <form onSubmit={handleSubmit} className="admin-modal-body">
 
@@ -953,23 +972,6 @@ function ProjectModal({ isOpen, onClose, onSubmit, loading, category, title }) {
             />
           </div>
 
-          <div className="admin-modal-footer">
-            <button 
-              type="button" 
-              className="admin-button admin-button-secondary"
-              onClick={handleModalClose}
-              disabled={loading}
-            >
-              취소
-            </button>
-            <button 
-              type="submit" 
-              className="admin-button admin-button-primary"
-              disabled={loading || !formData.title.trim()}
-            >
-              {loading ? '저장 중...' : '저장'}
-            </button>
-          </div>
         </form>
       </div>
     </div>
@@ -1132,7 +1134,9 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
   }, [project, isOpen, category]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     if (formData.title.trim()) {
       onSubmit(project.id, {
         ...formData,
@@ -1265,11 +1269,28 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
   if (!isOpen || !project) return null;
 
   return (
-    <div className="admin-modal-overlay" onClick={handleModalClose}>
+    <div className="admin-modal-overlay">
       <div className="admin-modal-content admin-modal-large" onClick={e => e.stopPropagation()}>
         <div className="admin-modal-header">
           <h3>프로젝트 수정: {project.title}</h3>
-          <button className="admin-modal-close-btn" onClick={handleModalClose}>&times;</button>
+            <div className="admin-modal-footer">
+            <button 
+              type="button" 
+              className="admin-button admin-button-secondary"
+              onClick={handleModalClose}
+              disabled={loading}
+            >
+              취소
+            </button>
+            <button 
+              type="button" 
+              onClick={handleSubmit}
+              className="admin-button admin-button-primary"
+              disabled={loading || !formData.title.trim()}
+            >
+              {loading ? '저장 중...' : '저장'}
+            </button>
+          </div>
         </div>
         <form onSubmit={handleSubmit} className="admin-modal-body">
             <div className="admin-form-column">
@@ -1521,23 +1542,6 @@ function ProjectEditModal({ isOpen, onClose, project, onSubmit, loading, categor
             />
           </div>
 
-          <div className="admin-modal-footer">
-            <button 
-              type="button" 
-              className="admin-button admin-button-secondary"
-              onClick={handleModalClose}
-              disabled={loading}
-            >
-              취소
-            </button>
-            <button 
-              type="submit" 
-              className="admin-button admin-button-primary"
-              disabled={loading || !formData.title.trim()}
-            >
-              {loading ? '저장 중...' : '저장'}
-            </button>
-          </div>
         </form>
       </div>
     </div>
@@ -1771,7 +1775,7 @@ export default function ProjectManager() {
                       strategy={verticalListSortingStrategy}
                     >
                       <div className="admin-projects-table">
-                        <div className="admin-table-body">
+                        <div className="admin-table-body" style={{ maxHeight: 'calc(100vh - 290px)' }}>
                           {currentProjects.map((project) => (
                             <SortableProjectItem
                               key={project.id}

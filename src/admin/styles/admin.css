@@ -889,7 +889,6 @@ select.admin-input,
   background: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
-  margin-top: 15px;
 }
 
 .admin-form-row {
@@ -1217,12 +1216,6 @@ select.admin-input,
   margin-bottom: 20px;
 }
 
-.admin-modal-header h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
 .admin-modal-close-btn {
   background: none;
   border: none;
@@ -1482,11 +1475,6 @@ select.admin-input,
   min-height: 80px;
 }
 
-/* 로딩 상태 개선 */
-.admin-projects-container {
-  min-height: 200px;
-}
-
 .admin-empty-state {
   text-align: center;
   padding: 3rem 1rem;
@@ -1719,6 +1707,10 @@ select.admin-input,
   cursor: grab;
 }
 
+.admin-press-table-row:last-child {
+  border-bottom: none;
+}
+
 .admin-table-row:active {
   cursor: grabbing;
 }
@@ -1877,7 +1869,6 @@ select.admin-input,
 }
 
 .admin-modal-footer {
-  padding: 10px 0;
   display: flex;
   gap: 12px;
   justify-content: flex-end;
@@ -2473,7 +2464,6 @@ label.admin-checkbox-label {
 .admin-table-container {
   background: #fff;
   overflow: hidden;
-  margin-bottom: 20px;
 }
 
 .admin-table {
@@ -2560,8 +2550,8 @@ label.admin-checkbox-label {
 
 .admin-modal-header h3 {
   margin: 0;
-  font-size: 1.8rem;
-  font-weight: 600;
+  font-size: 2.2rem;
+  font-weight: 700;
 }
 
 .admin-modal-close-btn {
@@ -2620,7 +2610,6 @@ label.admin-checkbox-label {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding-top: 40px;
 }
 
 /* 파일 업로드 관련 스타일 */
@@ -2750,4 +2739,39 @@ label.admin-checkbox-label {
   font-weight: 500;
   margin-right: 20px;
   display: block;
+}
+
+.admin-table-body,
+.admin-table tbody {
+  overflow-y: scroll;
+}
+
+.admin-awards-container {
+  overflow-y: scroll;
+  max-height: calc(100vh - 300px);
+}
+
+.admin-inquiries-container {
+  overflow-y: scroll;
+  max-height: calc(100vh - 270px);
+}
+
+.admin-contact-form,
+.admin-about-container {
+  overflow-y: scroll;
+  max-height: calc(100vh - 290px);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table-container {
+  overflow-y: scroll;
+  max-height: calc(100vh - 240px);
+}
+
+.admin-image-grid-display {
+  overflow-y: scroll;
+  max-height: 53vh;
 }

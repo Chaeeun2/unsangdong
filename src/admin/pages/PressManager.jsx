@@ -42,7 +42,7 @@ function SortablePressItem({ id, item, onEdit, onDelete }) {
       ref={setNodeRef} 
       style={style} 
       {...attributes} 
-      className={`admin-press-table-row ${isDragging ? 'dragging' : ''}`}
+      className={`admin-table-row ${isDragging ? 'dragging' : ''}`}
     >
       <div className="admin-table-cell admin-table-title">
         <div 
@@ -109,7 +109,9 @@ function PressModal({ isOpen, onClose, onSubmit, loading, pressItem = null }) {
   }, [isOpen, pressItem]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     
     if (!year || year === '') {
       alert('연도를 입력해주세요.');
@@ -140,10 +142,17 @@ function PressModal({ isOpen, onClose, onSubmit, loading, pressItem = null }) {
 
   return (
     <div className="admin-modal-overlay">
-      <div className="admin-modal-content admin-modal-large">
+      <div className="admin-modal-content admin-modal-large" onClick={e => e.stopPropagation()}>
         <div className="admin-modal-header">
           <h3>{pressItem ? 'Press 수정' : '새 Press 추가'}</h3>
-          <button onClick={onClose} className="admin-modal-close-btn">&times;</button>
+                    <div className="admin-form-actions">
+            <button type="button" onClick={onClose} className="admin-button admin-button-secondary">
+              취소
+            </button>
+            <button type="button" onClick={handleSubmit} disabled={loading} className="admin-button admin-button-primary">
+              {loading ? '저장 중...' : '저장'}
+            </button>
+          </div>
         </div>
         
         <form onSubmit={handleSubmit} className="admin-modal-body">
@@ -212,15 +221,6 @@ function PressModal({ isOpen, onClose, onSubmit, loading, pressItem = null }) {
               />
             </div>
           )}
-
-          <div className="admin-form-actions">
-            <button type="button" onClick={onClose} className="admin-button admin-button-secondary">
-              취소
-            </button>
-            <button type="submit" disabled={loading} className="admin-button admin-button-primary">
-              {loading ? '저장 중...' : '저장'}
-            </button>
-          </div>
           </div>
         </form>
       </div>
@@ -231,9 +231,16 @@ function PressModal({ isOpen, onClose, onSubmit, loading, pressItem = null }) {
 const PressManager = () => {
   const [pressItems, setPressItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPress, setEditingPress] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
+
+  const pressSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     loadPress();
@@ -242,34 +249,40 @@ const PressManager = () => {
   const loadPress = async () => {
     try {
       setLoading(true);
-      const items = await pressService.getPress();
-      setPressItems(items);
+      const pressData = await pressService.getPress();
+      setPressItems(pressData || []);
     } catch (error) {
-      console.error('Error loading press:', error);
-      alert('Press 데이터를 불러오는데 실패했습니다.');
+      console.error('Press 로딩 실패:', error);
+      alert('Press 로딩에 실패했습니다.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSave = async (pressData) => {
+    setModalLoading(true);
     try {
-      setSaving(true);
-      
       if (editingPress) {
+        // 수정
         await pressService.updatePressItem(editingPress.id, pressData);
+        setPressItems(prev => prev.map(item => 
+          item.id === editingPress.id ? { id: editingPress.id, ...pressData } : item
+        ));
       } else {
-        await pressService.addPressItem(pressData);
+        // 새 추가
+        const newPressId = await pressService.addPressItem(pressData);
+        setPressItems(prev => [
+          { id: newPressId, ...pressData },
+          ...prev
+        ]);
       }
-      
-      await loadPress();
       setIsModalOpen(false);
       setEditingPress(null);
     } catch (error) {
-      console.error('Error saving press:', error);
-      alert('저장에 실패했습니다.');
+      console.error('Press 저장 실패:', error);
+      alert('Press 저장에 실패했습니다.');
     } finally {
-      setSaving(false);
+      setModalLoading(false);
     }
   };
 
@@ -279,14 +292,16 @@ const PressManager = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) return;
-    
+    if (!window.confirm('이 Press 항목을 삭제하시겠습니까?')) {
+      return;
+    }
+
     try {
       await pressService.deletePressItem(id);
-      await loadPress();
+      setPressItems(prev => prev.filter(item => item.id !== id));
     } catch (error) {
-      console.error('Error deleting press:', error);
-      alert('삭제에 실패했습니다.');
+      console.error('Press 삭제 실패:', error);
+      alert('Press 삭제에 실패했습니다.');
     }
   };
 
@@ -295,104 +310,97 @@ const PressManager = () => {
     setIsModalOpen(true);
   };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = async (event) => {
+  // Press 목록 드래그앤드롭 핸들러
+  const handlePressListDragEnd = async (event) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
       const oldIndex = pressItems.findIndex(item => item.id === active.id);
       const newIndex = pressItems.findIndex(item => item.id === over.id);
 
-      const newItems = arrayMove(pressItems, oldIndex, newIndex);
-      
-      // 즉시 UI 업데이트
-      setPressItems(newItems);
+      const newPressItems = arrayMove(pressItems, oldIndex, newIndex);
 
-      // Firebase 업데이트
+      // 로컬 상태 업데이트
+      setPressItems(newPressItems);
+
+      // 백엔드 업데이트 (순서 정보 저장)
       try {
-        const updates = newItems.map((item, index) => ({
-          id: item.id,
-          order: index
-        }));
-        
-        await pressService.updatePressOrder(updates);
+        const pressIds = newPressItems.map(item => item.id);
+        await pressService.updatePressOrder(pressIds);
       } catch (error) {
-        console.error('Error updating press order:', error);
+        console.error('Press 순서 변경 실패:', error);
+        // 실패 시 원래 상태로 복구
+        await loadPress();
         alert('순서 변경에 실패했습니다.');
-        // 에러 시 데이터 새로고침
-        loadPress();
       }
     }
   };
 
-  if (loading) {
-    return (
-      <AdminLayout>
-        <div className="admin-content">
-          <div className="admin-loading">로딩 중...</div>
-        </div>
-      </AdminLayout>
-    );
-  }
-
   return (
-    <>
-      <AdminLayout>
-        <div className="admin-content">
-          <h2 className="admin-page-title">PRESS 관리</h2>
-          
-          <div className="admin-content-layout">
-            <div className="admin-content-main">
-              <div className="admin-content-header">
-                <div className="admin-content-title-section">
-                  <h3 className="admin-content-title">Press 목록</h3>
-                </div>
-                <div className="admin-header-buttons">
-                  <button 
-                    onClick={handleNewPress}
-                    className="admin-button admin-button-primary"
-                  >
-                    새 Press 추가
-                  </button>
-                </div>
-              </div>
-
-              <div className="admin-content-body">
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
+    <AdminLayout>
+      <div className="admin-content">
+        <h2 className="admin-page-title">PRESS 관리</h2>
+        
+        <div className="admin-content-layout">
+          <div className="admin-content-main">
+            <div className="admin-content-header">
+              <h3 className="admin-content-title">Press 관리</h3>
+              <div className="admin-header-buttons">
+                <button 
+                  className="admin-button admin-button-primary"
+                  onClick={handleNewPress}
                 >
-                  <SortableContext
-                    items={pressItems.map(item => item.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    <div className="admin-projects-table">
-                      <div className="admin-table-container">
-                        {pressItems.map((item) => (
-                          <SortablePressItem
-                            key={item.id}
-                            id={item.id}
-                            item={item}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                  Press 추가
+                </button>
               </div>
             </div>
+
+            {loading ? (
+              <p>로딩 중...</p>
+            ) : (
+              <div className="admin-projects-container">
+                {pressItems.length === 0 ? (
+                  <div className="admin-empty-state">
+                    <p>등록된 Press가 없습니다.</p>
+                    <button 
+                      className="admin-button admin-button-primary"
+                      onClick={handleNewPress}
+                    >
+                      첫 번째 Press 추가
+                    </button>
+                  </div>
+                ) : (
+                  <DndContext
+                    sensors={pressSensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handlePressListDragEnd}
+                    animateLayoutChanges={false}
+                  >
+                    <SortableContext
+                      items={pressItems.map(item => item.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="admin-projects-table">
+                        <div className="admin-table-body" style={{ maxHeight: 'calc(100vh - 230px)' }}>
+                          {pressItems.map((item) => (
+                            <SortablePressItem
+                              key={item.id}
+                              id={item.id}
+                              item={item}
+                              onEdit={handleEdit}
+                              onDelete={handleDelete}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                )}
+              </div>
+            )}
           </div>
         </div>
-      </AdminLayout>
+      </div>
 
       <PressModal
         isOpen={isModalOpen}
@@ -401,10 +409,10 @@ const PressManager = () => {
           setEditingPress(null);
         }}
         onSubmit={handleSave}
-        loading={saving}
+        loading={modalLoading}
         pressItem={editingPress}
       />
-    </>
+    </AdminLayout>
   );
 };
 
