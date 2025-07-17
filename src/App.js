@@ -25,10 +25,10 @@ function App() {
     if (path === '/' || path === '') {
       return { page: 'main', projectId: null };
     } else if (path.startsWith('/project/')) {
-      const projectId = parseInt(path.split('/')[2]);
+      const projectId = path.split('/')[2];
       return { page: 'project-detail', projectId };
     } else if (path.startsWith('/news/')) {
-      const newsId = parseInt(path.split('/')[2]);
+      const newsId = path.split('/')[2];
       return { page: 'news-detail', projectId: newsId };
     } else if (path.startsWith('/')) {
       const page = path.substring(1);

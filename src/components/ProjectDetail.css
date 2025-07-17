@@ -83,13 +83,15 @@
 /* 메인 이미지 갤러리 */
 .project-gallery {
   width: 100vw;
-  height: 95vh;
+  max-height: 95vh;
+  aspect-ratio: 16/10;
 }
 
 /* 단일 이미지 컨테이너 */
 .single-image-container {
   width: 100%;
-  height: 95vh;
+  aspect-ratio: 16/10;
+  max-height: 95vh;
   overflow: hidden;
   background: #f5f5f5;
 }
@@ -104,7 +106,8 @@
 .glide {
   position: relative;
   width: 100%;
-  height: 95vh;
+  max-height: 95vh;
+  aspect-ratio: 16/10;
   overflow: hidden;
   background: #f2f2f2;
 }
@@ -253,8 +256,9 @@
 .project-description-en {
   font-size: 1.7rem;
   line-height: 1.6;
+  letter-spacing: -0.02em;
   word-break: keep-all;
-  font-family: Roboto Mono;
+  font-family: Roboto Mono, Pretendard, sans-serif;
   white-space: pre-line;
 }
 
@@ -367,6 +371,59 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .project-header-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .project-detail-title {
+    font-size: 3.5rem;
+  }
+
+  .glide__arrow--left {
+    left: 0rem;
+  }
+
+  .glide__arrow--right {
+    right: 0rem;
+  }
+
+  .project-description-ko {
+    line-height: 1.7;
+  }
+
+  .project-description-en {
+    line-height: 1.5;
+  }
+
+  .detail-grid {
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-bottom: 0rem;
+  }
+
+  .detail-grid-left,
+  .detail-grid-right {
+    width: 100%;
+    display: flex;
+    gap: 2.5rem;
+    flex-direction: column;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .detail-label,
+  .detail-value {
+    font-size: 1.6rem;
+  }
+}
+
 @media (max-width: 768px) {
   .project-header {
     padding: 6rem 2.5rem 3rem 2.5rem;
@@ -410,14 +467,6 @@
   .glide__bullet {
     width: 8px;
     height: 8px;
-  }
-
-  .glide__arrow--left {
-    left: 0rem;
-  }
-
-  .glide__arrow--right {
-    right: 0rem;
   }
 
   .image-modal {
