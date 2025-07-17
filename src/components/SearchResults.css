@@ -153,6 +153,15 @@
     margin-left: 00%;
     margin-top: 4rem;
   }
+
+  .search-projects-list .list-item {
+    grid-template-columns: 6fr;
+  }
+
+  .search-projects-list .list-col-year,
+  .search-projects-list .list-col-type {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -173,6 +182,7 @@
     line-height: 1;
     margin-top: 1rem;
     letter-spacing: -0.03em;
+    font-weight: 400;
   }
 
   .search-results-content {
