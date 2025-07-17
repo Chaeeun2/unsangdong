@@ -106,4 +106,8 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
   }
+
+  .art-projects-grid .project-overlay {
+    padding: 2rem;
+  }
 }

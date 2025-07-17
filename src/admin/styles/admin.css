@@ -1721,10 +1721,6 @@ select.admin-input,
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.admin-table-row:hover {
-  background: rgba(0, 0, 0, 0.02);
-}
-
 .admin-table-row:last-child {
   border-bottom: none;
 }
@@ -1774,18 +1770,17 @@ select.admin-input,
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 12px;
+  margin-right: 10px;
   color: #aaa;
   font-size: 16px;
   cursor: grab;
-  padding: 4px;
+  padding: 5px 10px;
   border-radius: 4px;
   transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .admin-project-drag-handle:hover {
-  color: #007bff;
-  background-color: rgba(0, 123, 255, 0.1);
+  background: #f0f0f0;
 }
 
 .admin-project-drag-handle:active {
@@ -2306,7 +2301,7 @@ select.admin-input,
   flex-direction: column;
   max-height: 400px;
   overflow-y: auto;
-  padding: 10px;
+  padding: 0 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
@@ -2315,19 +2310,31 @@ select.admin-input,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: 12px 12px 12px 0;
   border-bottom: 1px solid #ededed;
   transition: all 0.3s ease;
-  font-size: 16px;
+  font-size: 18px;
+  gap: 5px;
+  cursor: pointer;
 }
 
 .admin-type-item:last-child {
   border-bottom: none;
 }
 
+.admin-type-drag-handle {
+  color: #aaa;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+.admin-type-drag-handle:hover {
+  background: #f0f0f0;
+}
+
 .admin-type-name {
   font-weight: 500;
-  color: #333;
+  color: black;
   flex: 1;
 }
 

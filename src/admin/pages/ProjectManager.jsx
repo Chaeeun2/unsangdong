@@ -143,6 +143,82 @@ function SortableProjectItem({ id, project, onEdit, onDelete }) {
   );
 }
 
+// SortableTypeItem 컴포넌트
+function SortableTypeItem({ id, type, onEdit, onDelete, isEditing, editingValue, onEditingChange, onEditingSubmit, onEditingCancel, loading }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px,0` : undefined,
+    transition: 'none',
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      className={`admin-type-item ${isDragging ? 'dragging' : ''}`}
+    >
+      <div 
+        className="admin-type-drag-handle"
+        {...listeners}
+      >
+        ⠿
+      </div>
+      {isEditing ? (
+        <div className="admin-type-edit">
+          <input
+            type="text"
+            value={editingValue}
+            onChange={(e) => onEditingChange(e.target.value)}
+            className="admin-input admin-input-small"
+            autoFocus
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                onEditingSubmit();
+              } else if (e.key === 'Escape') {
+                onEditingCancel();
+              }
+            }}
+            onBlur={onEditingSubmit}
+          />
+        </div>
+      ) : (
+        <>
+          <span className="admin-type-name">
+            {type}
+          </span>
+          <div className="admin-type-actions">
+            <button
+              type="button"
+              onClick={() => onEdit(type)}
+              className="admin-button admin-button-secondary admin-button-small"
+              disabled={loading}
+            >
+              수정
+            </button>
+            <button
+              type="button"
+              onClick={() => onDelete(type)}
+              className="admin-button admin-button-danger admin-button-small"
+              disabled={loading}
+            >
+              삭제
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // Type 관리 모달 컴포넌트
 function TypeManagementModal({ isOpen, onClose, category }) {
   const [typeOptions, setTypeOptions] = useState([]);
@@ -151,6 +227,31 @@ function TypeManagementModal({ isOpen, onClose, category }) {
   const [editingType, setEditingType] = useState(null);
   const [editingValue, setEditingValue] = useState('');
   const [typeUsageMap, setTypeUsageMap] = useState({});
+
+  // DnD 관련 상태
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  // 타입 순서 변경 처리
+  const handleTypeDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = typeOptions.findIndex(type => type === active.id);
+    const newIndex = typeOptions.findIndex(type => type === over.id);
+    const newTypeOptions = arrayMove(typeOptions, oldIndex, newIndex);
+    setTypeOptions(newTypeOptions);
+    try {
+      // Firebase에 새로운 순서 저장
+      const allTypes = await projectTypeService.getProjectTypes();
+      allTypes[category] = newTypeOptions;
+      await projectTypeService.updateProjectTypes(allTypes);
+    } catch (error) {
+      console.error('타입 순서 업데이트 실패:', error);
+      alert('타입 순서 업데이트에 실패했습니다.');
+    }
+  };
 
   // 타입 옵션 로드
   useEffect(() => {
@@ -294,59 +395,30 @@ function TypeManagementModal({ isOpen, onClose, category }) {
             ) : typeOptions.length === 0 ? (
               <p>등록된 타입이 없습니다.</p>
             ) : (
-              <div className="admin-type-list">
-                {typeOptions.map((type, index) => (
-                  <div key={index} className="admin-type-item">
-                    {editingType === type ? (
-                      <div className="admin-type-edit">
-                        <input
-                          type="text"
-                          value={editingValue}
-                          onChange={(e) => setEditingValue(e.target.value)}
-                          className="admin-input admin-input-small"
-                          autoFocus
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                              handleEditType(type, editingValue);
-                            } else if (e.key === 'Escape') {
-                              setEditingType(null);
-                              setEditingValue('');
-                            }
-                          }}
-                          onBlur={() => handleEditType(type, editingValue)}
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <span className="admin-type-name">
-                          {type}
-                        </span>
-                        <div className="admin-type-actions">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEditingType(type);
-                              setEditingValue(type);
-                            }}
-                            className="admin-button admin-button-secondary admin-button-small"
-                            disabled={loading}
-                          >
-                            수정
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteType(type)}
-                            className="admin-button admin-button-danger admin-button-small"
-                            disabled={loading}
-                          >
-                            삭제
-                          </button>
-                        </div>
-                      </>
-                    )}
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleTypeDragEnd}>
+                <SortableContext items={typeOptions} strategy={verticalListSortingStrategy}>
+                  <div className="admin-type-list">
+                    {typeOptions.map((type) => (
+                      <SortableTypeItem
+                        key={type}
+                        id={type}
+                        type={type}
+                        onEdit={(type) => {
+                          setEditingType(type);
+                          setEditingValue(type);
+                        }}
+                        onDelete={handleDeleteType}
+                        isEditing={editingType === type}
+                        editingValue={editingValue}
+                        onEditingChange={setEditingValue}
+                        onEditingSubmit={() => handleEditType(type, editingValue)}
+                        onEditingCancel={() => { setEditingType(null); setEditingValue(''); }}
+                        loading={loading}
+                      />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
             )}
           </div>
         </div>

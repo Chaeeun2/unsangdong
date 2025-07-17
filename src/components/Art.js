@@ -80,12 +80,24 @@ function Art({ onNavigate }) {
     onNavigate('project-detail', projectId);
   };
 
-  const handleTypeFilter = (type) => {
+  const handleTypeChange = (type) => {
     setSelectedType(type);
+    setIsTypeDropdownOpen(false);
   };
 
-  const handleYearFilter = (year) => {
+  const toggleTypeDropdown = () => {
+    setIsTypeDropdownOpen(!isTypeDropdownOpen);
+    setIsYearDropdownOpen(false);
+  };
+
+  const handleYearChange = (year) => {
     setSelectedYear(year);
+    setIsYearDropdownOpen(false);
+  };
+
+  const toggleYearDropdown = () => {
+    setIsYearDropdownOpen(!isYearDropdownOpen);
+    setIsTypeDropdownOpen(false);
   };
 
   if (loading) {
@@ -98,31 +110,85 @@ function Art({ onNavigate }) {
   return (
     <div className="art-container">
       <div className="controls-bar">
-        <div className="art-type-options">
-          <button 
-            className={`art-type-btn all ${selectedType === '' ? 'active' : ''}`}
-            onClick={() => handleTypeFilter('')}
-          >
-            ALL
-          </button>
-          <span className="art-type-separator">/</span>
-          {typeOptions.map((type, index) => (
-            <React.Fragment key={type}>
-              <button 
-                className={`art-type-btn ${selectedType === type ? 'active' : ''}`}
-                onClick={() => handleTypeFilter(type)}
-              >
-                {type}
-              </button>
-              {index < typeOptions.length - 1 && <span className="art-type-separator">/</span>}
-            </React.Fragment>
-          ))}
+        <div className="filters">
+          {/* Year 필터 (드롭다운) */}
+          <div className="filter-group">
+            <div className="custom-select" onClick={toggleYearDropdown}>
+              <div className="select-header">
+                <span className="select-value">
+                  {selectedYear || 'Year'}
+                </span>
+                <span className={`select-arrow ${isYearDropdownOpen ? 'open' : ''}`}>▼</span>
+              </div>
+              {isYearDropdownOpen && (
+                <div className="select-dropdown">
+                  <div 
+                    className="select-option"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleYearChange('');
+                    }}
+                  >
+                    Year
+                  </div>
+                  {years.map(year => (
+                    <div 
+                      key={year}
+                      className={`select-option ${selectedYear === year ? 'selected-option' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleYearChange(year);
+                      }}
+                    >
+                      {year}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Type 필터 (드롭다운) */}
+          <div className="filter-group">
+            <div className="custom-select" onClick={toggleTypeDropdown}>
+              <div className="select-header">
+                <span className="select-value">
+                  {selectedType || 'Type'}
+                </span>
+                <span className={`select-arrow ${isTypeDropdownOpen ? 'open' : ''}`}>▼</span>
+              </div>
+              {isTypeDropdownOpen && (
+                <div className="select-dropdown">
+                  <div 
+                    className="select-option"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTypeChange('');
+                    }}
+                  >
+                    Type
+                  </div>
+                  {typeOptions.map(type => (
+                    <div 
+                      key={type}
+                      className={`select-option ${selectedType === type ? 'selected-option' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTypeChange(type);
+                      }}
+                    >
+                      {type}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
         <div className="art-projects-grid">
           {filteredProjects.length === 0 ? (
-            <div className="no-projects">프로젝트가 없습니다.</div>
+            <div className="no-projects">조건에 해당하는 프로젝트가 없습니다.</div>
           ) : (
             filteredProjects.map((project) => (
               <div 

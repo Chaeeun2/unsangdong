@@ -238,7 +238,8 @@ function Design({ onNavigate }) {
       {viewMode === 'gallery' && (
         <div className="projects-grid">
           {filteredProjects.length === 0 ? (
-            <div className="no-projects" style={{padding: '4rem'}}>프로젝트가 없습니다.</div>
+            <div className="no-projects">조건에 해당하는 프로젝트가 없습니다.
+            <p className="no-project-en">There are no projects that meet the conditions.</p></div>
           ) : (
             filteredProjects.map((project) => (
               <div 

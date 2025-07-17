@@ -214,6 +214,10 @@
   align-items: flex-end;
 }
 
+.project-title-wrap {
+  word-break: keep-all;
+}
+
 .project-meta {
   display: flex;
   flex-direction: column;
@@ -311,7 +315,15 @@
   font-size: 1.8rem;
   color: black;
   font-family: Pretendard, sans-serif;
-  padding: 4rem;
+  padding: 2.5rem 4rem;
+  width: 100vw;
+  line-height: 1.8;
+}
+
+.no-project-en {
+  font-family: Roboto Mono;
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
 }
 
 @keyframes fadeInThumbnail {
@@ -539,5 +551,14 @@
   /* 모바일에서는 호버 썸네일 숨김 */
   .hover-thumbnail {
     display: none;
+  }
+
+  .no-projects {
+    padding: 2.5rem;
+    font-size: 1.6rem;
+  }
+
+  .no-project-en {
+    font-size: 1.6rem;
   }
 }
