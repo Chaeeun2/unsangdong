@@ -489,24 +489,32 @@ function ProjectDetail({ projectId, onNavigate }) {
                 <span className="detail-label">TYPE</span>
                 <span className="detail-value">{project.type}</span>
               </div>
-              <div className="detail-row">
-                <span className="detail-label">LOCATION</span>
-                <span className="detail-value">{project.location}</span>
-              </div>
+              {project.location && project.location.trim() !== '' && (
+                <div className="detail-row">
+                  <span className="detail-label">LOCATION</span>
+                  <span className="detail-value">{project.location}</span>
+                </div>
+              )}
             </div>
             <div className="detail-grid-right">
-              <div className="detail-row">
-                <span className="detail-label">CLIENT</span>
-                <span className="detail-value">{project.client}</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">DIRECTOR</span>
-                <span className="detail-value">{project.director}</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">STATUS</span>
-                <span className="detail-value">{project.status}</span>
-              </div>
+              {project.client && project.client.trim() !== '' && (
+                <div className="detail-row">
+                  <span className="detail-label">CLIENT</span>
+                  <span className="detail-value">{project.client}</span>
+                </div>
+              )}
+              {project.director && project.director.trim() !== '' && (
+                <div className="detail-row">
+                  <span className="detail-label">DIRECTOR</span>
+                  <span className="detail-value">{project.director}</span>
+                </div>
+              )}
+              {project.status && project.status.trim() !== '' && (
+                <div className="detail-row">
+                  <span className="detail-label">STATUS</span>
+                  <span className="detail-value">{project.status}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

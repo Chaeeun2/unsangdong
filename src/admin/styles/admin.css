@@ -1693,7 +1693,7 @@ select.admin-input,
 
 .admin-table-row {
   display: grid;
-  grid-template-columns: 2fr 120px 140px 150px;
+  grid-template-columns: 2fr 120px 180px 150px;
   border-bottom: 1px solid #ededed;
   transition: background-color 0.2s ease;
   cursor: grab;
