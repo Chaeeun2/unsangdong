@@ -7,8 +7,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject",
-    "init-books": "node src/admin/scripts/initializeBooksData.js"
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.842.0",
