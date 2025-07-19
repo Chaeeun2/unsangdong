@@ -5,7 +5,7 @@ import {
   query, 
   where, 
   orderBy 
-} from 'firebase/firestore';
+} from '@firebase/firestore';
 import { db } from '../admin/lib/firebase';
 
 export const mainImageService = {

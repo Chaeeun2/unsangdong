@@ -9,7 +9,7 @@ import {
   where,
   limit,
   updateDoc
-} from 'firebase/firestore';
+} from '@firebase/firestore';
 import { db } from '../lib/firebase';
 
 // 콘텐츠 관리 (홈페이지용)

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Contact.css';
 import { contactService } from '../admin/services/dataService';
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "@firebase/firestore";
 import emailjs from '@emailjs/browser';
 
 // EmailJS 초기화

@@ -1,8 +1,8 @@
 // Firebase 관리자 계정 생성 스크립트
 // 사용법: node src/admin/scripts/createAdminUser.js
 
-import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { initializeApp } from '@firebase/app';
+import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 
 // Firebase 설정
 const firebaseConfig = {

@@ -1,8 +1,7 @@
 // Firebase 설정 및 초기화
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { getStorage } from 'firebase/storage';
+import { initializeApp } from '@firebase/app';
+import { getFirestore } from '@firebase/firestore';
+import { getAuth } from '@firebase/auth';
 
 // Firebase 설정 (환경 변수에서 가져오기)
 const firebaseConfig = {
@@ -20,6 +19,5 @@ const app = initializeApp(firebaseConfig);
 // Firebase 서비스들 초기화
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-export const storage = getStorage(app);
 
 export default app; 

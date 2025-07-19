@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc } from '@firebase/firestore';
 import './NewsDetail.css';
 
 const NewsDetail = ({ newsId, onNavigate }) => {

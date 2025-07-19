@@ -13,7 +13,7 @@ import {
   where,
   limit,
   serverTimestamp 
-} from 'firebase/firestore';
+} from '@firebase/firestore';
 import { db } from '../lib/firebase';
 
 // 메뉴 관리

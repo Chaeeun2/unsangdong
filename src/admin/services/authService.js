@@ -1,5 +1,5 @@
 // Firebase 인증 서비스 (실무용 보안)
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '../lib/firebase';
 
 // 환경변수에서 허용된 관리자 이메일 목록 가져오기 (실무에서는 Firestore에 저장하거나 환경변수로 관리)
