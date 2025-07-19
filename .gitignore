@@ -22,6 +22,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pglite-debug.log
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
 # IDE
 .vscode/
@@ -35,6 +38,9 @@ Thumbs.db
 .cache/
 node_modules/.cache/
 .firebase/
+*.cache
+*.tmp
+.tmp/
 
 # Firebase
 .firebase/
