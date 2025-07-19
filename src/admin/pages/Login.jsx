@@ -21,7 +21,7 @@ export default function Login() {
     if (!authLoading && user && user.isAdmin) {
       navigate('/admin/mainpage');
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading]); // navigate 제거
 
   async function handleLogin(e) {
     e.preventDefault();

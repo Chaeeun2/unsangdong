@@ -1,5 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { loginAdmin, logoutAdmin, getCurrentUser, checkAdminPermission } from '../services/authService';
+import { onAuthStateChanged } from '@firebase/auth';
+import { auth } from '../lib/firebase';
+import { loginAdmin, logoutAdmin, checkAdminPermission } from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -8,20 +10,29 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 사용자 상태 확인
-    const checkUser = async () => {
-      try {
-        const userData = await getCurrentUser();
-        setUser(userData);
-      } catch (error) {
-        console.error('사용자 상태 확인 실패:', error);
+    // Firebase Auth 상태 변경 리스너
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          // 관리자 권한 확인
+          const isAdmin = await checkAdminPermission();
+          if (isAdmin) {
+            setUser({ user: firebaseUser, isAdmin: true });
+          } else {
+            setUser(null);
+          }
+        } catch (error) {
+          console.error('관리자 권한 확인 실패:', error);
+          setUser(null);
+        }
+      } else {
         setUser(null);
-      } finally {
-        setLoading(false);
       }
-    };
+      setLoading(false);
+    });
 
-    checkUser();
+    // 컴포넌트 언마운트 시 리스너 해제
+    return () => unsubscribe();
   }, []);
 
   const login = async (email, password) => {
