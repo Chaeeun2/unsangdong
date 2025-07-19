@@ -1,10 +1,11 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 관리자 권한 확인 (커스텀 클레임 기반)
+    // 관리자 권한 확인 (커스텀 클레임 기반, 없으면 이메일 기반)
     function isAdmin() {
       return request.auth != null && 
-             request.auth.token.admin == true;
+             (request.auth.token.admin == true || 
+              request.auth.token.email == 'admin@unsangdong.com');
     }
     
     // 문의사항 생성 시 기본 검증 (스팸 방지)
