@@ -89,10 +89,10 @@ service cloud.firestore {
       allow write: if isAdmin();  // 관리자만 쓰기
     }
     
-    // 문의사항 컬렉션 (모든 사용자 작성 가능)
+    // 문의사항 컬렉션 (모든 사용자 작성 가능, 관리자만 읽기/수정/삭제)
     match /inquiries/{document} {
       allow read: if isAdmin();  // 관리자만 읽기
-      allow create: if isValidInquiry();  // 유효한 문의사항만 생성 가능
+      allow create: if isValidInquiry();  // 모든 사용자 생성 가능 (검증만)
       allow update, delete: if isAdmin();  // 관리자만 수정/삭제
     }
     
