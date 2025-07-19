@@ -8,19 +8,6 @@ service cloud.firestore {
               request.auth.token.email == 'admin@unsangdong.com');
     }
     
-    // 문의사항 생성 시 기본 검증 (스팸 방지)
-    function isValidInquiry() {
-      return request.resource.data.keys().hasAll(['name', 'email', 'message']) &&
-             request.resource.data.name is string &&
-             request.resource.data.name.size() > 0 &&
-             request.resource.data.name.size() < 100 &&
-             request.resource.data.email is string &&
-             request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
-             request.resource.data.message is string &&
-             request.resource.data.message.size() > 0 &&
-             request.resource.data.message.size() < 2000;
-    }
-    
     // === 공개 읽기 허용 컬렉션 (웹사이트 방문자용) ===
     
     // 메뉴 컬렉션
@@ -89,10 +76,10 @@ service cloud.firestore {
       allow write: if isAdmin();  // 관리자만 쓰기
     }
     
-    // 문의사항 컬렉션 (모든 사용자 작성 가능, 관리자만 읽기/수정/삭제)
+    // 문의사항 컬렉션 (완전 개방)
     match /inquiries/{document} {
       allow read: if isAdmin();  // 관리자만 읽기
-      allow create: if isValidInquiry();  // 모든 사용자 생성 가능 (검증만)
+      allow create: if true;  // 모든 사용자 자유롭게 생성 가능
       allow update, delete: if isAdmin();  // 관리자만 수정/삭제
     }
     
