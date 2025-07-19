@@ -1,10 +1,24 @@
-rules_version = '2';
+const fs = require('fs');
+const path = require('path');
+
+// 환경변수에서 관리자 이메일 가져오기
+const ALLOWED_ADMIN_EMAILS = process.env.REACT_APP_ADMIN_EMAILS?.split(',').map(email => email.trim()) || [];
+
+if (ALLOWED_ADMIN_EMAILS.length === 0) {
+  console.error('❌ REACT_APP_ADMIN_EMAILS 환경변수가 설정되지 않았습니다.');
+  process.exit(1);
+}
+
+console.log('🔧 허용된 관리자 이메일:', ALLOWED_ADMIN_EMAILS);
+
+// Firestore 규칙 템플릿
+const firestoreRulesTemplate = `rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 관리자 권한 확인 (커스텀 클레임 기반)
+    // 관리자 권한 확인 (환경변수 기반)
     function isAdmin() {
       return request.auth != null && 
-             request.auth.token.admin == true;
+             request.auth.token.email in [${ALLOWED_ADMIN_EMAILS.map(email => `'${email}'`).join(', ')}];
     }
     
     // 문의사항 생성 시 기본 검증 (스팸 방지)
@@ -14,7 +28,7 @@ service cloud.firestore {
              request.resource.data.name.size() > 0 &&
              request.resource.data.name.size() < 100 &&
              request.resource.data.email is string &&
-             request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+             request.resource.data.email.matches('^[^@]+@[^@]+\\\\.[^@]+$') &&
              request.resource.data.message is string &&
              request.resource.data.message.size() > 0 &&
              request.resource.data.message.size() < 2000;
@@ -113,4 +127,11 @@ service cloud.firestore {
       allow read, write: if false;  // 명시적으로 정의되지 않은 모든 경로 차단
     }
   }
-} 
+}`;
+
+// 규칙 파일 생성
+const rulesPath = path.join(__dirname, '..', 'firestore.rules');
+fs.writeFileSync(rulesPath, firestoreRulesTemplate);
+
+console.log('✅ Firestore 규칙이 성공적으로 생성되었습니다.');
+console.log('📁 파일 위치:', rulesPath); 

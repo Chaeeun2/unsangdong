@@ -1,7 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { onAuthStateChanged } from '@firebase/auth';
-import { auth } from '../lib/firebase';
-import { authService } from '../services/authService';
+import { loginAdmin, logoutAdmin, getCurrentUser, checkAdminPermission } from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -10,31 +8,27 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Firebase Auth의 onAuthStateChanged를 직접 사용
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        // Firebase user 객체를 직접 전달 (UserImpl)
-        setUser(firebaseUser);
-      } else {
+    // 사용자 상태 확인
+    const checkUser = async () => {
+      try {
+        const userData = await getCurrentUser();
+        setUser(userData);
+      } catch (error) {
+        console.error('사용자 상태 확인 실패:', error);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
-    });
-
-    // 컴포넌트 언마운트 시 리스너 해제
-    return () => {
-      unsubscribe();
     };
+
+    checkUser();
   }, []);
 
   const login = async (email, password) => {
     try {
-      const result = await authService.signIn(email, password);
-      if (result.success) {
-        setUser(result.user);
-        return result;
-      }
+      const result = await loginAdmin(email, password);
+      setUser(result);
+      return result;
     } catch (error) {
       throw error;
     }
@@ -42,18 +36,23 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await authService.signOut();
+      await logoutAdmin();
       setUser(null);
     } catch (error) {
       console.error('로그아웃 실패:', error);
     }
   };
 
+  const checkAdmin = async () => {
+    return await checkAdminPermission();
+  };
+
   const value = {
     user,
     loading,
     login,
-    logout
+    logout,
+    checkAdmin
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

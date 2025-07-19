@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 export default function Login() {
   const navigate = useNavigate();
   const { isMobile } = useMobile();
-  const { login, user } = useAuth();
+  const { login, user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [credentials, setCredentials] = useState({
@@ -16,21 +16,12 @@ export default function Login() {
     password: ''
   });
 
-  // 환경변수에서 허용된 관리자 이메일 목록 가져오기
-  const ALLOWED_ADMIN_EMAILS = process.env.REACT_APP_ADMIN_EMAILS?.split(',').map(email => email.trim()) || [];
-
   // 이미 인증된 관리자면 자동으로 admin 홈으로 이동
   useEffect(() => {
-    if (user && user.email) {
-      // 관리자 권한 확인
-      const isAdmin = (user.role === 'admin' && ALLOWED_ADMIN_EMAILS.includes(user.email)) ||
-                      (ALLOWED_ADMIN_EMAILS.includes(user.email));
-      
-      if (isAdmin) {
-        navigate('/admin/mainpage');
-      }
+    if (!authLoading && user && user.isAdmin) {
+      navigate('/admin/mainpage');
     }
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -38,7 +29,7 @@ export default function Login() {
     setError(null);
 
     try {
-      const result = await login(credentials.email, credentials.password);
+      await login(credentials.email, credentials.password);
       // 로그인 성공 후 admin 홈으로 이동
       navigate('/admin/mainpage');
     } catch (error) {
@@ -50,6 +41,17 @@ export default function Login() {
 
   if (isMobile) {
     return <MobileCheck />;
+  }
+
+  if (authLoading) {
+    return (
+      <div className="admin-login">
+        <div className="admin-form">
+          <h2 className="admin-page-title">운생동 Admin</h2>
+          <div>로딩 중...</div>
+        </div>
+      </div>
+    );
   }
 
   return (
