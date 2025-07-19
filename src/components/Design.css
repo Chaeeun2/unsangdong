@@ -26,15 +26,68 @@
 }
 
 .design-container .projects-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
   gap: 0.8rem;
+}
+
+.design-container .projects-grid > * {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 calc(33.333% - 0.533rem);
+  flex: 0 0 calc(33.333% - 0.533rem);
+}
+
+/* CSS Grid 지원 브라우저용 */
+@supports (display: grid) {
+  .design-container .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+  }
+
+  .design-container .projects-grid > * {
+    flex: none;
+  }
 }
 
 @media (max-width: 1200px) {
   .design-container .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .design-container .projects-grid > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 calc(50% - 0.25rem);
+    flex: 0 0 calc(50% - 0.25rem);
+  }
+
+  /* CSS Grid 지원 브라우저용 */
+  @supports (display: grid) {
+    .design-container .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .design-container .projects-grid > * {
+      flex: none;
+    }
   }
 }
 
@@ -44,7 +97,34 @@
   }
 
   .design-container .projects-grid {
-    grid-template-columns: repeat(1, 1fr);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .design-container .projects-grid > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+  }
+
+  /* CSS Grid 지원 브라우저용 */
+  @supports (display: grid) {
+    .design-container .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 0.5px;
+    }
+
+    .design-container .projects-grid > * {
+      flex: none;
+    }
   }
 }

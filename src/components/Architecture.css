@@ -166,9 +166,35 @@
 
 /* 프로젝트 그리드 */
 .projects-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
   gap: 0.8rem;
+}
+
+.projects-grid > * {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 calc(33.333% - 0.533rem);
+  flex: 0 0 calc(33.333% - 0.533rem);
+}
+
+/* CSS Grid 지원 브라우저용 */
+@supports (display: grid) {
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+  }
+
+  .projects-grid > * {
+    flex: none;
+  }
 }
 
 .project-item {
@@ -255,14 +281,52 @@
 }
 
 .list-item {
-  display: grid;
-  grid-template-columns: 6fr 0.6fr 1.5fr;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
   gap: 2rem;
   padding: 2rem 0;
   border-bottom: 1.5px solid black;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+}
+
+.list-item > *:nth-child(1) {
+  -webkit-box-flex: 6;
+  -ms-flex: 6;
+  flex: 6;
+}
+
+.list-item > *:nth-child(2) {
+  -webkit-box-flex: 0.6;
+  -ms-flex: 0.6;
+  flex: 0.6;
+}
+
+.list-item > *:nth-child(3) {
+  -webkit-box-flex: 1.5;
+  -ms-flex: 1.5;
+  flex: 1.5;
+}
+
+/* CSS Grid 지원 브라우저용 */
+@supports (display: grid) {
+  .list-item {
+    display: grid;
+    grid-template-columns: 6fr 0.6fr 1.5fr;
+    gap: 2rem;
+  }
+
+  .list-item > * {
+    flex: none;
+  }
 }
 
 .list-col-title {
@@ -399,9 +463,35 @@
   }
 
   .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .projects-grid > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 calc(50% - 0.25rem);
+    flex: 0 0 calc(50% - 0.25rem);
+  }
+
+  /* CSS Grid 지원 브라우저용 */
+  @supports (display: grid) {
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .projects-grid > * {
+      flex: none;
+    }
   }
 
   .projects-list {
@@ -492,8 +582,35 @@
   }
 
   .projects-grid {
-    grid-template-columns: 1fr;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .projects-grid > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+  }
+
+  /* CSS Grid 지원 브라우저용 */
+  @supports (display: grid) {
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .projects-grid > * {
+      flex: none;
+    }
   }
 
   .project-overlay {

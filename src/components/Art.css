@@ -53,9 +53,35 @@
 }
 
 .art-projects-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
   gap: 0.8rem;
+}
+
+.art-projects-grid > * {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 calc(25% - 0.6rem);
+  flex: 0 0 calc(25% - 0.6rem);
+}
+
+/* CSS Grid 지원 브라우저용 */
+@supports (display: grid) {
+  .art-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+  }
+
+  .art-projects-grid > * {
+    flex: none;
+  }
 }
 
 .art-project-image-wrapper {
@@ -83,8 +109,35 @@
 
 @media (max-width: 1200px) {
   .art-projects-grid {
-    grid-template-columns: repeat(3, 1fr);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .art-projects-grid > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 calc(33.333% - 0.333rem);
+    flex: 0 0 calc(33.333% - 0.333rem);
+  }
+
+  /* CSS Grid 지원 브라우저용 */
+  @supports (display: grid) {
+    .art-projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .art-projects-grid > * {
+      flex: none;
+    }
   }
 
   .art-container .project-year,
@@ -103,8 +156,35 @@
   }
 
   .art-projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .art-projects-grid > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 calc(50% - 0.25rem);
+    flex: 0 0 calc(50% - 0.25rem);
+  }
+
+  /* CSS Grid 지원 브라우저용 */
+  @supports (display: grid) {
+    .art-projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .art-projects-grid > * {
+      flex: none;
+    }
   }
 
   .art-projects-grid .project-overlay {
