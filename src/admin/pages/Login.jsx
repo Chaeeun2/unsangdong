@@ -21,7 +21,7 @@ export default function Login() {
     if (!authLoading && user && user.isAdmin) {
       navigate('/admin/mainpage');
     }
-  }, [user, authLoading]); // navigate 제거
+  }, [user, authLoading]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -30,8 +30,7 @@ export default function Login() {
 
     try {
       await login(credentials.email, credentials.password);
-      // 로그인 성공 후 admin 홈으로 이동
-      navigate('/admin/mainpage');
+      // navigate 호출 제거 - AuthContext의 상태 변경에 의존
     } catch (error) {
       setError(error.message || '로그인에 실패했습니다.');
     } finally {
