@@ -1847,19 +1847,6 @@ export default function ProjectManager() {
               </div>
             </div>
 
-            {/* 검색 결과 표시 */}
-            {searchTerm && (
-              <div className="admin-search-results">
-                <span>검색 결과: {currentProjects.length}개</span>
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="admin-button admin-button-secondary admin-button-small"
-                >
-                  검색 초기화
-                </button>
-              </div>
-            )}
-
             {loading ? (
               <p>로딩 중...</p>
             ) : (
@@ -1867,12 +1854,6 @@ export default function ProjectManager() {
                 {currentProjects.length === 0 ? (
                   <div className="admin-empty-state">
                     <p>등록된 {activeTab} 프로젝트가 없습니다.</p>
-                    <button 
-                      className="admin-button admin-button-primary"
-                      onClick={() => setIsAddModalOpen(true)}
-                    >
-                      첫 번째 프로젝트 추가
-                    </button>
                   </div>
                 ) : (
                   <DndContext
