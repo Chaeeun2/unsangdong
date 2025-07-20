@@ -123,7 +123,7 @@ export default function MainPageManager() {
           <div className="admin-content-main">
             
             {/* 가로 이미지 섹션 */}
-            <div className="admin-content-section">
+            <div className="admin-content-section" style={{paddingBottom: "0px"}}>
               <div className="admin-content-header">
                 <h3 className="admin-content-title">가로 이미지 관리</h3>
                 <p className="admin-content-description">
@@ -168,8 +168,12 @@ export default function MainPageManager() {
               </div>
             </div>
 
+          </div>
+          
+          <div className="admin-content-main">
+              
             {/* 세로 이미지 섹션 */}
-            <div className="admin-content-section">
+            <div className="admin-content-section" style={{paddingBottom: "0px"}}>
               <div className="admin-content-header">
                 <h3 className="admin-content-title">세로 이미지 관리</h3>
                 <p className="admin-content-description">

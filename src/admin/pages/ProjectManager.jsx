@@ -1633,6 +1633,8 @@ export default function ProjectManager() {
   const [isTypeManagementModalOpen, setIsTypeManagementModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchType, setSearchType] = useState('all');
 
   useEffect(() => {
     loadProjects();
@@ -1772,7 +1774,19 @@ export default function ProjectManager() {
     setIsEditModalOpen(true);
   }
 
-  const currentProjects = projects[activeTab] || [];
+  // 검색 필터링 로직
+  const filteredProjects = (projects[activeTab] || []).filter(project => {
+    const matchesSearch = !searchTerm || 
+      (project.title && project.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (project.titleEn && project.titleEn.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (project.description && project.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesType = searchType === 'all' || project.type === searchType;
+    
+    return matchesSearch && matchesType;
+  });
+
+  const currentProjects = filteredProjects;
 
   return (
     <AdminLayout>
@@ -1819,6 +1833,51 @@ export default function ProjectManager() {
                   프로젝트 추가
                 </button>
               </div>
+            </div>
+
+            {/* 검색 필터 */}
+            <div className="admin-search-filters">
+              <div className="admin-search-input-group">
+                <input
+                  type="text"
+                  placeholder="프로젝트 검색..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="admin-input admin-search-input"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="admin-search-clear"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+              <select
+                value={searchType}
+                onChange={(e) => setSearchType(e.target.value)}
+                className="admin-input admin-search-select"
+              >
+                <option value="all">모든 Type</option>
+                {Array.from(new Set(projects[activeTab]?.map(p => p.type).filter(Boolean))).map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+              {(searchTerm || searchType !== 'all') && (
+                <div className="admin-search-results">
+                  <span>검색 결과: {currentProjects.length}개</span>
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setSearchType('all');
+                    }}
+                    className="admin-button admin-button-secondary admin-button-small"
+                  >
+                    검색 초기화
+                  </button>
+                </div>
+              )}
             </div>
 
             {loading ? (
