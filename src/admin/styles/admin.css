@@ -2844,27 +2844,25 @@ label.admin-checkbox-label {
   overflow-y: scroll;
 }
 
-/* 프로젝트 검색 필터 스타일 */
-.admin-search-filters {
+/* 프로젝트 검색 스타일 */
+.admin-header-buttons {
   display: flex;
   gap: 15px;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  flex-wrap: wrap;
 }
 
 .admin-search-input-group {
   position: relative;
-  flex: 1;
-  min-width: 200px;
+  min-width: 250px;
 }
 
 .admin-search-input {
   width: 100%;
   padding-right: 35px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 .admin-search-clear {
@@ -2874,7 +2872,7 @@ label.admin-checkbox-label {
   transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
   color: #666;
   cursor: pointer;
   padding: 0;
@@ -2891,16 +2889,16 @@ label.admin-checkbox-label {
   color: #333;
 }
 
-.admin-search-select {
-  min-width: 150px;
-}
-
 .admin-search-results {
   display: flex;
   align-items: center;
   gap: 10px;
   color: #666;
   font-size: 14px;
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
 }
 
 .admin-search-results span {
