@@ -112,19 +112,6 @@
   flex: 1.5;
 }
 
-/* CSS Grid 지원 브라우저용 */
-@supports (display: grid) {
-  .search-projects-list .list-item {
-    display: grid;
-    grid-template-columns: 6fr 1fr 1.5fr;
-    gap: 2rem;
-  }
-
-  .search-projects-list .list-item > * {
-    flex: none;
-  }
-}
-
 .search-projects-list .list-col-title {
   display: flex;
   gap: 1rem;
@@ -214,19 +201,6 @@
     display: none;
   }
 
-  /* CSS Grid 지원 브라우저용 */
-  @supports (display: grid) {
-    .search-projects-list .list-item {
-      display: grid;
-      grid-template-columns: 6fr;
-      gap: 2rem;
-    }
-
-    .search-projects-list .list-item > * {
-      flex: none;
-    }
-  }
-
   .search-projects-list .list-col-year,
   .search-projects-list .list-col-type {
     display: none;
@@ -287,18 +261,5 @@
   .search-projects-list .list-item > *:nth-child(2),
   .search-projects-list .list-item > *:nth-child(3) {
     display: none;
-  }
-
-  /* CSS Grid 지원 브라우저용 */
-  @supports (display: grid) {
-    .search-projects-list .list-item {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .search-projects-list .list-item > * {
-      flex: none;
-    }
   }
 }

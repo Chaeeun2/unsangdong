@@ -71,19 +71,6 @@
   flex: 0 0 calc(25% - 0.6rem);
 }
 
-/* CSS Grid 지원 브라우저용 */
-@supports (display: grid) {
-  .art-projects-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.8rem;
-  }
-
-  .art-projects-grid > * {
-    flex: none;
-  }
-}
-
 .art-project-image-wrapper {
   position: relative;
   aspect-ratio: 3/4;
@@ -127,19 +114,6 @@
     flex: 0 0 calc(33.333% - 0.333rem);
   }
 
-  /* CSS Grid 지원 브라우저용 */
-  @supports (display: grid) {
-    .art-projects-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-    }
-
-    .art-projects-grid > * {
-      flex: none;
-    }
-  }
-
   .art-container .project-year,
   .art-container .project-type {
     display: none;
@@ -172,19 +146,6 @@
     -webkit-box-flex: 0;
     -ms-flex: 0 0 calc(50% - 0.25rem);
     flex: 0 0 calc(50% - 0.25rem);
-  }
-
-  /* CSS Grid 지원 브라우저용 */
-  @supports (display: grid) {
-    .art-projects-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
-    }
-
-    .art-projects-grid > * {
-      flex: none;
-    }
   }
 
   .art-projects-grid .project-overlay {
