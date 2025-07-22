@@ -116,6 +116,73 @@
   }
 }
 
+/* 스켈레톤 로딩 */
+.skeleton-image {
+  position: absolute;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-vertical {
+  aspect-ratio: 3/4;
+}
+
+.skeleton-horizontal {
+  aspect-ratio: 3/2;
+}
+
+.skeleton-1 {
+  width: 31vw;
+  top: 15vw;
+  right: 0;
+}
+
+.skeleton-2 {
+  width: 31vw;
+  top: 100vw;
+  left: 0;
+}
+
+.skeleton-3 {
+  width: 61vw;
+  top: 0;
+}
+
+.skeleton-4 {
+  width: 51vw;
+  left: 10vw;
+  top: 50vw;
+}
+
+.skeleton-5 {
+  width: 60vw;
+  right: 0;
+  top: 92vw;
+}
+
+.skeleton-6 {
+  width: 50vw;
+  right: 0;
+  top: 142vw;
+}
+
+.skeleton-7 {
+  width: 40vw;
+  left: 0;
+  top: 155vw;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* 로딩 메시지 스타일 */
 .loading-message {
   display: flex;
