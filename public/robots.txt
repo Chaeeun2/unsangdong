@@ -4,6 +4,9 @@ Allow: /
 # Sitemap
 Sitemap: https://usdspace.com/sitemap.xml
 
+# RSS Feed
+Sitemap: https://usdspace.com/rss.xml
+
 # Disallow admin pages
 Disallow: /admin
 Disallow: /admin.html 
