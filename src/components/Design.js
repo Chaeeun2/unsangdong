@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Design.css';
 import { contentService, projectTypeService } from '../services/dataService';
+import { imageOptimizationService } from '../services/imageOptimizationService';
 
 function Design({ onNavigate }) {
   const [selectedYear, setSelectedYear] = useState('');
@@ -25,7 +26,9 @@ function Design({ onNavigate }) {
           projectTypeService.getYearsByCategory('Design')
         ]);
         
-        setProjects(projectsData);
+        // 이미지 최적화 적용
+        const optimizedProjects = imageOptimizationService.optimizeProjects(projectsData);
+        setProjects(optimizedProjects);
         setTypeOptions(typesData.Design || []);
         setYears(yearsData);
       } catch (error) {
@@ -249,9 +252,15 @@ function Design({ onNavigate }) {
               >
                 <div className="project-image-wrapper">
                   <img 
-                    src={project.thumbnailImage || project.mainImage} 
+                    src={project.optimizedThumbnailImage || project.optimizedMainImage || project.thumbnailImage || project.mainImage} 
                     alt={project.title}
                     className="project-image"
+                    onError={(e) => {
+                      // 최적화된 이미지 로드 실패시 원본으로 fallback
+                      if (e.target.src !== (project.thumbnailImage || project.mainImage)) {
+                        e.target.src = project.thumbnailImage || project.mainImage;
+                      }
+                    }}
                   />
                   <div className="project-overlay">
                     <div className="project-info">
@@ -314,9 +323,15 @@ function Design({ onNavigate }) {
           }}
         >
           <img 
-            src={hoveredProject.thumbnailImage || hoveredProject.mainImage} 
+            src={hoveredProject.optimizedThumbnailImage || hoveredProject.optimizedMainImage || hoveredProject.thumbnailImage || hoveredProject.mainImage} 
             alt={hoveredProject.title}
             className="hover-thumbnail-image"
+            onError={(e) => {
+              // 최적화된 이미지 로드 실패시 원본으로 fallback
+              if (e.target.src !== (hoveredProject.thumbnailImage || hoveredProject.mainImage)) {
+                e.target.src = hoveredProject.thumbnailImage || hoveredProject.mainImage;
+              }
+            }}
           />
         </div>
       )}

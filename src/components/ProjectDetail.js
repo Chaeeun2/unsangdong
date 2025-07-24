@@ -4,6 +4,7 @@ import "@glidejs/glide/dist/css/glide.core.min.css";
 import "@glidejs/glide/dist/css/glide.theme.min.css";
 import "./ProjectDetail.css";
 import { contentService } from '../services/dataService';
+import { imageOptimizationService } from '../services/imageOptimizationService';
 
 function ProjectDetail({ projectId, onNavigate }) {
   const glideRef = useRef(null);
@@ -22,7 +23,9 @@ function ProjectDetail({ projectId, onNavigate }) {
       try {
         setLoading(true);
         const projectData = await contentService.getContent(projectId);
-        setProject(projectData);
+        // 이미지 최적화 적용
+        const optimizedProject = imageOptimizationService.optimizeProject(projectData);
+        setProject(optimizedProject);
       } catch (error) {
         console.error('프로젝트 데이터 로딩 실패:', error);
       } finally {
@@ -224,12 +227,18 @@ function ProjectDetail({ projectId, onNavigate }) {
                 <div className="single-image-container">
                   {media.type === "image" ? (
                     <img
-                      src={media.src}
+                      src={media.optimizedSrc || media.src}
                       alt={project.title}
                       className={getImageClass(0, "single-image")}
                       data-slide-index="0"
                       onClick={() => openImgModal(0)}
                       style={{ cursor: "pointer" }}
+                      onError={(e) => {
+                        // 최적화된 이미지 로드 실패시 원본으로 fallback
+                        if (e.target.src !== media.src) {
+                          e.target.src = media.src;
+                        }
+                      }}
                     />
                   ) : (
                     (() => {
@@ -309,50 +318,56 @@ function ProjectDetail({ projectId, onNavigate }) {
               <div className="glide" ref={glideRef}>
                 <div className="glide__track" data-glide-el="track">
                   <ul className="glide__slides">
-                    {project.media ? (
-                      // media 배열 사용
-                      project.media.map((media, index) => (
+                    {project.optimizedMedia ? (
+                      // optimizedMedia 배열 사용
+                      project.optimizedMedia.map((media, index) => (
                         <li key={`media-${index}`} className="glide__slide">
                           {media.type === "image" ? (
                             <img
-                              src={media.src}
+                              src={media.optimizedSrc || media.src}
                               alt={`${project.title} - ${index + 1}`}
                               className={getImageClass(index, "slide-image")}
                               data-slide-index={index}
                               onClick={() => openImgModal(index)}
                               style={{ cursor: "pointer" }}
+                              onError={(e) => {
+                                // 최적화된 이미지 로드 실패시 원본으로 fallback
+                                if (e.target.src !== media.src) {
+                                  e.target.src = media.src;
+                                }
+                              }}
                             />
                           ) : (
-                            (() => {
-                              const video = media.src;
-                              let embedUrl = video;
-                              if (video.includes("youtube.com/watch?v=")) {
-                                const videoId = video
-                                  .split("v=")[1]
-                                  .split("&")[0];
-                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                              } else if (video.includes("youtu.be/")) {
-                                const videoId = video
-                                  .split("youtu.be/")[1]
-                                  .split("?")[0];
-                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                              }
+                              (() => {
+                                const video = media.src;
+                                let embedUrl = video;
+                                if (video.includes("youtube.com/watch?v=")) {
+                                  const videoId = video
+                                    .split("v=")[1]
+                                    .split("&")[0];
+                                  embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                                } else if (video.includes("youtu.be/")) {
+                                  const videoId = video
+                                    .split("youtu.be/")[1]
+                                    .split("?")[0];
+                                  embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                                }
 
-                              return (
-                                <iframe
-                                  src={embedUrl}
-                                  width="100%"
-                                  height="100%"
-                                  frameBorder="0"
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                  allowFullScreen
-                                  style={{ width: "100%", height: "100%" }}
-                                ></iframe>
-                              );
-                            })()
-                          )}
-                        </li>
-                      ))
+                                return (
+                                  <iframe
+                                    src={embedUrl}
+                                    width="100%"
+                                    height="100%"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    style={{ width: "100%", height: "100%" }}
+                                  ></iframe>
+                                );
+                              })()
+                            )}
+                          </li>
+                        ))
                     ) : (
                       // 기존 방식 (하위 호환성)
                       <>

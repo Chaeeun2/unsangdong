@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Art.css';
 import { contentService, projectTypeService } from '../services/dataService';
+import { imageOptimizationService } from '../services/imageOptimizationService';
 
 function Art({ onNavigate }) {
   const [selectedYear, setSelectedYear] = useState('');
@@ -27,7 +28,9 @@ function Art({ onNavigate }) {
           projectTypeService.getYearsByCategory('Art')
         ]);
         
-        setProjects(projectsData);
+        // 이미지 최적화 적용
+        const optimizedProjects = imageOptimizationService.optimizeProjects(projectsData);
+        setProjects(optimizedProjects);
         setTypeOptions(typesData.Art || []);
         setYears(yearsData);
       } catch (error) {
@@ -198,10 +201,16 @@ function Art({ onNavigate }) {
               >
                 <div className="art-project-image-wrapper">
                   <img 
-                    src={project.thumbnailImage || project.mainImage} 
+                    src={project.optimizedThumbnailImage || project.optimizedMainImage || project.thumbnailImage || project.mainImage} 
                     alt={project.title}
                     className="art-project-image"
                     onClick={() => handleProjectClick(project.id)}
+                    onError={(e) => {
+                      // 최적화된 이미지 로드 실패시 원본으로 fallback
+                      if (e.target.src !== (project.thumbnailImage || project.mainImage)) {
+                        e.target.src = project.thumbnailImage || project.mainImage;
+                      }
+                    }}
                   />
                   <div className="project-overlay">
                     <div className="project-info">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from '@firebase/firestore';
 import './NewsDetail.css';
+import { imageOptimizationService } from '../services/imageOptimizationService';
 
 const NewsDetail = ({ newsId, onNavigate }) => {
   const [news, setNews] = useState(null);
@@ -28,7 +29,9 @@ const NewsDetail = ({ newsId, onNavigate }) => {
             files: newsData.files || []
           };
           
-          setNews(formattedNews);
+          // 이미지 최적화 적용
+          const optimizedNews = imageOptimizationService.optimizeNewsImages(formattedNews);
+          setNews(optimizedNews);
         } else {
           setNews(null);
         }
@@ -114,8 +117,14 @@ const NewsDetail = ({ newsId, onNavigate }) => {
             {news.image_urls.map((url, idx) => (
               <img
                 key={idx}
-                src={url}
+                src={news.optimizedImageUrls?.[idx] || url}
                 alt={`뉴스 이미지 ${idx + 1}`}
+                onError={(e) => {
+                  // 최적화된 이미지 로드 실패시 원본으로 fallback
+                  if (e.target.src !== url) {
+                    e.target.src = url;
+                  }
+                }}
               />
             ))}
           </div>

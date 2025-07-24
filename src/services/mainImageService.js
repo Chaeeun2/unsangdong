@@ -92,7 +92,7 @@ export const mainImageService = {
       return querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
-          id: doc.id,
+        id: doc.id,
           ...data,
           // 원본 URL과 최적화된 URL 모두 제공
           imageUrl: data.imageUrl,
@@ -115,7 +115,7 @@ export const mainImageService = {
       return querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
-          id: doc.id,
+        id: doc.id,
           ...data,
           imageUrl: data.imageUrl,
           optimizedImageUrl: data.type === 'horizontal' 

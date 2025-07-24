@@ -54,17 +54,17 @@ export const imageService = {
           originalName: safeOriginalName, // Base64로 인코딩된 파일명
           uploadedAt: new Date().toISOString(),
           source: metadata.source || 'admin-panel',
-                     // 추가 메타데이터도 안전하게 처리 - 브라우저 호환
-           ...(metadata && Object.keys(metadata).reduce((acc, key) => {
-             const value = metadata[key];
-             if (typeof value === 'string') {
-               // 문자열 값은 ASCII 문자만 포함하는지 확인
-               acc[key] = /^[\x00-\x7F]*$/.test(value) ? value : btoa(encodeURIComponent(value));
-             } else {
-               acc[key] = value;
-             }
-             return acc;
-           }, {}))
+          // 추가 메타데이터도 안전하게 처리 - 브라우저 호환
+          ...(metadata && Object.keys(metadata).reduce((acc, key) => {
+            const value = metadata[key];
+            if (typeof value === 'string') {
+              // 문자열 값은 ASCII 문자만 포함하는지 확인
+              acc[key] = /^[\x00-\x7F]*$/.test(value) ? value : btoa(encodeURIComponent(value));
+            } else {
+              acc[key] = value;
+            }
+            return acc;
+          }, {}))
         }
       });
 
