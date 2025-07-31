@@ -460,37 +460,41 @@ function ProjectDetail({ projectId, onNavigate }) {
 
       {/* 프로젝트 정보 */}
       <div className="project-content">
-        <div className="project-description">
-          <div className="lang-options">
-            <button
-              className={`lang-btn ${langMode === "KO" ? "active" : ""}`}
-              onClick={() => handleLangModeChange("KO")}
+        {/* 프로젝트 설명이 있을 때만 표시 */}
+        {(project.description && project.description.trim() !== '') || 
+         (project.descriptionEn && project.descriptionEn.trim() !== '') ? (
+          <div className="project-description">
+            <div className="lang-options">
+              <button
+                className={`lang-btn ${langMode === "KO" ? "active" : ""}`}
+                onClick={() => handleLangModeChange("KO")}
+              >
+                KO
+              </button>
+              <span className="lang-separator">/</span>
+              <button
+                className={`lang-btn ${langMode === "EN" ? "active" : ""}`}
+                onClick={() => handleLangModeChange("EN")}
+              >
+                EN
+              </button>
+            </div>
+            <div
+              className={`project-description-ko ${
+                langMode === "KO" ? "active" : ""
+              }`}
             >
-              KO
-            </button>
-            <span className="lang-separator">/</span>
-            <button
-              className={`lang-btn ${langMode === "EN" ? "active" : ""}`}
-              onClick={() => handleLangModeChange("EN")}
+              {project.description}
+            </div>
+            <div
+              className={`project-description-en ${
+                langMode === "EN" ? "active" : ""
+              }`}
             >
-              EN
-            </button>
+              {project.descriptionEn}
+            </div>
           </div>
-          <div
-            className={`project-description-ko ${
-              langMode === "KO" ? "active" : ""
-            }`}
-          >
-            {project.description}
-          </div>
-          <div
-            className={`project-description-en ${
-              langMode === "EN" ? "active" : ""
-            }`}
-          >
-            {project.descriptionEn}
-          </div>
-        </div>
+        ) : null}
 
         <div className="detail-section">
           <div className="detail-line"></div>
