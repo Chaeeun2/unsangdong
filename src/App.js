@@ -21,7 +21,7 @@ function App() {
   // URL 기반 초기 페이지 설정
   const getInitialPageFromURL = () => {
     const path = window.location.pathname;
-    
+
     if (path === '/' || path === '') {
       return { page: 'main', projectId: null };
     } else if (path.startsWith('/project/')) {
@@ -46,30 +46,31 @@ function App() {
   // 브라우저 뒤로가기/앞으로가기 처리
   useEffect(() => {
     const handlePopState = (event) => {
-      
+
       if (event.state) {
         const newPage = event.state.page;
         setCurrentPage(newPage);
         setSelectedProjectId(event.state.projectId || null);
-        
-        // 브라우저 뒤로가기/앞으로가기 시 스크롤을 최상단으로 이동
-        window.scrollTo(0, 0);
+
+        // 저장된 스크롤 위치가 있으면 복원
+        if (event.state.scrollY !== undefined) {
+          setTimeout(() => {
+            window.scrollTo(0, event.state.scrollY);
+          }, 100);
+        }
       } else {
         // 초기 상태로 돌아감
         setCurrentPage('main');
         setSelectedProjectId(null);
-        
-        // 초기 상태로 돌아갈 때도 스크롤을 최상단으로 이동
-        window.scrollTo(0, 0);
       }
     };
 
     window.addEventListener('popstate', handlePopState);
-    
+
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [currentPage, selectedProjectId]);
+  }, []);
 
   // 초기 로드 시 현재 페이지의 히스토리 상태 설정
   useEffect(() => {
@@ -102,24 +103,30 @@ function App() {
   };
 
   const handleNavigate = (page, projectId = null, query = null) => {
-    
+
     // 같은 페이지로의 중복 네비게이션 방지 (검색 페이지는 제외)
     if (page === currentPage && projectId === selectedProjectId && page !== 'search') {
       return;
     }
-    
+
+    // 현재 스크롤 위치를 현재 히스토리 상태에 저장
+    const currentScrollY = window.scrollY || window.pageYOffset;
+    const currentState = window.history.state || { page: currentPage };
+    const updatedCurrentState = { ...currentState, scrollY: currentScrollY };
+    window.history.replaceState(updatedCurrentState, '', window.location.pathname);
+
     setCurrentPage(page);
-    
+
     if (page === 'search') {
       setSearchQuery(query);
     }
     setSelectedProjectId(projectId);
-    
+
     // URL 업데이트 및 히스토리 상태 설정
     if (page === 'project-detail' && projectId) {
       const newState = { page, projectId };
       const newUrl = `/project/${projectId}`;
-      
+
       // 현재 상태가 이미 같은 프로젝트 상세 페이지인 경우 replace 사용
       const currentState = window.history.state;
       if (currentState && currentState.page === 'project-detail' && currentState.projectId === projectId) {
@@ -130,7 +137,7 @@ function App() {
     } else if (page === 'news-detail' && projectId) {
       const newState = { page, projectId };
       const newUrl = `/news/${projectId}`;
-      
+
       // 현재 상태가 이미 같은 뉴스 상세 페이지인 경우 replace 사용
       const currentState = window.history.state;
       if (currentState && currentState.page === 'news-detail' && currentState.projectId === projectId) {
@@ -143,10 +150,10 @@ function App() {
       const newState = { page };
       window.history.pushState(newState, '', url);
     }
-    
+
     // 모든 페이지 접근 시 스크롤을 최상단으로 이동
     window.scrollTo(0, 0);
-    
+
   };
 
   const renderPage = () => {
