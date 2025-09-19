@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Main.css';
 import { mainImageService } from '../services/mainImageService';
 
@@ -12,10 +12,18 @@ function Main() {
   // 상태 관리
   const [allVerticalImages, setAllVerticalImages] = useState([]);
   const [allHorizontalImages, setAllHorizontalImages] = useState([]);
-  const [selectedVerticalImages, setSelectedVerticalImages] = useState([]);
-  const [selectedHorizonImages, setSelectedHorizonImages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [nextImageSet, setNextImageSet] = useState(null);
+
+  // 이중 버퍼링을 위한 두 세트의 이미지 상태
+  const [imageSetA, setImageSetA] = useState({ vertical: [], horizontal: [] });
+  const [imageSetB, setImageSetB] = useState({ vertical: [], horizontal: [] });
+  const [activeSet, setActiveSet] = useState('A'); // 현재 표시 중인 세트
+
+  // 다음 세트 로딩 완료 여부
+  const nextSetLoadedRef = useRef(false);
+  const preloadingRef = useRef(false);
+  const intervalRef = useRef(null);
+  const [resetTimer, setResetTimer] = useState(0); // 타이머 리셋 트리거
 
   // 이미지 preload 함수
   const preloadImage = (src) => {
@@ -27,44 +35,54 @@ function Main() {
     });
   };
 
-  // Firebase에서 이미지 로드 (점진적 로딩)
+  // 이미지 세트 프리로드 (정확히 7장)
+  const preloadImageSet = async (verticalImages, horizontalImages) => {
+    const urls = [
+      ...verticalImages.map(img => img.optimizedImageUrl || img.imageUrl),
+      ...horizontalImages.map(img => img.optimizedImageUrl || img.imageUrl)
+    ];
+
+    try {
+      await Promise.all(urls.map(preloadImage));
+      return true;
+    } catch (error) {
+      console.error('이미지 프리로드 실패:', error);
+      return false;
+    }
+  };
+
+  // Firebase에서 이미지 로드
   const loadImages = async () => {
     try {
       setLoading(true);
-      
-      // 먼저 세로 이미지만 로드 (더 중요)
-      const vertical = await mainImageService.getMainImagesByType('vertical');
-      setAllVerticalImages(vertical);
-      
-      if (vertical.length > 0) {
-        const selectedVertical = getRandomImages(vertical, Math.min(2, vertical.length));
-        setSelectedVerticalImages(selectedVertical);
-      }
-      
-      // 세로 이미지 로드 후 가로 이미지 로드
-      const horizontal = await mainImageService.getMainImagesByType('horizontal');
-      setAllHorizontalImages(horizontal);
-      
-      if (horizontal.length > 0) {
-        const selectedHorizontal = getRandomImages(horizontal, Math.min(5, horizontal.length));
-        setSelectedHorizonImages(selectedHorizontal);
-      }
 
-      // 선택된 이미지들 우선순위별 preload
-      const priorityImages = [
-        ...selectedVerticalImages.map(img => img.optimizedImageUrl || img.imageUrl),
-        ...selectedHorizonImages.slice(0, 2).map(img => img.optimizedImageUrl || img.imageUrl) // 처음 2개만 우선
-      ];
-      
-      // 우선순위 이미지 먼저 preload
-      await Promise.allSettled(priorityImages.map(preloadImage));
-      
-      // 나머지 이미지 백그라운드에서 preload
-      const remainingImages = selectedHorizonImages.slice(2).map(img => img.optimizedImageUrl || img.imageUrl);
-      if (remainingImages.length > 0) {
-        Promise.allSettled(remainingImages.map(preloadImage));
+      // 이미지 데이터 로드
+      const [vertical, horizontal] = await Promise.all([
+        mainImageService.getMainImagesByType('vertical'),
+        mainImageService.getMainImagesByType('horizontal')
+      ]);
+
+      setAllVerticalImages(vertical);
+      setAllHorizontalImages(horizontal);
+
+      if (vertical.length > 0 && horizontal.length > 0) {
+        // 첫 번째 세트 설정
+        const initialVertical = getRandomImages(vertical, Math.min(2, vertical.length));
+        const initialHorizontal = getRandomImages(horizontal, Math.min(5, horizontal.length));
+
+        // 첫 번째 세트 프리로드 후 표시
+        await preloadImageSet(initialVertical, initialHorizontal);
+
+        setImageSetA({
+          vertical: initialVertical,
+          horizontal: initialHorizontal
+        });
+
+        // 1초 후 두 번째 세트 미리 준비 (더 빠르게 준비)
+        setTimeout(() => {
+          prepareNextSet();
+        }, 1000);
       }
-        
     } catch (error) {
       console.error('이미지 로딩 실패:', error);
     } finally {
@@ -72,60 +90,105 @@ function Main() {
     }
   };
 
-  // 다음 이미지 세트 미리 로드 (2장만)
-  const preloadNextImageSet = () => {
-    if (allVerticalImages.length === 0 && allHorizontalImages.length === 0) return;
-    
-    // 랜덤으로 2장의 이미지만 선택
-    const allImages = [...allVerticalImages, ...allHorizontalImages];
-    const nextImages = getRandomImages(allImages, 2);
-    
-    // 선택된 이미지들 preload
-    const imageUrls = nextImages.map(img => img.optimizedImageUrl || img.imageUrl);
-    Promise.allSettled(imageUrls.map(preloadImage))
-      .then(() => {
-        setNextImageSet(nextImages);
-      });
-  };
-
-  // 이미지 랜덤 선택 함수 (미리 로드된 이미지 사용)
-  const refreshImages = () => {
-    // 미리 로드된 이미지가 있으면 사용
-    if (nextImageSet && nextImageSet.length > 0) {
-      // 미리 로드된 이미지들로 교체
-      const verticalFromNext = nextImageSet.filter(img => img.type === 'vertical').slice(0, 2);
-      const horizontalFromNext = nextImageSet.filter(img => img.type === 'horizontal').slice(0, 5);
-      
-      if (verticalFromNext.length > 0) {
-        setSelectedVerticalImages(verticalFromNext);
-      } else if (allVerticalImages.length > 0) {
-        setSelectedVerticalImages(getRandomImages(allVerticalImages, Math.min(2, allVerticalImages.length)));
-      }
-      
-      if (horizontalFromNext.length > 0) {
-        setSelectedHorizonImages(horizontalFromNext);
-      } else if (allHorizontalImages.length > 0) {
-        setSelectedHorizonImages(getRandomImages(allHorizontalImages, Math.min(5, allHorizontalImages.length)));
-      }
-      
-      setNextImageSet(null);
-    } else {
-      // 기존 방식으로 랜덤 선택
-      if (allVerticalImages.length > 0) {
-        setSelectedVerticalImages(getRandomImages(allVerticalImages, Math.min(2, allVerticalImages.length)));
-      }
-      if (allHorizontalImages.length > 0) {
-        setSelectedHorizonImages(getRandomImages(allHorizontalImages, Math.min(5, allHorizontalImages.length)));
-      }
+  // 다음 이미지 세트 준비 (백그라운드에서)
+  const prepareNextSet = async () => {
+    if (preloadingRef.current || nextSetLoadedRef.current || allVerticalImages.length === 0 || allHorizontalImages.length === 0) {
+      return;
     }
-    
-    // 다음 이미지 세트 미리 로드
-    preloadNextImageSet();
+
+    preloadingRef.current = true;
+
+    try {
+      // 정확히 7장 선택 (세로 2, 가로 5)
+      const nextVertical = getRandomImages(allVerticalImages, Math.min(2, allVerticalImages.length));
+      const nextHorizontal = getRandomImages(allHorizontalImages, Math.min(5, allHorizontalImages.length));
+
+      // 이미지 프리로드 (브라우저 유휴 시간 활용)
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(async () => {
+          const success = await preloadImageSet(nextVertical, nextHorizontal);
+
+          if (success) {
+            // 비활성 세트에 저장
+            if (activeSet === 'A') {
+              setImageSetB({
+                vertical: nextVertical,
+                horizontal: nextHorizontal
+              });
+            } else {
+              setImageSetA({
+                vertical: nextVertical,
+                horizontal: nextHorizontal
+              });
+            }
+            nextSetLoadedRef.current = true;
+          }
+          preloadingRef.current = false;
+        });
+      } else {
+        // requestIdleCallback이 없으면 setTimeout 사용
+        setTimeout(async () => {
+          const success = await preloadImageSet(nextVertical, nextHorizontal);
+
+          if (success) {
+            if (activeSet === 'A') {
+              setImageSetB({
+                vertical: nextVertical,
+                horizontal: nextHorizontal
+              });
+            } else {
+              setImageSetA({
+                vertical: nextVertical,
+                horizontal: nextHorizontal
+              });
+            }
+            nextSetLoadedRef.current = true;
+          }
+          preloadingRef.current = false;
+        }, 100);
+      }
+    } catch (error) {
+      console.error('다음 세트 준비 실패:', error);
+      preloadingRef.current = false;
+    }
   };
 
-  // 로고 클릭 핸들러 - 이미지 재선택
+  // 이미지 세트 전환
+  const switchImageSet = async () => {
+    if (!nextSetLoadedRef.current) {
+      // 다음 세트가 준비되지 않았으면 새로운 이미지 선택 후 프리로드
+      const newVertical = getRandomImages(allVerticalImages, Math.min(2, allVerticalImages.length));
+      const newHorizontal = getRandomImages(allHorizontalImages, Math.min(5, allHorizontalImages.length));
+
+      // 로고 클릭 시에도 이미지 프리로드 수행
+      const success = await preloadImageSet(newVertical, newHorizontal);
+
+      if (success) {
+        if (activeSet === 'A') {
+          setImageSetB({ vertical: newVertical, horizontal: newHorizontal });
+          setActiveSet('B');
+        } else {
+          setImageSetA({ vertical: newVertical, horizontal: newHorizontal });
+          setActiveSet('A');
+        }
+      }
+    } else {
+      // 준비된 세트로 즉시 전환
+      setActiveSet(activeSet === 'A' ? 'B' : 'A');
+      nextSetLoadedRef.current = false;
+    }
+
+    // 다음 세트 미리 준비 (2초 후)
+    setTimeout(() => {
+      prepareNextSet();
+    }, 2000);
+  };
+
+  // 로고 클릭 핸들러
   const handleLogoClick = () => {
-    refreshImages();
+    switchImageSet();
+    // 타이머 리셋
+    setResetTimer(prev => prev + 1);
   };
 
   // 컴포넌트 마운트 시 이미지 로드
@@ -133,35 +196,41 @@ function Main() {
     loadImages();
   }, []);
 
-  // 5초마다 이미지 랜덤 변경 (미리 로드된 이미지 사용)
+  // 5초마다 이미지 전환 (타이머 리셋 가능)
   useEffect(() => {
-    if (allVerticalImages.length === 0 && allHorizontalImages.length === 0) {
-      return; // 이미지가 로드되지 않았으면 인터벌 설정 안함
+    if (allVerticalImages.length === 0 || allHorizontalImages.length === 0) {
+      return;
     }
 
-    // 초기 로드 후 3초 뒤에 다음 이미지 2장 미리 로드
-    const preloadTimer = setTimeout(() => {
-      preloadNextImageSet();
-    }, 3000);
+    // 이전 인터벌 정리
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
 
-    // 5초마다 이미지 변경
-    const interval = setInterval(() => {
-      refreshImages();
+    // 새로운 인터벌 설정
+    intervalRef.current = setInterval(() => {
+      switchImageSet();
     }, 5000);
 
-    // 컴포넌트 언마운트 시 타이머들 클리어
+    // 클린업
     return () => {
-      clearTimeout(preloadTimer);
-      clearInterval(interval);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
-  }, [allVerticalImages, allHorizontalImages]);
+  }, [allVerticalImages, allHorizontalImages, resetTimer]); // resetTimer 추가로 로고 클릭 시 타이머 리셋
 
-  // 로딩 중이거나 이미지가 없으면 기본 상태 표시
+  // 현재 표시할 이미지 세트 결정
+  const currentImages = activeSet === 'A' ? imageSetA : imageSetB;
+  const selectedVerticalImages = currentImages.vertical;
+  const selectedHorizontalImages = currentImages.horizontal;
+
+  // 로딩 중
   if (loading) {
     return (
       <main className="main-container">
         <div className="main-logo" onClick={handleLogoClick} style={{cursor: 'pointer'}}>
-          <img src="https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/main-logo.png"/>
+          <img src="https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/main-logo.png" alt="메인 로고"/>
         </div>
         <div className="main-image-wrap">
           {/* 스켈레톤 로딩 */}
@@ -180,13 +249,13 @@ function Main() {
   return (
     <main className="main-container">
       <div className="main-logo" onClick={handleLogoClick} style={{cursor: 'pointer'}}>
-        <img src="https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/main-logo.png"/>
+        <img src="https://pub-1331f8c46b8d4b71aa752849b530c45e.r2.dev/main-logo.png" alt="메인 로고"/>
       </div>
       <div className="main-image-wrap">
         {selectedVerticalImages.map((image, index) => (
-          <div key={`vertical-${image.id}`} className={`main-image-ver main-image${index + 1}`}>
-            <img 
-              src={image.optimizedImageUrl || image.imageUrl} 
+          <div key={`${activeSet}-vertical-${index}`} className={`main-image-ver main-image${index + 1}`}>
+            <img
+              src={image.optimizedImageUrl || image.imageUrl}
               alt={`메인 세로 이미지 ${index + 1}`}
               loading="eager"
               onError={(e) => {
@@ -198,10 +267,10 @@ function Main() {
             />
           </div>
         ))}
-        {selectedHorizonImages.map((image, index) => (
-          <div key={`horizon-${image.id}`} className={`main-image-hor main-image${index + 3}`}>
-            <img 
-              src={image.optimizedImageUrl || image.imageUrl} 
+        {selectedHorizontalImages.map((image, index) => (
+          <div key={`${activeSet}-horizontal-${index}`} className={`main-image-hor main-image${index + 3}`}>
+            <img
+              src={image.optimizedImageUrl || image.imageUrl}
               alt={`메인 가로 이미지 ${index + 1}`}
               loading="eager"
               onError={(e) => {
@@ -218,4 +287,4 @@ function Main() {
   );
 }
 
-export default Main; 
+export default Main;

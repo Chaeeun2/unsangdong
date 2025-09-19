@@ -81,12 +81,22 @@ export default function AwardsManager() {
     try {
       setLoading(true);
       const data = await awardsService.getAwardsData();
-      
+
+      let sortedData = [];
       if (data.awardsData) {
-        setAwardsData(data.awardsData);
+        sortedData = data.awardsData;
       } else if (Array.isArray(data)) {
-        setAwardsData(data);
+        sortedData = data;
       }
+
+      // 연도별로 내림차순 정렬 (최신 연도가 먼저)
+      sortedData.sort((a, b) => {
+        const yearA = parseInt(a.year);
+        const yearB = parseInt(b.year);
+        return yearB - yearA;
+      });
+
+      setAwardsData(sortedData);
     } catch (error) {
       console.error('Awards 데이터 로딩 실패:', error);
       alert('데이터 로딩에 실패했습니다.');
@@ -149,6 +159,12 @@ export default function AwardsManager() {
       };
       
       const newAwardsData = [newYear, ...awardsData];
+      // 연도별로 내림차순 정렬
+      newAwardsData.sort((a, b) => {
+        const yearA = parseInt(a.year);
+        const yearB = parseInt(b.year);
+        return yearB - yearA;
+      });
       setAwardsData(newAwardsData);
       setSelectedYear(year);
       setIsModalOpen(false);
@@ -278,7 +294,7 @@ export default function AwardsManager() {
                           <div key={awardIndex} className="admin-award-item">
                             <div className="admin-award-header">
                               <h4>Award {awardIndex + 1}</h4>
-                              <button 
+                              <button
                                 className="admin-button admin-button-danger admin-button-small"
                                 onClick={() => removeAward(selectedYear, awardIndex)}
                               >
@@ -294,6 +310,7 @@ export default function AwardsManager() {
                                 className="admin-textarea"
                                 rows="3"
                                 placeholder="영문 수상명을 입력하세요"
+                                style={{ minHeight: '30px', maxHeight: '80px' }}
                               />
                             </div>
 
@@ -305,6 +322,7 @@ export default function AwardsManager() {
                                 className="admin-textarea"
                                 rows="3"
                                 placeholder="국문 수상명을 입력하세요"
+                                style={{ minHeight: '30px', maxHeight: '80px' }}
                               />
                             </div>
                           </div>

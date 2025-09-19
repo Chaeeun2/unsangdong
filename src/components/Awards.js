@@ -40,8 +40,12 @@ function Awards() {
     );
   }
 
-  // 연도별로 그룹화된 데이터 사용
-  const dataToDisplay = awardsData || [];
+  // 연도별로 그룹화된 데이터를 최신 연도순으로 정렬
+  const dataToDisplay = (awardsData || []).sort((a, b) => {
+    const yearA = parseInt(a.year);
+    const yearB = parseInt(b.year);
+    return yearB - yearA; // 내림차순 정렬 (최신 연도가 먼저)
+  });
 
   return (
     <div className="awards-container">
