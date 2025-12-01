@@ -288,7 +288,7 @@
 .detail-row {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   padding: 0.4rem 0;
   font-family: Roboto Mono;
 }
@@ -302,6 +302,7 @@
   font-weight: 700;
   color: black;
   width: 130px;
+  min-width: 130px;
 }
 
 .detail-value {

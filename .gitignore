@@ -47,3 +47,7 @@ node_modules/.cache/
 firebase-debug.log
 firestore-debug.log
 ui-debug.log 
+node_modules
+
+# Local Netlify folder
+.netlify
