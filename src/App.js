@@ -10,6 +10,7 @@ import Architecture from './components/Architecture';
 import ProjectDetail from './components/ProjectDetail';
 import Art from './components/Art';
 import Design from './components/Design';
+import Interior from './components/Interior';
 import News from './components/News';
 import NewsDetail from './components/NewsDetail';
 import Book from './components/Book';
@@ -172,6 +173,8 @@ function App() {
         return <Art onNavigate={handleNavigate} />;
       case 'design':
         return <Design onNavigate={handleNavigate} />;
+      case 'interior':
+        return <Interior onNavigate={handleNavigate} />;
       case 'news':
         return <News onNavigate={handleNavigate} />;
       case 'news-detail':

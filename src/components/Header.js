@@ -235,12 +235,21 @@ function Header({ currentPage, onNavigate }) {
                 </a>
               </li>
               <li>
-                <a 
-                  href="design" 
+                <a
+                  href="design"
                   className={currentPage === 'design' ? 'current' : ''}
                   onClick={(e) => handleMenuClick(e, 'design')}
                 >
                   Design
+                </a>
+              </li>
+              <li>
+                <a
+                  href="interior"
+                  className={currentPage === 'interior' ? 'current' : ''}
+                  onClick={(e) => handleMenuClick(e, 'interior')}
+                >
+                  Interior
                 </a>
               </li>
             </ul>

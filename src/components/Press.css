@@ -76,6 +76,9 @@
   color: black;
   letter-spacing: -0.01em;
   font-family: Pretendard;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .press-table td {
