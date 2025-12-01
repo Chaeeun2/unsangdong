@@ -1626,7 +1626,8 @@ export default function ProjectManager() {
   const [projects, setProjects] = useState({
     Architecture: [],
     Art: [],
-    Design: []
+    Design: [],
+    Interior: []
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -1643,16 +1644,18 @@ export default function ProjectManager() {
   async function loadProjects() {
     try {
       setLoading(true);
-      const [archProjects, artProjects, designProjects] = await Promise.all([
+      const [archProjects, artProjects, designProjects, interiorProjects] = await Promise.all([
         contentService.getContents('Architecture'),
-        contentService.getContents('Art'), 
-        contentService.getContents('Design')
+        contentService.getContents('Art'),
+        contentService.getContents('Design'),
+        contentService.getContents('Interior')
       ]);
-      
+
       setProjects({
         Architecture: archProjects || [],
         Art: artProjects || [],
-        Design: designProjects || []
+        Design: designProjects || [],
+        Interior: interiorProjects || []
       });
     } catch (error) {
       console.error('프로젝트 로딩 실패:', error);
@@ -1802,11 +1805,17 @@ export default function ProjectManager() {
           >
             Art
           </button>
-          <button 
+          <button
             className={`admin-tab ${activeTab === 'Design' ? 'active' : ''}`}
             onClick={() => setActiveTab('Design')}
           >
             Design
+          </button>
+          <button
+            className={`admin-tab ${activeTab === 'Interior' ? 'active' : ''}`}
+            onClick={() => setActiveTab('Interior')}
+          >
+            Interior
           </button>
         </div>
 
