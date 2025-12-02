@@ -225,6 +225,15 @@ function Header({ currentPage, onNavigate }) {
                   Architecture
                 </a>
               </li>
+                            <li>
+                <a
+                  href="interior"
+                  className={currentPage === 'interior' ? 'current' : ''}
+                  onClick={(e) => handleMenuClick(e, 'interior')}
+                >
+                  Interior
+                </a>
+              </li>
               <li>
                 <a 
                   href="art" 
@@ -241,15 +250,6 @@ function Header({ currentPage, onNavigate }) {
                   onClick={(e) => handleMenuClick(e, 'design')}
                 >
                   Design
-                </a>
-              </li>
-              <li>
-                <a
-                  href="interior"
-                  className={currentPage === 'interior' ? 'current' : ''}
-                  onClick={(e) => handleMenuClick(e, 'interior')}
-                >
-                  Interior
                 </a>
               </li>
             </ul>

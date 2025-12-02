@@ -1799,6 +1799,12 @@ export default function ProjectManager() {
           >
             Architecture
           </button>
+                    <button
+            className={`admin-tab ${activeTab === 'Interior' ? 'active' : ''}`}
+            onClick={() => setActiveTab('Interior')}
+          >
+            Interior
+          </button>
           <button 
             className={`admin-tab ${activeTab === 'Art' ? 'active' : ''}`}
             onClick={() => setActiveTab('Art')}
@@ -1810,12 +1816,6 @@ export default function ProjectManager() {
             onClick={() => setActiveTab('Design')}
           >
             Design
-          </button>
-          <button
-            className={`admin-tab ${activeTab === 'Interior' ? 'active' : ''}`}
-            onClick={() => setActiveTab('Interior')}
-          >
-            Interior
           </button>
         </div>
 
